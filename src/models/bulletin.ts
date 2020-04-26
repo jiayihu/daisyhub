@@ -27,6 +27,14 @@ export interface Bulletin {
 
 export type BulletinBody = Exclude<Bulletin, 'id' | 'meta'>;
 
+export const readBulletins = (): Reader<Firestore, Promise<Array<Bulletin>>> => db => {
+  const ref = db.collection('bulletins');
+
+  return ref.get().then(snapshot => {
+    return snapshot.docs.map(doc => doc.data() as Bulletin);
+  });
+};
+
 export const readBulletin = (
   id: string,
 ): Reader<Firestore, Promise<Bulletin | undefined>> => db => {
