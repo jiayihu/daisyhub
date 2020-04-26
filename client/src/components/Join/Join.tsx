@@ -1,5 +1,5 @@
 import React from 'react';
 
-export const Join = () => {
+export const Join: React.FC = () => {
   return <div>Join</div>;
 };

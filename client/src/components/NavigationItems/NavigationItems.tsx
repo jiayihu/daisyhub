@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationItem } from './NavigationItem/NavigationItem';
 import { Navbar, Nav } from 'reactstrap';
 
-export const NavigationItems: React.FC = (props) => (
+export const NavigationItems: React.FC = () => (
   <Navbar color="light" light expand="md">
     <Nav className="mr-auto" navbar>
       <NavigationItem link="/host">Host</NavigationItem>
