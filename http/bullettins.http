@@ -1,0 +1,46 @@
+POST http://localhost:3001/bulletins
+Content-Type: application/json
+
+{
+  "dodo": "JOJO5",
+  "island": {
+    "fruit": "apple",
+    "hemisphere": "north",
+    "villager": "neither"
+  },
+  "time": "2020-04-26T14:34:30.354Z",
+  "turnipPrice": 12,
+  "description": "Any gift is welcome",
+  "preferences": {
+    "concurrent": 1,
+    "queue": 5,
+    "hasFee": false,
+    "isPrivate": false
+  }
+}
+
+###
+
+GET http://localhost:3001/bulletins/Z0YV0nIZ9wmcMrYfULAzu
+Content-Type: application/json
+
+###
+
+PATCH http://localhost:3001/bulletins/Z0YV0nIZ9wmcMrYfULAzu
+Content-Type: application/json
+
+{
+  "turnipPrice": 120,
+  "description": "Any gift is welcome",
+  "preferences": {
+    "concurrent": 1,
+    "queue": 5,
+    "hasFee": false,
+    "isPrivate": false
+  }
+}
+
+###
+
+DELETE http://localhost:3001/bulletins/Z0YV0nIZ9wmcMrYfULAzu
+Content-Type: application/json
