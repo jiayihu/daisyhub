@@ -1,19 +1,19 @@
-import { Request, Response } from 'express';
 import express from 'express';
-import { getIslands, getIsland } from './services/islands';
 import { cors } from './middlewares';
+import { createBulletinsRoutes } from './routes/bulletins';
+import { db } from './db';
+import { createIslandsRoutes } from './routes/islands';
 
 // Create an Express object and routes (in order)
 const app = express();
 
 // CORS
 app.use(cors);
+app.use(express.json());
 
-app.get('/islands/:islandId', (req, res) => {
-  res.send(getIsland(req.params.islandId));
-});
-app.get('/islands', (_, res) => {
-  res.send(getIslands());
-});
+app.use('/bulletins', createBulletinsRoutes(db));
+app.use('/islands', createIslandsRoutes());
 
 exports.app = app;
+
+export { app };
