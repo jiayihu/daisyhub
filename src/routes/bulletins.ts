@@ -21,7 +21,7 @@ export const createBulletinsRoutes = (db: Firestore) => {
 
   router.post('/', validator(BulletinBodyDec), (req, res, next) => {
     return addBulletin(req.body)(db)
-      .then(bulletin => res.status(301).send({ status: 'success', data: bulletin }))
+      .then(id => res.status(301).send({ status: 'success', data: { id } }))
       .catch(next);
   });
 
