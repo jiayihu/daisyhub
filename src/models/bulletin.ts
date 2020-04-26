@@ -2,30 +2,37 @@ import { Reader } from 'fp-ts/lib/Reader';
 import { nanoid } from 'nanoid';
 import { Island } from './island';
 import { Firestore, DocumentReference } from '@google-cloud/firestore';
+import * as D from 'io-ts/lib/Decoder';
 
-export interface Bulletin {
-  id: string;
-  dodo: string;
+const bodySchema = {
+  dodo: D.string,
+  island: Island,
+  time: D.string,
+  turnipPrice: D.number,
+  description: D.string,
+  preferences: D.type({
+    concurrent: D.number,
+    queue: D.number,
+    hasFee: D.boolean,
+    isPrivate: D.boolean,
+  }),
+};
 
-  island: Island;
+export const BulletinBodyDec = D.type(bodySchema);
+export const PartialBulletinBodyDec = D.partial(bodySchema);
 
-  time: string;
-  turnipPrice: number;
-  description: string;
+export const BulletinDec = D.intersection(
+  D.type({
+    id: D.string,
+    meta: D.type({
+      creationDate: D.string,
+    }),
+  }),
+  BulletinBodyDec,
+);
 
-  preferences: {
-    concurrent: number;
-    queue: number;
-    hasFee: boolean;
-    isPrivate: boolean;
-  };
-
-  meta: {
-    creationDate: string;
-  };
-}
-
-export type BulletinBody = Exclude<Bulletin, 'id' | 'meta'>;
+export type BulletinBody = D.TypeOf<typeof BulletinBodyDec>;
+export type Bulletin = D.TypeOf<typeof BulletinDec>;
 
 export const readBulletins = (): Reader<Firestore, Promise<Array<Bulletin>>> => db => {
   const ref = db.collection('bulletins');
