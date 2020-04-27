@@ -2,7 +2,7 @@ import express from 'express';
 import { getIsland, getIslands } from '../services/islands';
 
 export const createIslandsRoutes = () => {
-  const router = express.Router();
+  const router = express.Router({ mergeParams: true });
 
   router.get('/:islandId', (req, res) => {
     return res.send(getIsland(req.params.islandId));
