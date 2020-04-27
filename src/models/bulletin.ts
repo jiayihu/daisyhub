@@ -22,9 +22,14 @@ const bodySchema = {
 export const BulletinBodyDec = D.type(bodySchema);
 export const PartialBulletinBodyDec = D.partial(bodySchema);
 
+export const QueueBodyDec = D.partial({
+  isLocked: D.boolean,
+});
+
 export const BulletinDec = D.intersection(
   D.type({
     id: D.string,
+    queue: QueueBodyDec,
     meta: D.type({
       creationDate: D.string,
     }),
@@ -33,11 +38,18 @@ export const BulletinDec = D.intersection(
 );
 
 export type BulletinBody = D.TypeOf<typeof BulletinBodyDec>;
+export type PartialBulletinBody = D.TypeOf<typeof PartialBulletinBodyDec>;
+export type QueueBody = D.TypeOf<typeof QueueBodyDec>;
 export type Bulletin = D.TypeOf<typeof BulletinDec>;
 
 function docToBulletin(document: DocumentData): Bulletin {
   const creationDate = (document.meta.creationDate.toDate() as Date).toISOString();
   return { ...document, meta: { creationDate } } as Bulletin;
+}
+
+function bulletinToDoc(bulletin: Bulletin): DocumentData {
+  const creationDate = Timestamp.fromDate(new Date(bulletin.meta.creationDate));
+  return { ...bulletin, meta: { creationDate } };
 }
 
 export const readBulletins = (): Reader<Firestore, Promise<Array<Bulletin>>> => db => {
@@ -66,22 +78,24 @@ export const readBulletin = (id: string): Reader<Firestore, Promise<Bulletin | n
 
 export const createBulletin = (body: BulletinBody): Reader<Firestore, Promise<string>> => db => {
   const id = nanoid();
-  const creationDate = Timestamp.fromDate(new Date());
   const ref = db.collection('bulletins').doc(id);
-  const document = {
+  const bulletin: Bulletin = {
     ...body,
     id,
+    queue: {
+      isLocked: false,
+    },
     meta: {
-      creationDate,
+      creationDate: new Date().toISOString(),
     },
   };
 
-  return ref.set(document).then(() => id);
+  return ref.set(bulletinToDoc(bulletin)).then(() => id);
 };
 
 export const updateBulletin = (
   id: string,
-  body: BulletinBody,
+  body: Partial<Bulletin>,
 ): Reader<Firestore, Promise<boolean>> => db => {
   const ref = db.collection('bulletins').doc(id);
 
@@ -91,5 +105,12 @@ export const updateBulletin = (
 export const deleteBulletin = (id: string): Reader<Firestore, Promise<boolean>> => db => {
   const ref = db.collection('bulletins').doc(id);
 
-  return ref.delete().then(() => true);
+  // First delete all queue visitors
+  return ref
+    .collection('visitors')
+    .get()
+    .then(snapshot => {
+      return Promise.all(snapshot.docs.map(doc => doc.ref.delete()));
+    })
+    .then(() => ref.delete().then(() => true));
 };

@@ -1,0 +1,25 @@
+GET http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB/visitors
+Content-Type: application/json
+
+###
+
+POST http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB/visitors
+Content-Type: application/json
+
+{
+  "name": "Brichi"
+}
+
+###
+
+PATCH http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB/visitors/5LRVvbDTF5gJb757KIm5g
+Content-Type: application/json
+
+{
+  "name": "Jiayi"
+}
+
+###
+
+DELETE http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB/visitors/5LRVvbDTF5gJb757KIm5g
+Content-Type: application/json

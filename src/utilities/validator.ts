@@ -8,11 +8,11 @@ import { flatten } from './utils';
 /**
  * https://github.com/Microsoft/api-guidelines/blob/master/Guidelines.md#errorresponse--object
  */
-export interface RestError {
+export type RestError = {
   code: 'BadArgument';
   message: string;
   details?: Array<RestError>;
-}
+};
 
 function getErrorValues(forest: Array<Tree<string>>): Array<string> {
   return flatten(
@@ -22,11 +22,9 @@ function getErrorValues(forest: Array<Tree<string>>): Array<string> {
   );
 }
 
-export const validator: <T>(decoder: Decoder<T>) => RequestHandler = decoder => (
-  req,
-  res,
-  next,
-) => {
+export const validator: <T>(
+  decoder: Decoder<T>,
+) => RequestHandler<Record<string, string>, any, T> = decoder => (req, res, next) => {
   return pipe(
     decoder.decode(req.body),
     fold(
