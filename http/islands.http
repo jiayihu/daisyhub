@@ -1,9 +1,0 @@
-GET https://europe-west1-turnips-274820.cloudfunctions.net/islands
-
-###
-
-GET https://us-east4-turnips-274820.cloudfunctions.net/app/islands
-
-###
-
-GET https://europe-west2-turnips-274820.cloudfunctions.net/app/islands
