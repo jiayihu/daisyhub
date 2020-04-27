@@ -47,6 +47,7 @@ export const readBulletins = (): Reader<Firestore, Promise<Array<Bulletin>>> => 
     ref
       // Filter bulletins more recent than one day
       .where('meta.creationDate', '>=', addDays(new Date(), -1))
+      .orderBy('meta.creationDate', 'desc')
       .get()
       .then(snapshot => {
         return snapshot.docs.map(doc => docToBulletin(doc.data()));
