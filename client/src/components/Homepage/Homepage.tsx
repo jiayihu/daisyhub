@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Bulletin as BulletinType } from '../../types/bulletin';
+import { initBulletins } from '../../store/actions/bulletin.actions';
 import { Spinner } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Bulletins } from './Bulletins/Bulletins';
 
-const fetchBullettins = (): Promise<BulletinType[]> => {
-  return fetch('http://localhost:3001/bulletins')
-    .then((rawRes) => rawRes.json())
-    .then((res) => res.data);
-};
-
 export const Homepage: React.FC = () => {
-  const [bulletins, setBulletins] = useState<BulletinType[]>();
+  const bulletins = useSelector<BulletinType[], BulletinType[]>(
+    (state) => state
+  );
+
+  const dispatch = useDispatch();
+
+  const onInitBulletins = useCallback(() => dispatch(initBulletins()), [
+    dispatch,
+  ]);
 
   useEffect(() => {
-    fetchBullettins().then((data) => setBulletins(data));
-  }, []);
-
-  console.log(bulletins);
+    onInitBulletins();
+  }, [onInitBulletins]);
 
   const content = bulletins ? (
     <Bulletins bulletins={bulletins} />
