@@ -7,6 +7,8 @@ import {
   getBulletins,
 } from '../services/bulletin';
 import { Firestore } from '@google-cloud/firestore';
+import { validator } from '../utilities/validator';
+import { BulletinBodyDec, PartialBulletinBodyDec } from '../models/bulletin';
 
 export const createBulletinsRoutes = (db: Firestore) => {
   const router = express.Router();
@@ -17,9 +19,9 @@ export const createBulletinsRoutes = (db: Firestore) => {
       .catch(next);
   });
 
-  router.post('/', (req, res, next) => {
+  router.post('/', validator(BulletinBodyDec), (req, res, next) => {
     return addBulletin(req.body)(db)
-      .then(bulletin => res.status(301).send({ status: 'success', data: bulletin }))
+      .then(id => res.status(301).send({ status: 'success', data: { id } }))
       .catch(next);
   });
 
@@ -31,7 +33,7 @@ export const createBulletinsRoutes = (db: Firestore) => {
       .catch(next);
   });
 
-  router.patch('/:bulletinId', (req, res, next) => {
+  router.patch('/:bulletinId', validator(PartialBulletinBodyDec), (req, res, next) => {
     return editBulletin(
       req.params.bulletinId,
       req.body,
