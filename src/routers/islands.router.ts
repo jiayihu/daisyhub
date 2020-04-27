@@ -1,5 +1,5 @@
 import express from 'express';
-import { getIsland, getIslands } from '../services/islands';
+import { getIsland, getIslands } from '../services/islands.service';
 
 export const createIslandsRoutes = () => {
   const router = express.Router({ mergeParams: true });

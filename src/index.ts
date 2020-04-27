@@ -1,10 +1,10 @@
 import express from 'express';
 import { cors, jsonError } from './middlewares';
-import { createBulletinsRoutes } from './routes/bulletins';
+import { createBulletinsRoutes } from './routers/bulletins.router';
 import { db } from './db';
-import { createIslandsRoutes } from './routes/islands';
-import { createVisitorsRoutes } from './routes/visitors';
-import { createMessagesRoutes } from './routes/messages';
+import { createIslandsRoutes } from './routers/islands.router';
+import { createVisitorsRoutes } from './routers/visitors.router';
+import { createMessagesRoutes } from './routers/messages.router';
 
 // Create an Express object and routes (in order)
 const app = express();

@@ -1,8 +1,8 @@
 import express from 'express';
 import { Firestore } from '@google-cloud/firestore';
 import { validator } from '../utilities/validator';
-import { getVisitors, addVisitor, removeVisitor, editVisitor } from '../services/visitors';
-import { VisitorBodyDec } from '../models/visitors';
+import { getVisitors, addVisitor, removeVisitor, editVisitor } from '../services/visitors.service';
+import { VisitorBodyDec } from '../models/visitors.model';
 
 export const createVisitorsRoutes = (db: Firestore) => {
   const router = express.Router({ mergeParams: true });

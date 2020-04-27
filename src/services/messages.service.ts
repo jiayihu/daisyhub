@@ -1,4 +1,4 @@
-import { readMessages, createMessage, MessageBody, deleteMessage } from '../models/messages';
+import { readMessages, createMessage, MessageBody, deleteMessage } from '../models/messages.model';
 
 export function getMessages(bulletinId: string) {
   return readMessages(bulletinId);

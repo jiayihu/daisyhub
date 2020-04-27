@@ -1,6 +1,6 @@
 import { Reader } from 'fp-ts/lib/Reader';
 import { nanoid } from 'nanoid';
-import { Island } from './island';
+import { Island } from './island.model';
 import { Firestore, Timestamp, DocumentData } from '@google-cloud/firestore';
 import * as D from 'io-ts/lib/Decoder';
 import { addDays } from '../utilities/utils';

@@ -4,7 +4,7 @@ import {
   updateVisitor,
   VisitorBody,
   deleteVisitor,
-} from '../models/visitors';
+} from '../models/visitors.model';
 
 export function getVisitors(bulletinId: string) {
   return readVisitors(bulletinId);

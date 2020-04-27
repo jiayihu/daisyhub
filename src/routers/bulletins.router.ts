@@ -6,12 +6,10 @@ import {
   getBulletin,
   getBulletins,
   updateQueue,
-} from '../services/bulletin';
+} from '../services/bulletin.service';
 import { Firestore } from '@google-cloud/firestore';
 import { validator } from '../utilities/validator';
-import { BulletinBodyDec, PartialBulletinBodyDec, QueueBodyDec } from '../models/bulletin';
-import { getMessages, addMessage, removeMessage } from '../services/messages';
-import { MessageBodyDec } from '../models/messages';
+import { BulletinBodyDec, PartialBulletinBodyDec, QueueBodyDec } from '../models/bulletin.model';
 
 export const createBulletinsRoutes = (db: Firestore) => {
   const router = express.Router({ mergeParams: true });

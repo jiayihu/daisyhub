@@ -1,8 +1,8 @@
 import express from 'express';
 import { Firestore } from '@google-cloud/firestore';
 import { validator } from '../utilities/validator';
-import { getMessages, addMessage, removeMessage } from '../services/messages';
-import { MessageBodyDec } from '../models/messages';
+import { getMessages, addMessage, removeMessage } from '../services/messages.service';
+import { MessageBodyDec } from '../models/messages.model';
 
 export const createMessagesRoutes = (db: Firestore) => {
   const router = express.Router({ mergeParams: true });

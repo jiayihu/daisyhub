@@ -7,7 +7,7 @@ import {
   deleteBulletin,
   readBulletins,
   QueueBody,
-} from '../models/bulletin';
+} from '../models/bulletin.model';
 
 export function getBulletins() {
   return readBulletins();
