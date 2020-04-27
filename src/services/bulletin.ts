@@ -3,8 +3,10 @@ import {
   createBulletin,
   updateBulletin,
   BulletinBody,
+  PartialBulletinBody,
   deleteBulletin,
   readBulletins,
+  QueueBody,
 } from '../models/bulletin';
 
 export function getBulletins() {
@@ -19,10 +21,16 @@ export function addBulletin(body: BulletinBody) {
   return createBulletin(body);
 }
 
-export function editBulletin(id: string, body: BulletinBody) {
+export function editBulletin(id: string, body: PartialBulletinBody) {
   return updateBulletin(id, body);
 }
 
 export function removeBulletin(id: string) {
   return deleteBulletin(id);
+}
+
+export function updateQueue(id: string, body: QueueBody) {
+  return updateBulletin(id, {
+    queue: body,
+  });
 }

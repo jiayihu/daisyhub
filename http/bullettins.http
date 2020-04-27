@@ -9,6 +9,8 @@ Content-Type: application/json
 {
   "dodo": "JOJO5",
   "island": {
+    "name": "Gardenia",
+    "player": "jiayi",
     "fruit": "apple",
     "hemisphere": "north",
     "villager": "neither"
@@ -26,7 +28,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3001/bulletins/Z0YV0nIZ9wmcMrYfULAzu
+GET http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB
 Content-Type: application/json
 
 ###
@@ -47,5 +49,14 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3001/bulletins/Z0YV0nIZ9wmcMrYfULAzu
+DELETE http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB
 Content-Type: application/json
+
+###
+
+PATCH  http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB/queue
+Content-Type: application/json
+
+{
+  "isLocked": false
+}
