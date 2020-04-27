@@ -1,0 +1,17 @@
+GET http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/messages
+Content-Type: application/json
+
+###
+
+POST http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/messages
+Content-Type: application/json
+
+{
+  "name": "Brichi",
+  "message": "Hello world!"
+}
+
+###
+
+DELETE http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/messages/mZNvtMXzwehTBI_rOqi_5
+Content-Type: application/json
