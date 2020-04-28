@@ -13,9 +13,11 @@ const initialState: BulletinType[] = [
     id: '',
     dodo: '',
     island: {
+      name: '',
+      player: '',
       fruit: '',
       hemisphere: '',
-      villager: '',
+      villager: 'neither',
     },
     time: '',
     turnipPrice: 0,

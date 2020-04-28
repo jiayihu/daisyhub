@@ -30,7 +30,7 @@ export const Bulletin: React.FC<{
               />
             </Col>
             <Col>
-              <CardTitle>{props.bulletin.dodo}</CardTitle>
+              <CardTitle>{props.bulletin.island.name}</CardTitle>
             </Col>
           </Row>
 
