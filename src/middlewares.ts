@@ -14,7 +14,7 @@ export const cors: RequestHandler = (req, res, next) => {
   return next();
 };
 
-export const jsonError: ErrorRequestHandler = (err, req, res, next) => {
+export const jsonError: ErrorRequestHandler = (err, _, res, next) => {
   if (err instanceof SyntaxError) {
     const error: RestError = {
       code: 'InvalidJSON',
