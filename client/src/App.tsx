@@ -9,18 +9,10 @@ import { NavigationItems } from './components/NavigationItems/NavigationItems';
 function App() {
   const routes = (
     <Switch>
-      <Route path="/host">
-        <Host />
-      </Route>
-      <Route path="/join">
-        <Join />
-      </Route>
-      <Route exact path="/">
-        <Homepage />
-      </Route>
-      <Route path="*">
-        <NotFound />
-      </Route>
+      <Route path="/host" component={Host} />
+      <Route path="/join" component={Join} />
+      <Route exact path="/" component={Homepage} />
+      <Route path="*" component={NotFound} />
     </Switch>
   );
 
