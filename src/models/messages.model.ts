@@ -18,10 +18,7 @@ export type Message = {
 export const readMessages = (
   bulletinId: string,
 ): Reader<Firestore, Promise<Array<Message>>> => db => {
-  const ref = db
-    .collection('bulletins')
-    .doc(bulletinId)
-    .collection('messages');
+  const ref = db.collection('bulletins').doc(bulletinId).collection('messages');
 
   return ref.get().then(snapshot => {
     return snapshot.docs.map(doc => doc.data() as Message);
@@ -33,11 +30,7 @@ export const createMessage = (
   body: MessageBody,
 ): Reader<Firestore, Promise<string>> => db => {
   const id = nanoid();
-  const ref = db
-    .collection('bulletins')
-    .doc(bulletinId)
-    .collection('messages')
-    .doc(id);
+  const ref = db.collection('bulletins').doc(bulletinId).collection('messages').doc(id);
   const message: Message = {
     ...body,
     id,
@@ -51,11 +44,7 @@ export const deleteMessage = (
   bulletinId: string,
   messageId: string,
 ): Reader<Firestore, Promise<boolean>> => db => {
-  const ref = db
-    .collection('bulletins')
-    .doc(bulletinId)
-    .collection('messages')
-    .doc(messageId);
+  const ref = db.collection('bulletins').doc(bulletinId).collection('messages').doc(messageId);
 
   return ref.delete().then(() => true);
 };

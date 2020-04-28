@@ -8,7 +8,7 @@ export function assertNever(_: never): never {
 export function debounce<F extends (...params: Array<any>) => void>(fn: F, delay: number): F {
   let timer: NodeJS.Timeout;
 
-  return function(this: any, ...args: Array<any>) {
+  return function (this: any, ...args: Array<any>) {
     clearTimeout(timer);
     timer = setTimeout(() => fn.apply(this, args), delay);
   } as F;
@@ -79,7 +79,5 @@ export function times(n: number, fn: (n: number) => void) {
 }
 
 export const uniqueId = (prefix: string = ''): string => {
-  return `${prefix}_${Math.random()
-    .toString(36)
-    .substr(2, 9)}`;
+  return `${prefix}_${Math.random().toString(36).substr(2, 9)}`;
 };
