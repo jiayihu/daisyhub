@@ -18,6 +18,9 @@ node_modules
 
 # Include dist folder ignored by Git
 !dist/
+!.env
+!db-owner.json
 
 client/
 src/
+http/

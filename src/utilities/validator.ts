@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import { ParamsDictionary } from 'express-serve-static-core';
 import { Decoder } from 'io-ts/lib/Decoder';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { fold } from 'fp-ts/lib/Either';
@@ -9,7 +10,7 @@ import { flatten } from './utils';
  * https://github.com/Microsoft/api-guidelines/blob/master/Guidelines.md#errorresponse--object
  */
 export type RestError = {
-  code: 'BadArgument';
+  code: 'BadArgument' | 'InvalidJSON';
   message: string;
   details?: Array<RestError>;
 };
@@ -24,7 +25,7 @@ function getErrorValues(forest: Array<Tree<string>>): Array<string> {
 
 export const validator: <T>(
   decoder: Decoder<T>,
-) => RequestHandler<Record<string, string>, any, T> = decoder => (req, res, next) => {
+) => RequestHandler<ParamsDictionary, any, T> = decoder => (req, res, next) => {
   return pipe(
     decoder.decode(req.body),
     fold(

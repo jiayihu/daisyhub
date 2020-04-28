@@ -1,9 +1,9 @@
-GET http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB/visitors
+GET http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/visitors
 Content-Type: application/json
 
 ###
 
-POST http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB/visitors
+POST http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/visitors
 Content-Type: application/json
 
 {
@@ -12,7 +12,7 @@ Content-Type: application/json
 
 ###
 
-PATCH http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB/visitors/5LRVvbDTF5gJb757KIm5g
+PATCH http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/visitors/5LRVvbDTF5gJb757KIm5g
 Content-Type: application/json
 
 {
@@ -21,5 +21,5 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB/visitors/5LRVvbDTF5gJb757KIm5g
+DELETE http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/visitors/5LRVvbDTF5gJb757KIm5g
 Content-Type: application/json
