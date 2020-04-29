@@ -17,10 +17,7 @@ export type Visitor = {
 export const readVisitors = (
   bulletinId: string,
 ): Reader<Firestore, Promise<Array<Visitor>>> => db => {
-  const ref = db
-    .collection('bulletins')
-    .doc(bulletinId)
-    .collection('visitors');
+  const ref = db.collection('bulletins').doc(bulletinId).collection('visitors');
 
   return ref.get().then(snapshot => {
     return snapshot.docs.map(doc => doc.data() as Visitor);
@@ -32,11 +29,7 @@ export const createVisitor = (
   body: VisitorBody,
 ): Reader<Firestore, Promise<string>> => db => {
   const id = nanoid();
-  const ref = db
-    .collection('bulletins')
-    .doc(bulletinId)
-    .collection('visitors')
-    .doc(id);
+  const ref = db.collection('bulletins').doc(bulletinId).collection('visitors').doc(id);
   const visitor: Visitor = {
     ...body,
     id,
@@ -51,11 +44,7 @@ export const updateVisitor = (
   visitorId: string,
   body: Partial<Visitor>,
 ): Reader<Firestore, Promise<boolean>> => db => {
-  const ref = db
-    .collection('bulletins')
-    .doc(bulletinId)
-    .collection('visitors')
-    .doc(visitorId);
+  const ref = db.collection('bulletins').doc(bulletinId).collection('visitors').doc(visitorId);
 
   return ref.update(body).then(() => true);
 };
@@ -64,11 +53,7 @@ export const deleteVisitor = (
   bulletinId: string,
   visitorId: string,
 ): Reader<Firestore, Promise<boolean>> => db => {
-  const ref = db
-    .collection('bulletins')
-    .doc(bulletinId)
-    .collection('visitors')
-    .doc(visitorId);
+  const ref = db.collection('bulletins').doc(bulletinId).collection('visitors').doc(visitorId);
 
   return ref.delete().then(() => true);
 };
