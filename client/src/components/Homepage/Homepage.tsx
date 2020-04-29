@@ -5,11 +5,9 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Spinner } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Bulletins } from './Bulletins/Bulletins';
+import { Bulletins } from './Bulletins/BulletinsList';
 
-interface HomepageProps extends RouteComponentProps<any> {}
-
-export const Homepage: React.FC<HomepageProps> = (props) => {
+export const Homepage: React.FC<RouteComponentProps<any>> = (props) => {
   const bulletins = useSelector<BulletinType[], BulletinType[]>(
     (state) => state
   );
@@ -24,7 +22,7 @@ export const Homepage: React.FC<HomepageProps> = (props) => {
   }, [onInitBulletins]);
 
   const selectedBulletinHandler = (id: string) => {
-    props.history.push(`/island/${id}`);
+    props.history.push(`/bulletins/${id}`);
   };
 
   const content = bulletins ? (

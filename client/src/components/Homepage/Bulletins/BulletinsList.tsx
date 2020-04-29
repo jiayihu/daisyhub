@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bulletin } from './Bulletin/Bulletin';
+import { Bulletin } from '../../Bulletin/Bulletin';
 import { Bulletin as BulletinType } from '../../../types/bulletin';
 import { Container, Row, Col } from 'reactstrap';
 

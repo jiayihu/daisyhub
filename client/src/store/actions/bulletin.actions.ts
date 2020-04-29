@@ -25,6 +25,13 @@ export const setBulletins = (payload: BulletinType[]) => {
   };
 };
 
+export const failFetch = (error: string) => {
+  return {
+    type: FAIL_FETCH,
+    error,
+  };
+};
+
 export const initBulletins = () => {
   return {
     type: INIT_BULLETINS,
