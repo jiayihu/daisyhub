@@ -2,6 +2,7 @@ import { all, takeEvery, call } from 'redux-saga/effects';
 import { put } from 'redux-saga/effects';
 import * as actions from '../actions/bulletin.actions';
 import { getBulletins } from '../../services/bulletins.service';
+import { handleSagaError } from './handleSagaError';
 
 function* fetchBulletins() {
   try {
@@ -9,6 +10,7 @@ function* fetchBulletins() {
 
     yield put(actions.getBulletinsSucceeded(bulletins));
   } catch (error) {
+    yield* handleSagaError(error);
     yield put(actions.getBulletinsFailed(error));
   }
 }

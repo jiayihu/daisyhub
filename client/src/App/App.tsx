@@ -8,6 +8,7 @@ import { JoinBulletin } from '../features/bulletins/JoinBulletin/JoinBulletin';
 import { BulletinDetails } from '../features/bulletins/BulletinDetails/BulletinDetails';
 import { NavigationItems } from '../features/navigation/NavigationItems/NavigationItems';
 import { Container } from 'reactstrap';
+import { Notifications } from '../features/notifications/Notifications/Notifications';
 
 function App() {
   const routes = (
@@ -26,6 +27,7 @@ function App() {
       <div className="app">
         <Container className="py-5">{routes}</Container>
       </div>
+      <Notifications />
     </>
   );
 }

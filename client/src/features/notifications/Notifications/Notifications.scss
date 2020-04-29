@@ -1,0 +1,18 @@
+@import '../../ui/bootstrap/variables';
+
+.notifications {
+  min-height: 12.5rem;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (min-width: map-get($grid-breakpoints, 'md')) {
+  .notifications {
+    top: 6rem;
+    left: auto;
+    right: 1rem;
+    transform: none;
+  }
+}

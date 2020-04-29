@@ -24,7 +24,7 @@ export const Bulletins = (_: Props) => {
   return (
     <CardColumns className="bulletins">
       {bulletins.map(bulletin => (
-        <BulletinPreview bulletin={bulletin} />
+        <BulletinPreview bulletin={bulletin} key={bulletin.id} />
       ))}
     </CardColumns>
   );

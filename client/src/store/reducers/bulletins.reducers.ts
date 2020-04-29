@@ -1,15 +1,10 @@
 import { GET_BULLETINS_SUCCEEDED, GET_BULLETINS_FAILED } from '../actions/bulletin.actions';
-import { Bulletin as BulletinType } from '../../types/bulletin';
+import { Bulletin } from '../../types/bulletin';
 import { Action } from '../actions';
 
-export type BulletinsState = BulletinType[];
+export type BulletinsState = Bulletin[];
 
-const initialState: BulletinsState = [];
-
-export const bulletinsReducer = (
-  state: BulletinsState = initialState,
-  action: Action,
-): BulletinsState => {
+export const bulletinsReducer = (state: BulletinsState = [], action: Action): BulletinsState => {
   switch (action.type) {
     case GET_BULLETINS_SUCCEEDED:
       return action.payload;
