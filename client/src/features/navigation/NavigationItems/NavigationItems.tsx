@@ -9,7 +9,7 @@ export const NavigationItems = () => {
   const handleToggle = () => setIsOpen(!isOpen);
 
   return (
-    <Navbar light expand="md">
+    <Navbar light expand="md" className="py-2">
       <NavbarBrand href="/">Daisyhub</NavbarBrand>
       <Collapse isOpen={isOpen} navbar>
         <Nav navbar>

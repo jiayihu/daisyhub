@@ -9,27 +9,27 @@
   padding: 1rem;
   margin-bottom: 1rem;
   min-width: 15rem;
-  max-width: 18rem;
+  max-width: 20rem;
 }
 
 .bulletin--apple {
-  background-color: rgba($color: $red, $alpha: 0.5);
+  background-color: $red;
 }
 
 .bulletin--cherry {
-  background-color: rgba($color: $red, $alpha: 0.8);
+  background-color: darken($red, 10);
 }
 
 .bulletin--orange {
-  background-color: rgba($color: $orange, $alpha: 0.4);
+  background-color: lighten($orange, 30);
 }
 
 .bulletin--peach {
-  background-color: rgba($color: $pink, $alpha: 0.8);
+  background-color: lighten($pink, 5);
 }
 
 .bulletin--pear {
-  background-color: rgba($color: $green, $alpha: 0.8);
+  background-color: lighten($green, 2);
 }
 
 .bulletin__fruit {

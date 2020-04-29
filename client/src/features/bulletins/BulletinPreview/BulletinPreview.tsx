@@ -19,7 +19,7 @@ export const BulletinPreview = (props: Props) => {
   });
 
   return (
-    <div className="card border-0">
+    <div className="card border-0 bg-transparent">
       <div className={className} onClick={() => history.push(`/bulletins/${bulletin.id}`)}>
         <p className="f7 my-0 text-right">{format(creationDate, 'HH:mm')}</p>
         <img className="bulletin__fruit" src={mockImg} alt={bulletin.island.fruit} />
