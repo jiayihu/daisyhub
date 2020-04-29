@@ -31,4 +31,12 @@ $light: $gray-100;
 $dark: $gray-800;
 
 $body-bg: $white;
-$body-color: #87c1ba;
+$body-color: $gray-700;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);

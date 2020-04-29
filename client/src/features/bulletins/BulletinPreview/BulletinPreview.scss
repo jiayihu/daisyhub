@@ -1,0 +1,40 @@
+@import '../../ui/bootstrap/variables.scss';
+
+.bulletin {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 2rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  min-width: 15rem;
+  max-width: 18rem;
+}
+
+.bulletin--apple {
+  background-color: rgba($color: $red, $alpha: 0.5);
+}
+
+.bulletin--cherry {
+  background-color: rgba($color: $red, $alpha: 0.8);
+}
+
+.bulletin--orange {
+  background-color: rgba($color: $orange, $alpha: 0.4);
+}
+
+.bulletin--peach {
+  background-color: rgba($color: $pink, $alpha: 0.8);
+}
+
+.bulletin--pear {
+  background-color: rgba($color: $green, $alpha: 0.8);
+}
+
+.bulletin__fruit {
+  align-self: center;
+  height: 8rem;
+  margin: 1rem 0;
+  width: 8rem;
+}

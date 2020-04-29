@@ -6,6 +6,7 @@ import { Host } from './components/BulletinCreation/BulletinCreation';
 import { JoinBulletin } from './features/bulletins/JoinBulletin/JoinBulletin';
 import { BulletinDetails } from './features/bulletins/BulletinDetails/BulletinDetails';
 import { NavigationItems } from './features/navigation/NavigationItems/NavigationItems';
+import { Container } from 'reactstrap';
 
 function App() {
   const routes = (
@@ -19,10 +20,10 @@ function App() {
   );
 
   return (
-    <div>
+    <Container>
       <NavigationItems />
       {routes}
-    </div>
+    </Container>
   );
 }
 

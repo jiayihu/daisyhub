@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { Island } from './island.model';
 import { Firestore, Timestamp, DocumentData } from '@google-cloud/firestore';
 import * as D from 'io-ts/lib/Decoder';
-import { addDays } from '../utilities/utils';
+// import { addDays } from '../utilities/utils';
 
 const bodySchema = {
   dodo: D.string,
@@ -47,7 +47,7 @@ function docToBulletin(document: DocumentData): Bulletin {
   return { ...document, meta: { creationDate } } as Bulletin;
 }
 
-function bulletinToDoc(bulletin: Bulletin): DocumentData {
+export function bulletinToDoc(bulletin: Bulletin): DocumentData {
   const creationDate = Timestamp.fromDate(new Date(bulletin.meta.creationDate));
   return { ...bulletin, meta: { creationDate } };
 }
@@ -58,7 +58,7 @@ export const readBulletins = (): Reader<Firestore, Promise<Array<Bulletin>>> => 
   return (
     ref
       // Filter bulletins more recent than one day
-      .where('meta.creationDate', '>=', addDays(new Date(), -1))
+      // .where('meta.creationDate', '>=', addDays(new Date(), -1))
       .orderBy('meta.creationDate', 'desc')
       .get()
       .then(snapshot => {
