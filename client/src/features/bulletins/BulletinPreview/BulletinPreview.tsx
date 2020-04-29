@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bulletin as BulletinType } from '../../types/bulletin';
+import { Bulletin as BulletinType } from '../../../types/bulletin';
 import {
   Card,
   CardImg,
@@ -10,31 +10,29 @@ import {
   Row,
   Col,
   CardSubtitle,
-  Spinner,
 } from 'reactstrap';
+import { format } from 'date-fns';
+import mockImg from './mockImage.png';
+import { useHistory } from 'react-router-dom';
 
-import mockImg from '../../assets/mockImage.png';
-
-export const Bulletin: React.FC<{
+type Props = {
   bulletin: BulletinType;
-  onclick: Function;
-}> = (props) => {
-  const [creationDate, creationTime] = props.bulletin.meta.creationDate.split(
-    'T'
-  );
-  let h, m;
-  if (creationTime) {
-    [h, m] = creationTime.split(':');
-  }
+};
 
-  const card = props.bulletin.island.name ? (
-    <Card onClick={() => props.onclick(props.bulletin.id)}>
+export const Bulletin = (props: Props) => {
+  const history = useHistory();
+  const creationDate = new Date(props.bulletin.meta.creationDate);
+
+  return (
+    <Card onClick={() => history.push(`/bulletins/${props.bulletin.id}`)}>
       <CardBody>
         <Container>
           <Row className="border-bottom mb-3 clearfix">
             <Col>
               <CardTitle>
-                <small className="text-right d-sm-none d-md-block pb-10">{`${creationDate} ${h}:${m}`}</small>
+                <small className="text-right d-sm-none d-md-block pb-10">
+                  {format(creationDate, 'H:m')}
+                </small>
                 <h3 className="text-center text-uppercase font-weight-bold">
                   {props.bulletin.island.name}
                 </h3>
@@ -57,9 +55,7 @@ export const Bulletin: React.FC<{
               <CardSubtitle className="font-weight-bold pt-1">
                 {props.bulletin.turnipPrice} Bells
               </CardSubtitle>
-              <CardSubtitle className="mt-1">
-                {props.bulletin.island.fruit}
-              </CardSubtitle>
+              <CardSubtitle className="mt-1">{props.bulletin.island.fruit}</CardSubtitle>
               <CardSubtitle>{props.bulletin.island.hemisphere}</CardSubtitle>
               <CardSubtitle>{props.bulletin.island.villager}</CardSubtitle>
             </Col>
@@ -71,9 +67,5 @@ export const Bulletin: React.FC<{
         </Container>
       </CardBody>
     </Card>
-  ) : (
-    <Spinner />
   );
-
-  return card;
 };

@@ -1,5 +1,5 @@
 import React from 'react';
 
-export const Join: React.FC = () => {
+export const JoinBulletin = () => {
   return <div>Join</div>;
 };

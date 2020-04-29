@@ -1,21 +1,20 @@
+import { all, takeEvery, call } from 'redux-saga/effects';
 import { put } from 'redux-saga/effects';
-
 import * as actions from '../actions/bulletin.actions';
+import { getBulletins } from '../../services/bulletins.service';
 
-const basUrl = 'http://localhost:3001';
-
-export function* onBulletinsInit() {
+function* fetchBulletins() {
   try {
-    const rawRes = yield fetch(`${basUrl}/bulletins`);
-    const response = yield rawRes.json();
-    if (response.status !== 'success') {
-      yield put(actions.failFetch(response.status));
-    } else {
-      yield put(actions.setBulletins(response.data));
-    }
-  } catch (e) {
-    yield put(actions.failFetch(e));
+    const bulletins = yield call<typeof getBulletins>(getBulletins);
+
+    yield put(actions.getBulletinsSucceeded(bulletins));
+  } catch (error) {
+    yield put(actions.getBulletinsFailed(error));
   }
 }
 
 // export function* onBulletinFetch()
+
+export function* bulletinsSaga() {
+  yield all([takeEvery(actions.GET_BULLETINS_REQUESTED, fetchBulletins)]);
+}

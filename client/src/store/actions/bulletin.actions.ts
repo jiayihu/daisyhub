@@ -1,44 +1,31 @@
-import { Bulletin as BulletinType } from '../../types/bulletin';
+import { Bulletin } from '../../types/bulletin';
 
-export const INIT_BULLETINS = 'INIT_BULLETINS';
-export const SET_BULLETINS = 'SET_BULLETINS';
-export const FAIL_FETCH = 'FAIL_FETCH';
+export const GET_BULLETINS_REQUESTED = 'GET_BULLETINS_REQUESTED';
+export const GET_BULLETINS_SUCCEEDED = 'GET_BULLETINS_SUCCEEDED';
+export const GET_BULLETINS_FAILED = 'GET_BULLETINS_FAILED';
 
-export type SetBulletinsActionType = {
-  type: typeof SET_BULLETINS;
-  payload: BulletinType[];
-};
-
-export type InitBulletinsActionType = {
-  type: typeof INIT_BULLETINS;
-};
-
-export type FailFetchBulletinsActionType = {
-  type: typeof FAIL_FETCH;
-  error: string;
-};
-
-export const setBulletins = (payload: BulletinType[]) => {
+export const getBulletins = () => {
   return {
-    type: SET_BULLETINS,
+    type: GET_BULLETINS_REQUESTED as typeof GET_BULLETINS_REQUESTED,
+  };
+};
+
+export const getBulletinsSucceeded = (payload: Bulletin[]) => {
+  return {
+    type: GET_BULLETINS_SUCCEEDED as typeof GET_BULLETINS_SUCCEEDED,
     payload,
   };
 };
 
-export const failFetch = (error: string) => {
+export const getBulletinsFailed = (error: string) => {
   return {
-    type: FAIL_FETCH,
-    error,
+    type: GET_BULLETINS_FAILED as typeof GET_BULLETINS_FAILED,
+    payload: error,
+    error: true,
   };
 };
 
-export const initBulletins = () => {
-  return {
-    type: INIT_BULLETINS,
-  };
-};
-
-export type BulletinsActionTypes =
-  | SetBulletinsActionType
-  | InitBulletinsActionType
-  | FailFetchBulletinsActionType;
+export type BulletinsAction =
+  | ReturnType<typeof getBulletins>
+  | ReturnType<typeof getBulletinsSucceeded>
+  | ReturnType<typeof getBulletinsFailed>;

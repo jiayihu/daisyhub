@@ -11,12 +11,15 @@
     "lint": "eslint src --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "browserslist": ["node 10"],
+  "browserslist": [
+    "node 10"
+  ],
   "keywords": [],
   "author": "Jiayi Hu <jiayi.ghu@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@google-cloud/firestore": "^3.7.4",
+    "date-fns": "^2.12.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fp-ts": "^2.5.4",
