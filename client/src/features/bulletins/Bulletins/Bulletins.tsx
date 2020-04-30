@@ -19,7 +19,7 @@ export const Bulletins = (_: Props) => {
     dispatch(getBulletins());
   }, [dispatch]);
 
-  if (!bulletins.length) return <Spinner />;
+  if (!bulletins.length) return <Spinner type="grow" />;
 
   return (
     <CardColumns className="bulletins">

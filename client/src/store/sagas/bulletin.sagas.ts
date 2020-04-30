@@ -1,7 +1,7 @@
-import { all, takeEvery, call } from 'redux-saga/effects';
+import { all, call, takeLatest } from 'redux-saga/effects';
 import { put } from 'redux-saga/effects';
 import * as actions from '../actions/bulletin.actions';
-import { getBulletins } from '../../services/bulletins.service';
+import { getBulletins, getBulletin } from '../../services/bulletins.service';
 import { handleSagaError } from './handleSagaError';
 
 function* fetchBulletins() {
@@ -11,12 +11,24 @@ function* fetchBulletins() {
     yield put(actions.getBulletinsSucceeded(bulletins));
   } catch (error) {
     yield* handleSagaError(error);
-    yield put(actions.getBulletinsFailed(error));
+  }
+}
+
+function* fetchBulletin(action: ReturnType<typeof actions.getBulletin>) {
+  try {
+    const bulletin = yield call<typeof getBulletin>(getBulletin, action.payload.bulletinId);
+
+    yield put(actions.getBulletinSucceeded(bulletin));
+  } catch (error) {
+    yield* handleSagaError(error);
   }
 }
 
 // export function* onBulletinFetch()
 
 export function* bulletinsSaga() {
-  yield all([takeEvery(actions.GET_BULLETINS_REQUESTED, fetchBulletins)]);
+  yield all([
+    takeLatest(actions.GET_BULLETINS_REQUESTED, fetchBulletins),
+    takeLatest(actions.GET_BULLETIN_REQUESTED, fetchBulletin),
+  ]);
 }

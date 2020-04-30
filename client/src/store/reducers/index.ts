@@ -14,5 +14,7 @@ export const reducer = combineReducers<AppState, Action>({
 });
 
 export const getBulletinsSelector = (state: AppState) => state.bulletins;
+export const getBulletinSelector = (bulletinId: string) => (state: AppState) =>
+  state.bulletins.find(bulletin => bulletin.id === bulletinId);
 
 export const getNotificationsSelector = (state: AppState) => state.notifications;

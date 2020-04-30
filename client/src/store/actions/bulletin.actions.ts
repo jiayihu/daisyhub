@@ -2,7 +2,9 @@ import { Bulletin } from '../../types/bulletin';
 
 export const GET_BULLETINS_REQUESTED = 'GET_BULLETINS_REQUESTED';
 export const GET_BULLETINS_SUCCEEDED = 'GET_BULLETINS_SUCCEEDED';
-export const GET_BULLETINS_FAILED = 'GET_BULLETINS_FAILED';
+
+export const GET_BULLETIN_REQUESTED = 'GET_BULLETIN_REQUESTED';
+export const GET_BULLETIN_SUCCEEDED = 'GET_BULLETIN_SUCCEEDED';
 
 export const getBulletins = () => {
   return {
@@ -10,22 +12,29 @@ export const getBulletins = () => {
   };
 };
 
-export const getBulletinsSucceeded = (payload: Bulletin[]) => {
+export const getBulletinsSucceeded = (bulletins: Bulletin[]) => {
   return {
     type: GET_BULLETINS_SUCCEEDED as typeof GET_BULLETINS_SUCCEEDED,
-    payload,
+    payload: bulletins,
   };
 };
 
-export const getBulletinsFailed = (error: string) => {
+export const getBulletin = (bulletinId: string) => {
   return {
-    type: GET_BULLETINS_FAILED as typeof GET_BULLETINS_FAILED,
-    payload: error,
-    error: true,
+    type: GET_BULLETIN_REQUESTED as typeof GET_BULLETIN_REQUESTED,
+    payload: { bulletinId },
+  };
+};
+
+export const getBulletinSucceeded = (bulletin: Bulletin) => {
+  return {
+    type: GET_BULLETIN_SUCCEEDED as typeof GET_BULLETIN_SUCCEEDED,
+    payload: bulletin,
   };
 };
 
 export type BulletinsAction =
   | ReturnType<typeof getBulletins>
   | ReturnType<typeof getBulletinsSucceeded>
-  | ReturnType<typeof getBulletinsFailed>;
+  | ReturnType<typeof getBulletin>
+  | ReturnType<typeof getBulletinSucceeded>;

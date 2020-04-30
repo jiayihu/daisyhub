@@ -1,5 +1,11 @@
 @import '../features/ui/bootstrap/variables';
 
 .app {
-  background-image: url(./bg-1.png);
+  background-image: url(./bg.png);
+}
+
+.app-container {
+  // background: white;
+  min-height: calc(100vh - 4rem);
+  padding-top: 2rem;
 }
