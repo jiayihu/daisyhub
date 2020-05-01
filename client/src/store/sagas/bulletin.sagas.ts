@@ -34,7 +34,6 @@ function createRealTimeChannel<T>(source: EventSource<T>) {
 function* fetchBulletinsSaga() {
   try {
     const bulletins = yield call<typeof getBulletins>(getBulletins);
-
     yield put(actions.getBulletinsSucceeded(bulletins));
   } catch (error) {
     yield* handleSagaError(error);
