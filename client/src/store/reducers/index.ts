@@ -18,8 +18,12 @@ export const reducer = combineReducers<AppState, Action>({
 
 export const getBulletinsSelector = (state: AppState) => state.bulletins;
 
-export const getStaticBulletinSelector = (bulletinId: string) => (state: AppState) =>
-  state.bulletins.find(bulletin => bulletin.id === bulletinId);
+export const getStaticBulletinSelector = (bulletinId: string) => (state: AppState) => {
+  if (!state.bulletins) return null;
+
+  const bulletin = state.bulletins.find(bulletin => bulletin.id === bulletinId);
+  return bulletin ? bulletin : null;
+};
 
 export const getBulletinSelector = (state: AppState) => state.bulletin.bulletin;
 
