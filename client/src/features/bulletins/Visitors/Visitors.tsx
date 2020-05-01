@@ -5,10 +5,12 @@ import {
   subscribeToVisitors,
   unsubscribeToVisitors,
   lockBulletinQueue,
+  removeBulletinVisitor,
 } from '../../../store/actions/bulletin.actions';
 import { Button, Table, Badge } from 'reactstrap';
 import { getBulletinVisitorsSelector } from '../../../store/reducers';
 import { Bulletin } from '../../../types/bulletin';
+import { Visitor } from '../../../types/visitor';
 
 export type Props =
   | {
@@ -64,6 +66,32 @@ export const Visitors = (props: Props) => {
     new Date(a.joinDate) > new Date(b.joinDate) ? 1 : -1,
   );
 
+  function renderVisitors(visitors: Visitor[]) {
+    return visitors.map((visitor, index) => (
+      <tr key={visitor.id}>
+        <td>{visitor.name}</td>
+        <td>
+          {index < preferences.concurrent ? (
+            <Badge color="success">Active</Badge>
+          ) : (
+            <Badge color="dark">Waiting</Badge>
+          )}
+        </td>
+        {kind === 'Host' ? (
+          <td>
+            <Button
+              color="danger"
+              size="sm"
+              onClick={() => dispatch(removeBulletinVisitor(bulletin.id, visitor.id))}
+            >
+              Remove
+            </Button>
+          </td>
+        ) : null}
+      </tr>
+    ));
+  }
+
   return (
     <div className="py-3">
       <h3>Visitors</h3>
@@ -77,25 +105,13 @@ export const Visitors = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {orderedVisitors.map((visitor, index) => (
-            <tr key={visitor.id}>
-              <td>{visitor.name}</td>
-              <td>
-                {index < preferences.concurrent ? (
-                  <Badge color="success">Active</Badge>
-                ) : (
-                  <Badge color="dark">Waiting</Badge>
-                )}
-              </td>
-              {kind === 'Host' ? (
-                <td>
-                  <Button color="danger" size="sm">
-                    Remove
-                  </Button>
-                </td>
-              ) : null}
+          {orderedVisitors.length ? (
+            renderVisitors(orderedVisitors)
+          ) : (
+            <tr>
+              <td colSpan={3}>There are currently no visitors.</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </Table>
     </div>

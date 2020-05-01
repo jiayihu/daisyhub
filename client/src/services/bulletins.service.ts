@@ -14,13 +14,13 @@ export function getBulletin(bulletinId: string) {
 }
 
 export function deleteBulletin(bulletinId: string) {
-  return request<Bulletin>(`bulletins/${bulletinId}`, {
+  return request<void>(`bulletins/${bulletinId}`, {
     method: 'DELETE',
   });
 }
 
 export function lockBulletinQueue(bulletinId: string, isLocked: boolean) {
-  return request<Bulletin>(`bulletins/${bulletinId}/queue`, {
+  return request<void>(`bulletins/${bulletinId}/queue`, {
     method: 'PATCH',
     body: JSON.stringify({
       isLocked,
@@ -48,4 +48,10 @@ export function getRealtimeVisitors(bulletinId: string) {
     .collection('visitors') as firestore.CollectionReference<Visitor>;
 
   return getRealtimeCollection(ref);
+}
+
+export function removeBulletinVisitor(bulletinId: string, visitorId: string) {
+  return request<void>(`bulletins/${bulletinId}/visitors/${visitorId}`, {
+    method: 'DELETE',
+  });
 }

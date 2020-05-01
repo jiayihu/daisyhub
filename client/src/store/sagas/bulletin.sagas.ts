@@ -7,6 +7,7 @@ import {
   getRealtimeBulletin,
   deleteBulletin,
   lockBulletinQueue,
+  removeBulletinVisitor,
 } from '../../services/bulletins.service';
 import { handleSagaError } from './handleSagaError';
 import { EventSource } from '../../services/real-time';
@@ -114,6 +115,15 @@ function* lockBulletinQueueSaga(action: ReturnType<typeof actions.lockBulletinQu
   }
 }
 
+function* removeBulletinVisitorSaga(action: ReturnType<typeof actions.removeBulletinVisitor>) {
+  try {
+    const { bulletinId, visitorId } = action.payload;
+    yield call<typeof removeBulletinVisitor>(removeBulletinVisitor, bulletinId, visitorId);
+  } catch (error) {
+    yield* handleSagaError(error);
+  }
+}
+
 export function* bulletinsSaga() {
   yield all([
     takeLatest(actions.GET_BULLETINS_REQUESTED, fetchBulletinsSaga),
@@ -121,5 +131,6 @@ export function* bulletinsSaga() {
     takeLatest(actions.SUBSCRIBE_TO_BULLETIN, watchBulletinSaga),
     takeLatest(actions.DELETE_BULLETIN, deleteBulletinSaga),
     takeLatest(actions.LOCK_BULLETIN_QUEUE, lockBulletinQueueSaga),
+    takeLatest(actions.REMOVE_BULLETIN_VISITOR, removeBulletinVisitorSaga),
   ]);
 }
