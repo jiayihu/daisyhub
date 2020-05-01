@@ -7,13 +7,15 @@ export const GET_BULLETINS_SUCCEEDED = 'GET_BULLETINS_SUCCEEDED';
 export const GET_BULLETIN_REQUESTED = 'GET_BULLETIN_REQUESTED';
 export const GET_BULLETIN_SUCCEEDED = 'GET_BULLETIN_SUCCEEDED';
 
+export const SUBSCRIBE_TO_BULLETIN = 'SUBSCRIBE_TO_BULLETIN';
+export const UNSUBSCRIBE_TO_BULLETIN = 'UNSUBSCRIBE_TO_BULLETIN';
+export const UPDATE_BULLETIN = 'UPDATE_BULLETIN';
+
 export const SUBSCRIBE_TO_VISITORS = 'SUBSCRIBE_TO_VISITORS';
 export const UNSUBSCRIBE_TO_VISITORS = 'UNSUBSCRIBE_TO_VISITORS';
 export const UPDATE_VISITORS = 'UPDATE_VISITORS';
 
-export const SUBSCRIBE_TO_BULLETIN = 'SUBSCRIBE_TO_BULLETIN';
-export const UNSUBSCRIBE_TO_BULLETIN = 'UNSUBSCRIBE_TO_BULLETIN';
-export const UPDATE_BULLETIN = 'UPDATE_BULLETIN';
+export const NOTIFY_UNSUB_BULLETIN = 'NOTIFY_UNSUB_BULLETIN';
 
 export const getBulletins = () => {
   return {
@@ -84,6 +86,12 @@ export const updateVisitors = (visitors: Visitor[]) => {
   };
 };
 
+export const notifyUnsubBulletin = () => {
+  return {
+    type: NOTIFY_UNSUB_BULLETIN as typeof NOTIFY_UNSUB_BULLETIN,
+  };
+};
+
 export type BulletinsAction =
   | ReturnType<typeof getBulletins>
   | ReturnType<typeof getBulletinsSucceeded>
@@ -94,4 +102,5 @@ export type BulletinsAction =
   | ReturnType<typeof updateBulletin>
   | ReturnType<typeof subscribeToVisitors>
   | ReturnType<typeof unsubscribeToVisitors>
-  | ReturnType<typeof updateVisitors>;
+  | ReturnType<typeof updateVisitors>
+  | ReturnType<typeof notifyUnsubBulletin>;

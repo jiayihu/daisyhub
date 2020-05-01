@@ -8,16 +8,21 @@ import {
 } from '../../services/bulletins.service';
 import { handleSagaError } from './handleSagaError';
 import { EventSource } from '../../services/real-time';
-import { eventChannel, EventChannel, END } from 'redux-saga';
+import { eventChannel, EventChannel } from 'redux-saga';
 import { Visitor } from '../../types/visitor';
 import { Bulletin } from '../../types/bulletin';
 import { getStaticBulletinSelector } from '../reducers';
-import { addNotification } from '../actions/notifications.actions';
+
+type END_REALTIME = { type: 'END_REALTIME' };
+
+const isEndMessage = (message: any): message is END_REALTIME =>
+  (message as END_REALTIME).type === 'END_REALTIME';
 
 function createRealTimeChannel<T>(source: EventSource<T>) {
-  return eventChannel<T>(emit => {
-    source.subscribe(docs => {
-      docs ? emit(docs) : emit(END);
+  return eventChannel<T | END_REALTIME>(emit => {
+    source.subscribe(data => {
+      // If there is no data then it has been deleted probably
+      data ? emit(data) : emit({ type: 'END_REALTIME' });
     });
 
     return () => source.unsubscribe();
@@ -38,62 +43,53 @@ function* watchBulletin(action: ReturnType<typeof actions.getBulletin>) {
   const bulletinId = action.payload.bulletinId;
   const source = getRealtimeBulletin(bulletinId);
 
+  // Try to retrieve a static version from the list
+  const bulletin = yield select(getStaticBulletinSelector(bulletinId));
+  if (bulletin) yield put(actions.updateBulletin(bulletin));
+
+  // Start real-time updates
+  const channel: EventChannel<Bulletin> = yield call(createRealTimeChannel, source);
+
   try {
-    // Try to retrieve a static version from the list
-    const bulletin = yield select(getStaticBulletinSelector(bulletinId));
-    if (bulletin) yield put(actions.updateBulletin(bulletin));
-
-    // Start real-time updates
-    const channel: EventChannel<Bulletin> = yield call(createRealTimeChannel, source);
-
     while (true) {
-      const { bulletin, cancel } = yield race({
-        bulletin: take(channel),
+      const { message, cancel } = yield race({
+        message: take(channel),
         cancel: take(actions.UNSUBSCRIBE_TO_BULLETIN),
       });
 
-      if (bulletin) yield put(actions.updateBulletin(bulletin));
+      if (message && isEndMessage(message)) yield put(actions.notifyUnsubBulletin());
       else if (cancel) channel.close();
+      else if (message) yield put(actions.updateBulletin(message));
     }
   } catch (error) {
-    source.unsubscribe();
     yield* handleSagaError(error);
   } finally {
-    yield put(
-      addNotification({
-        message: `Whopsie! This island doesn't exist anymore.`,
-        type: 'danger',
-      }),
-    );
+    channel.close();
   }
 }
 
 function* watchVisitors(action: ReturnType<typeof actions.subscribeToVisitors>) {
   const bulletinId = action.payload.bulletinId;
   const source = getRealtimeVisitors(bulletinId);
+  const channel: EventChannel<Visitor[]> = yield call(createRealTimeChannel, source);
 
   try {
-    const channel: EventChannel<Visitor[]> = yield call(createRealTimeChannel, source);
-
     while (true) {
-      const { visitors, cancel } = yield race({
-        visitors: take(channel),
+      const { message, cancel } = yield race({
+        message: take(channel),
         cancel: take(actions.UNSUBSCRIBE_TO_VISITORS),
       });
 
-      if (visitors) yield put(actions.updateVisitors(visitors));
-      else if (cancel) channel.close();
+      if (message && isEndMessage(message)) {
+        // Just close the channel, notification is handled by the watchBulletin saga
+        channel.close();
+      } else if (cancel) channel.close();
+      else if (message) yield put(actions.updateVisitors(message));
     }
   } catch (error) {
-    source.unsubscribe();
     yield* handleSagaError(error);
   } finally {
-    yield put(
-      addNotification({
-        message: `Whopsie! This island doesn't exist anymore.`,
-        type: 'danger',
-      }),
-    );
+    channel.close();
   }
 }
 
