@@ -18,6 +18,7 @@ export const UPDATE_VISITORS = 'UPDATE_VISITORS';
 export const NOTIFY_UNSUB_BULLETIN = 'NOTIFY_UNSUB_BULLETIN';
 
 export const DELETE_BULLETIN = 'DELETE_BULLETIN';
+export const LOCK_BULLETIN_QUEUE = 'LOCK_BULLETIN_QUEUE';
 
 export const getBulletins = () => {
   return {
@@ -101,6 +102,13 @@ export const deleteBulletin = (bulletinId: string) => {
   };
 };
 
+export const lockBulletinQueue = (bulletinId: string, isLocked: boolean) => {
+  return {
+    type: LOCK_BULLETIN_QUEUE as typeof LOCK_BULLETIN_QUEUE,
+    payload: { bulletinId, isLocked },
+  };
+};
+
 export type BulletinsAction =
   | ReturnType<typeof getBulletins>
   | ReturnType<typeof getBulletinsSucceeded>
@@ -113,4 +121,5 @@ export type BulletinsAction =
   | ReturnType<typeof unsubscribeToVisitors>
   | ReturnType<typeof updateVisitors>
   | ReturnType<typeof notifyUnsubBulletin>
-  | ReturnType<typeof deleteBulletin>;
+  | ReturnType<typeof deleteBulletin>
+  | ReturnType<typeof lockBulletinQueue>;

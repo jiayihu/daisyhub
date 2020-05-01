@@ -8,7 +8,7 @@ export function createBulletins(quantity: number) {
     return {
       id: nanoid(),
       queue: {
-        isLocked: faker.random.boolean(),
+        isLocked: false,
       },
       meta: {
         creationDate: faker.date.recent(0).toISOString(),

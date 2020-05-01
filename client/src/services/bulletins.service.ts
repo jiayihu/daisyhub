@@ -19,6 +19,15 @@ export function deleteBulletin(bulletinId: string) {
   });
 }
 
+export function lockBulletinQueue(bulletinId: string, isLocked: boolean) {
+  return request<Bulletin>(`bulletins/${bulletinId}/queue`, {
+    method: 'PATCH',
+    body: JSON.stringify({
+      isLocked,
+    }),
+  });
+}
+
 function docToBulletin(document: firestore.DocumentData): Bulletin {
   const creationDate = (document.meta.creationDate.toDate() as Date).toISOString();
   return { ...document, meta: { creationDate } } as Bulletin;

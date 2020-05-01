@@ -1,6 +1,6 @@
 export function request<T>(resource: string, options?: RequestInit): Promise<T> {
   const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  console.log(BASE_URL);
+
   return fetch(`${BASE_URL}/${resource}`, {
     mode: 'cors',
     ...options,

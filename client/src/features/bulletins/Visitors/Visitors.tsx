@@ -1,9 +1,10 @@
 import './Visitors.scss';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   subscribeToVisitors,
   unsubscribeToVisitors,
+  lockBulletinQueue,
 } from '../../../store/actions/bulletin.actions';
 import { Button, Table, Badge } from 'reactstrap';
 import { getBulletinVisitorsSelector } from '../../../store/reducers';
@@ -24,6 +25,17 @@ export const Visitors = (props: Props) => {
   const dispatch = useDispatch();
   const visitors = useSelector(getBulletinVisitorsSelector);
 
+  const preferences = bulletin.preferences;
+  const isLocked = bulletin.queue.isLocked;
+  const handleLock = useCallback(() => dispatch(lockBulletinQueue(bulletin.id, true)), [
+    dispatch,
+    bulletin.id,
+  ]);
+  const handleUnlock = useCallback(() => dispatch(lockBulletinQueue(bulletin.id, false)), [
+    dispatch,
+    bulletin.id,
+  ]);
+
   useEffect(() => {
     dispatch(subscribeToVisitors(bulletin.id));
 
@@ -35,9 +47,15 @@ export const Visitors = (props: Props) => {
   function renderToolbar() {
     return (
       <p className="d-flex justify-content-end">
-        <Button color="dark" size="sm">
-          Lock queue
-        </Button>
+        {isLocked ? (
+          <Button color="primary" size="sm" onClick={handleUnlock}>
+            Unlock queue
+          </Button>
+        ) : (
+          <Button color="dark" size="sm" onClick={handleLock}>
+            Lock queue
+          </Button>
+        )}
       </p>
     );
   }
@@ -59,11 +77,15 @@ export const Visitors = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {orderedVisitors.map(visitor => (
+          {orderedVisitors.map((visitor, index) => (
             <tr key={visitor.id}>
               <td>{visitor.name}</td>
               <td>
-                <Badge color="dark">Waiting</Badge>
+                {index < preferences.concurrent ? (
+                  <Badge color="success">Active</Badge>
+                ) : (
+                  <Badge color="dark">Waiting</Badge>
+                )}
               </td>
               {kind === 'Host' ? (
                 <td>
