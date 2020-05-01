@@ -17,6 +17,8 @@ export const UPDATE_VISITORS = 'UPDATE_VISITORS';
 
 export const NOTIFY_UNSUB_BULLETIN = 'NOTIFY_UNSUB_BULLETIN';
 
+export const DELETE_BULLETIN = 'DELETE_BULLETIN';
+
 export const getBulletins = () => {
   return {
     type: GET_BULLETINS_REQUESTED as typeof GET_BULLETINS_REQUESTED,
@@ -92,6 +94,13 @@ export const notifyUnsubBulletin = () => {
   };
 };
 
+export const deleteBulletin = (bulletinId: string) => {
+  return {
+    type: DELETE_BULLETIN as typeof DELETE_BULLETIN,
+    payload: { bulletinId },
+  };
+};
+
 export type BulletinsAction =
   | ReturnType<typeof getBulletins>
   | ReturnType<typeof getBulletinsSucceeded>
@@ -103,4 +112,5 @@ export type BulletinsAction =
   | ReturnType<typeof subscribeToVisitors>
   | ReturnType<typeof unsubscribeToVisitors>
   | ReturnType<typeof updateVisitors>
-  | ReturnType<typeof notifyUnsubBulletin>;
+  | ReturnType<typeof notifyUnsubBulletin>
+  | ReturnType<typeof deleteBulletin>;

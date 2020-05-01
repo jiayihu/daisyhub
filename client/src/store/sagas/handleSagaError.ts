@@ -16,5 +16,6 @@ export function* handleSagaError(error: any) {
     );
   }
 
+  console.error(error);
   yield put(addNotification({ message: error.message, type: 'danger' }));
 }

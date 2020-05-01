@@ -13,6 +13,12 @@ export function getBulletin(bulletinId: string) {
   return request<Bulletin>(`bulletins/${bulletinId}`);
 }
 
+export function deleteBulletin(bulletinId: string) {
+  return request<Bulletin>(`bulletins/${bulletinId}`, {
+    method: 'DELETE',
+  });
+}
+
 function docToBulletin(document: firestore.DocumentData): Bulletin {
   const creationDate = (document.meta.creationDate.toDate() as Date).toISOString();
   return { ...document, meta: { creationDate } } as Bulletin;

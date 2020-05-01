@@ -4,13 +4,17 @@ export function request<T>(resource: string, options?: RequestInit): Promise<T> 
   return fetch(`${BASE_URL}/${resource}`, {
     mode: 'cors',
     ...options,
-  })
-    .then(response => response.json())
-    .then(response => {
-      if (response.status !== 'success') {
-        throw response.error;
-      }
+  }).then(response => {
+    if (!response.ok) throw new Error(response.statusText);
+
+    const contentType = response.headers.get('content-type');
+
+    if (!contentType || !contentType.includes('application/json')) return null;
+
+    return response.json().then(response => {
+      if (response.status !== 'success') throw response.error;
 
       return response.data;
     });
+  });
 }

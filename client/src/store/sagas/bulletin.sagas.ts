@@ -5,6 +5,7 @@ import {
   getBulletins,
   getRealtimeVisitors,
   getRealtimeBulletin,
+  deleteBulletin,
 } from '../../services/bulletins.service';
 import { handleSagaError } from './handleSagaError';
 import { EventSource } from '../../services/real-time';
@@ -12,6 +13,7 @@ import { eventChannel, EventChannel } from 'redux-saga';
 import { Visitor } from '../../types/visitor';
 import { Bulletin } from '../../types/bulletin';
 import { getStaticBulletinSelector } from '../reducers';
+import { push } from '../middlewares/router.middleware';
 
 type END_REALTIME = { type: 'END_REALTIME' };
 
@@ -29,7 +31,7 @@ function createRealTimeChannel<T>(source: EventSource<T>) {
   });
 }
 
-function* fetchBulletins() {
+function* fetchBulletinsSaga() {
   try {
     const bulletins = yield call<typeof getBulletins>(getBulletins);
 
@@ -39,7 +41,7 @@ function* fetchBulletins() {
   }
 }
 
-function* watchBulletin(action: ReturnType<typeof actions.getBulletin>) {
+function* watchBulletinSaga(action: ReturnType<typeof actions.getBulletin>) {
   const bulletinId = action.payload.bulletinId;
   const source = getRealtimeBulletin(bulletinId);
 
@@ -68,7 +70,7 @@ function* watchBulletin(action: ReturnType<typeof actions.getBulletin>) {
   }
 }
 
-function* watchVisitors(action: ReturnType<typeof actions.subscribeToVisitors>) {
+function* watchVisitorsSaga(action: ReturnType<typeof actions.subscribeToVisitors>) {
   const bulletinId = action.payload.bulletinId;
   const source = getRealtimeVisitors(bulletinId);
   const channel: EventChannel<Visitor[]> = yield call(createRealTimeChannel, source);
@@ -93,13 +95,21 @@ function* watchVisitors(action: ReturnType<typeof actions.subscribeToVisitors>) 
   }
 }
 
-// export function* onBulletinFetch()
+function* deleteBulletinSaga(action: ReturnType<typeof actions.deleteBulletin>) {
+  try {
+    const bulletinId = action.payload.bulletinId;
+    yield call<typeof deleteBulletin>(deleteBulletin, bulletinId);
+    yield put(push('/'));
+  } catch (error) {
+    yield* handleSagaError(error);
+  }
+}
 
 export function* bulletinsSaga() {
   yield all([
-    takeLatest(actions.GET_BULLETINS_REQUESTED, fetchBulletins),
-    takeLatest(actions.GET_BULLETIN_REQUESTED, watchBulletin),
-    takeLatest(actions.SUBSCRIBE_TO_VISITORS, watchVisitors),
-    takeLatest(actions.SUBSCRIBE_TO_BULLETIN, watchBulletin),
+    takeLatest(actions.GET_BULLETINS_REQUESTED, fetchBulletinsSaga),
+    takeLatest(actions.SUBSCRIBE_TO_VISITORS, watchVisitorsSaga),
+    takeLatest(actions.SUBSCRIBE_TO_BULLETIN, watchBulletinSaga),
+    takeLatest(actions.DELETE_BULLETIN, deleteBulletinSaga),
   ]);
 }

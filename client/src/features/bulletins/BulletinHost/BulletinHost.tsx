@@ -1,15 +1,29 @@
 import './BulletinHost.scss';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   subscribeToBulletin,
   unsubscribeToBulletin,
+  deleteBulletin,
 } from '../../../store/actions/bulletin.actions';
 import { getBulletinSelector, getIsUnsubBulletin } from '../../../store/reducers';
 import { useRouteMatch } from 'react-router-dom';
 import { Spinner, Button, Alert } from 'reactstrap';
 import { BulletinDetails } from '../BulletinDetails/BulletinDetails';
 import { Visitors } from '../Visitors/Visitors';
+import { ConfirmModal } from '../../ui/ConfirmModal/ConfirmModal';
+
+function renderAlert() {
+  return (
+    <Alert color="dark">
+      <h3>Lost connection to the island!</h3>
+      <p>
+        Whoopsie! The connection to the island has been lost,{' '}
+        <strong>it has been probably deleted</strong> by the owner.
+      </p>
+    </Alert>
+  );
+}
 
 export const BulletinHost = () => {
   const match = useRouteMatch<{ bulletinId: string }>();
@@ -17,6 +31,8 @@ export const BulletinHost = () => {
   const bulletin = useSelector(getBulletinSelector);
   const isUnsubscribed = useSelector(getIsUnsubBulletin);
   const dispatch = useDispatch();
+
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     dispatch(subscribeToBulletin(bulletinId));
@@ -26,32 +42,25 @@ export const BulletinHost = () => {
     };
   }, [bulletinId, dispatch]);
 
-  if (isUnsubscribed) {
+  if (!bulletin) {
     return (
       <div className="row justify-content-center">
         <div className="col-md-8 col-lg-6">
-          <Alert color="dark">
-            <h3>Lost connection to the island!</h3>
-            <p>
-              Whoopsie! The connection to the island has been lost,{' '}
-              <strong>it has been probably deleted</strong> by the owner.
-            </p>
-          </Alert>
+          {isUnsubscribed ? renderAlert() : <Spinner type="grow" />}
         </div>
       </div>
     );
   }
 
-  if (!bulletin) return <Spinner type="grow" />;
-
   return (
     <div className="row justify-content-center">
       <div className="col-md-8 col-lg-6">
         <div className="bulletin-host">
+          {isUnsubscribed ? renderAlert() : null}
           <BulletinDetails bulletin={bulletin} />
           <p className="d-flex justify-content-end">
             <Button color="light">Edit island</Button>
-            <Button color="danger" className="ml-3">
+            <Button color="danger" className="ml-3" onClick={() => setIsDeleting(true)}>
               Delete island
             </Button>
           </p>
@@ -68,6 +77,20 @@ export const BulletinHost = () => {
           </p>
         </div>
       </div>
+
+      {isDeleting ? (
+        <ConfirmModal
+          isOpen={isDeleting}
+          onCancel={() => setIsDeleting(false)}
+          onConfirm={() => {
+            dispatch(deleteBulletin(bulletinId));
+            setIsDeleting(false);
+          }}
+        >
+          Deleting the island will remove it from the website and no further people will receive
+          your DODO code.
+        </ConfirmModal>
+      ) : null}
     </div>
   );
 };
