@@ -1,0 +1,20 @@
+@import '../../ui/bootstrap/variables.scss';
+
+.form {
+  border-radius: 2rem;
+  border: none;
+  margin-bottom: 1rem;
+  max-width: 20rem;
+  min-width: 15rem;
+  padding: 1rem;
+}
+
+.background {
+  border-radius: 2rem;
+  border: solid;
+  background-color: white;
+  margin-bottom: 1rem;
+  max-width: 20rem;
+  min-width: 15rem;
+  padding: 1rem;
+}
