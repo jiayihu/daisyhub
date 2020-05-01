@@ -14,8 +14,9 @@ export function* handleSagaError(error: any) {
         ),
       ),
     );
+  } else {
+    // Unexpected error
+    console.error(error);
+    yield put(addNotification({ message: error.message, type: 'danger' }));
   }
-
-  console.error(error);
-  yield put(addNotification({ message: error.message, type: 'danger' }));
 }

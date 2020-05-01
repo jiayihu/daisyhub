@@ -22,7 +22,7 @@ const bodySchema = {
 export const BulletinBodyDec = D.type(bodySchema);
 export const PartialBulletinBodyDec = D.partial(bodySchema);
 
-export const QueueBodyDec = D.partial({
+export const QueueBodyDec = D.type({
   isLocked: D.boolean,
 });
 

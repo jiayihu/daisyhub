@@ -24,5 +24,5 @@ export const jsonError: ErrorRequestHandler = (err, _, res, next) => {
     return res.status(400).send({ status: 'error', error });
   }
 
-  return next();
+  return next(err);
 };
