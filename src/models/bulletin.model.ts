@@ -104,13 +104,18 @@ export const updateBulletin = (
 
 export const deleteBulletin = (id: string): Reader<Firestore, Promise<boolean>> => db => {
   const ref = db.collection('bulletins').doc(id);
-
-  // First delete all queue visitors
-  return ref
+  const deleteVisitors = ref
     .collection('visitors')
     .get()
     .then(snapshot => {
       return Promise.all(snapshot.docs.map(doc => doc.ref.delete()));
-    })
-    .then(() => ref.delete().then(() => true));
+    });
+  const deleteMessages = ref
+    .collection('visitors')
+    .get()
+    .then(snapshot => {
+      return Promise.all(snapshot.docs.map(doc => doc.ref.delete()));
+    });
+
+  return Promise.all([deleteVisitors, deleteMessages]).then(() => ref.delete().then(() => true));
 };

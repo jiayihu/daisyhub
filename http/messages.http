@@ -1,5 +1,4 @@
 GET http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/messages
-Content-Type: application/json
 
 ###
 
@@ -14,4 +13,3 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/messages/mZNvtMXzwehTBI_rOqi_5
-Content-Type: application/json

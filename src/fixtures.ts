@@ -1,11 +1,12 @@
 import { Bulletin, bulletinToDoc } from './models/bulletin.model';
 import faker from 'faker';
 import { db } from './db';
+import { nanoid } from 'nanoid';
 
 export function createBulletins(quantity: number) {
   const data: Bulletin[] = new Array(quantity).fill(null).map(() => {
     return {
-      id: faker.random.uuid(),
+      id: nanoid(),
       queue: {
         isLocked: faker.random.boolean(),
       },

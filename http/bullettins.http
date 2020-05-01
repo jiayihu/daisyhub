@@ -1,5 +1,4 @@
 GET http://localhost:3001/bulletins
-Content-Type: application/json
 
 ###
 
@@ -29,7 +28,6 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB
-Content-Type: application/json
 
 ###
 
@@ -49,8 +47,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3001/bulletins/tSHOttXlkk7M9fhxsQoZB
-Content-Type: application/json
+DELETE http://localhost:3001/bulletins/p1VN2TIwvDq7RmaSIS1V6
 
 ###
 

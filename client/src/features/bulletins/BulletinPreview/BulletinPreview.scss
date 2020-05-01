@@ -13,23 +13,23 @@
 }
 
 .bulletin--apple {
-  background-color: $red;
+  background-color: #f1aeaf;
 }
 
 .bulletin--cherry {
-  background-color: darken($red, 10);
+  background-color: #e55552;
 }
 
 .bulletin--orange {
-  background-color: lighten($orange, 30);
+  background-color: #ffc599;
 }
 
 .bulletin--peach {
-  background-color: lighten($pink, 5);
+  background-color: #f5e0ba;
 }
 
 .bulletin--pear {
-  background-color: lighten($green, 2);
+  background-color: #cfdfac;
 }
 
 .bulletin__fruit {

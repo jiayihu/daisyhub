@@ -1,7 +1,9 @@
+export type Fruit = 'apple' | 'cherry' | 'orange' | 'peach' | 'pear';
+
 export interface Island {
   name: string;
   player: string;
-  fruit: 'apple' | 'cherry' | 'orange' | 'peach' | 'pear';
+  fruit: Fruit;
   hemisphere: 'north' | 'south';
   villager: 'daisy' | 'celeste' | 'neither';
 }

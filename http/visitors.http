@@ -1,5 +1,4 @@
 GET http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/visitors
-Content-Type: application/json
 
 ###
 
@@ -22,4 +21,3 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/visitors/5LRVvbDTF5gJb757KIm5g
-Content-Type: application/json

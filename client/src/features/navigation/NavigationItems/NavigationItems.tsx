@@ -1,7 +1,7 @@
 import './NavigationItems.scss';
 import React, { useState } from 'react';
-import { Navbar, Nav, NavLink, NavItem, NavbarBrand, Collapse, NavbarToggler } from 'reactstrap';
-import { NavLink as RRNavLink } from 'react-router-dom';
+import { Navbar, Nav, NavLink, NavItem, Collapse, NavbarToggler } from 'reactstrap';
+import { NavLink as RRNavLink, Link } from 'react-router-dom';
 
 export const NavigationItems = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +10,9 @@ export const NavigationItems = () => {
 
   return (
     <Navbar light expand="md" className="py-2">
-      <NavbarBrand href="/">Daisyhub</NavbarBrand>
+      <Link to="/" className="navbar-brand">
+        Daisyhub
+      </Link>
       <Collapse isOpen={isOpen} navbar>
         <Nav navbar>
           <NavItem>
