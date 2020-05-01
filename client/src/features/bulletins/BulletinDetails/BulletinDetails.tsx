@@ -16,7 +16,9 @@ export const BulletinDetails = (props: Props) => {
 
   return (
     <div className="bulletin-details">
-      <img src={turnipImg} alt="" width="400" />
+      <div className="text-center">
+        <img src={turnipImg} alt="" width="400" />
+      </div>
       <h2 className="mb-0">
         {bulletin.island.name}
         <span title={bulletin.island.fruit}>
