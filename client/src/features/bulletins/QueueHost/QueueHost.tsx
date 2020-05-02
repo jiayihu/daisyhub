@@ -1,6 +1,6 @@
 import './QueueHost.scss';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import {
   subscribeToVisitors,
   unsubscribeToVisitors,
@@ -10,6 +10,7 @@ import {
 import { Button, Table, Badge } from 'reactstrap';
 import { getBulletinVisitorsSelector } from '../../../store/reducers';
 import { Bulletin } from '../../../types/bulletin';
+import { useSubscription } from '../../../hooks/useSubscription';
 
 export type Props = {
   bulletin: Bulletin;
@@ -18,18 +19,17 @@ export type Props = {
 export const QueueHost = (props: Props) => {
   const { bulletin } = props;
   const dispatch = useDispatch();
-  const visitors = useSelector(getBulletinVisitorsSelector);
+  const visitors = useSubscription(
+    {
+      selector: getBulletinVisitorsSelector,
+      subscribe: () => dispatch(subscribeToVisitors(bulletin.id)),
+      unsubscribe: () => dispatch(unsubscribeToVisitors(bulletin.id)),
+    },
+    [dispatch, bulletin.id],
+  );
 
   const preferences = bulletin.preferences;
   const isLocked = bulletin.queue.isLocked;
-
-  useEffect(() => {
-    dispatch(subscribeToVisitors(bulletin.id));
-
-    return () => {
-      dispatch(unsubscribeToVisitors(bulletin.id));
-    };
-  }, [dispatch, bulletin.id]);
 
   const orderedVisitors = [...visitors].sort((a, b) =>
     new Date(a.joinDate) > new Date(b.joinDate) ? 1 : -1,

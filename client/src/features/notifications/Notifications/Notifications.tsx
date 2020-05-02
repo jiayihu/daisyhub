@@ -11,8 +11,8 @@ export const Notifications = () => {
 
   return (
     <div className="notifications" aria-live="polite" aria-atomic="true">
-      {notifications.map(notification => (
-        <Toast isOpen={true}>
+      {notifications.map((notification, i) => (
+        <Toast isOpen={true} key={i}>
           <ToastHeader
             icon={notification.type}
             toggle={() => dispatch(removeNotification(notification))}

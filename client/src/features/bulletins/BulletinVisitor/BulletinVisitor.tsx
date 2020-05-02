@@ -1,5 +1,5 @@
 import './BulletinVisitor.scss';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   subscribeToBulletin,
@@ -10,6 +10,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { Spinner, Alert } from 'reactstrap';
 import { BulletinDetails } from '../BulletinDetails/BulletinDetails';
 import { QueueVisitor } from '../QueueVisitor/QueueVisitor';
+import { useSubscription } from '../../../hooks/useSubscription';
 
 function renderAlert() {
   return (
@@ -26,17 +27,16 @@ function renderAlert() {
 export const BulletinVisitor = () => {
   const match = useRouteMatch<{ bulletinId: string }>();
   const bulletinId = match.params.bulletinId;
-  const bulletin = useSelector(getBulletinSelector);
   const isUnsubscribed = useSelector(getIsUnsubBulletin);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(subscribeToBulletin(bulletinId));
-
-    return () => {
-      dispatch(unsubscribeToBulletin(bulletinId));
-    };
-  }, [bulletinId, dispatch]);
+  const bulletin = useSubscription(
+    {
+      selector: getBulletinSelector,
+      subscribe: () => dispatch(subscribeToBulletin(bulletinId)),
+      unsubscribe: () => dispatch(unsubscribeToBulletin(bulletinId)),
+    },
+    [bulletinId, dispatch],
+  );
 
   if (!bulletin) {
     return (
