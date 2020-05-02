@@ -1,8 +1,7 @@
 import { request } from './request';
 import { Bulletin } from '../types/bulletin';
 import { getFirestore } from './db';
-import { getRealtimeCollection, getRealtimeDocument } from './real-time';
-import { Visitor } from '../types/visitor';
+import { getRealtimeDocument } from './real-time';
 import { firestore } from 'firebase';
 
 export function getBulletins() {
@@ -39,26 +38,4 @@ export function getRealtimeBulletin(bulletinId: string) {
   >;
 
   return getRealtimeDocument(ref, doc => docToBulletin(doc));
-}
-
-export function getRealtimeVisitors(bulletinId: string) {
-  const ref = getFirestore()
-    .collection('bulletins')
-    .doc(bulletinId)
-    .collection('visitors') as firestore.CollectionReference<Visitor>;
-
-  return getRealtimeCollection(ref);
-}
-
-export function addBulletinVisitor(bulletinId: string, name: string) {
-  return request<{ id: string }>(`bulletins/${bulletinId}/visitors`, {
-    method: 'POST',
-    body: JSON.stringify({ name }),
-  });
-}
-
-export function removeBulletinVisitor(bulletinId: string, visitorId: string) {
-  return request<void>(`bulletins/${bulletinId}/visitors/${visitorId}`, {
-    method: 'DELETE',
-  });
 }

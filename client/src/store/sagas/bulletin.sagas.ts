@@ -3,40 +3,16 @@ import { put } from 'redux-saga/effects';
 import * as actions from '../actions/bulletin.actions';
 import {
   getBulletins,
-  getRealtimeVisitors,
   getRealtimeBulletin,
   deleteBulletin,
   lockBulletinQueue,
-  removeBulletinVisitor,
-  addBulletinVisitor,
 } from '../../services/bulletins.service';
 import { handleSagaError } from './handleSagaError';
-import { EventSource } from '../../services/real-time';
-import { eventChannel, EventChannel } from 'redux-saga';
-import { Visitor } from '../../types/visitor';
+import { EventChannel } from 'redux-saga';
 import { Bulletin } from '../../types/bulletin';
-import { getStaticBulletinSelector, getBulletinVisitorIdSelector } from '../reducers';
+import { selectStaticBulletin } from '../reducers';
 import { push } from '../middlewares/router.middleware';
-import {
-  saveVisitorToHistory,
-  removeVisitorFromHistory,
-} from '../../services/bulletin-history.service';
-
-type END_REALTIME = { type: 'END_REALTIME' };
-
-const isEndMessage = (message: any): message is END_REALTIME =>
-  (message as END_REALTIME).type === 'END_REALTIME';
-
-function createRealTimeChannel<T>(source: EventSource<T>) {
-  return eventChannel<T | END_REALTIME>(emit => {
-    source.subscribe(data => {
-      // If there is no data then it has been deleted probably
-      data ? emit(data) : emit({ type: 'END_REALTIME' });
-    });
-
-    return () => source.unsubscribe();
-  });
-}
+import { isEndMessage, createRealTimeChannel } from './realtime-channel';
 
 function* fetchBulletinsSaga() {
   try {
@@ -52,7 +28,7 @@ function* watchBulletinSaga(action: ReturnType<typeof actions.getBulletin>) {
   const source = getRealtimeBulletin(bulletinId);
 
   // Try to retrieve a static version from the list
-  const bulletin = yield select(getStaticBulletinSelector(bulletinId));
+  const bulletin = yield select(selectStaticBulletin(bulletinId));
   if (bulletin) yield put(actions.updateBulletin(bulletin));
 
   // Start real-time updates
@@ -68,31 +44,6 @@ function* watchBulletinSaga(action: ReturnType<typeof actions.getBulletin>) {
       if (message && isEndMessage(message)) yield put(actions.notifyUnsubBulletin());
       else if (cancel) channel.close();
       else if (message) yield put(actions.updateBulletin(message));
-    }
-  } catch (error) {
-    yield* handleSagaError(error);
-  } finally {
-    channel.close();
-  }
-}
-
-function* watchVisitorsSaga(action: ReturnType<typeof actions.subscribeToVisitors>) {
-  const bulletinId = action.payload.bulletinId;
-  const source = getRealtimeVisitors(bulletinId);
-  const channel: EventChannel<Visitor[]> = yield call(createRealTimeChannel, source);
-
-  try {
-    while (true) {
-      const { message, cancel } = yield race({
-        message: take(channel),
-        cancel: take(actions.UNSUBSCRIBE_TO_VISITORS),
-      });
-
-      if (message && isEndMessage(message)) {
-        // Just close the channel, notification is handled by the watchBulletin saga
-        channel.close();
-      } else if (cancel) channel.close();
-      else if (message) yield put(actions.updateVisitors(message));
     }
   } catch (error) {
     yield* handleSagaError(error);
@@ -120,45 +71,11 @@ function* lockBulletinQueueSaga(action: ReturnType<typeof actions.lockBulletinQu
   }
 }
 
-function* addBulletinVisitorSaga(action: ReturnType<typeof actions.addBulletinVisitor>) {
-  try {
-    const { bulletinId, name } = action.payload;
-    const response = yield call<typeof addBulletinVisitor>(addBulletinVisitor, bulletinId, name);
-    yield put(actions.setBulletinVisitorId(response.id));
-    yield call(saveVisitorToHistory, bulletinId, response.id);
-  } catch (error) {
-    yield* handleSagaError(error);
-  }
-}
-
-/**
- * The saga is invoked for both when an owner is removing a visitor and when
- * the visitor is leaving the queue
- */
-function* removeBulletinVisitorSaga(action: ReturnType<typeof actions.removeBulletinVisitor>) {
-  try {
-    const { bulletinId, visitorId } = action.payload;
-    yield call<typeof removeBulletinVisitor>(removeBulletinVisitor, bulletinId, visitorId);
-    const activeVisitorId = yield select(getBulletinVisitorIdSelector);
-
-    if (activeVisitorId === visitorId) {
-      // The user is removing himself, aka leaving the queue
-      yield put(actions.setBulletinVisitorId(null));
-      yield call(removeVisitorFromHistory, visitorId);
-    }
-  } catch (error) {
-    yield* handleSagaError(error);
-  }
-}
-
 export function* bulletinsSaga() {
   yield all([
     takeLatest(actions.GET_BULLETINS_REQUESTED, fetchBulletinsSaga),
-    takeLatest(actions.SUBSCRIBE_TO_VISITORS, watchVisitorsSaga),
     takeLatest(actions.SUBSCRIBE_TO_BULLETIN, watchBulletinSaga),
     takeLatest(actions.DELETE_BULLETIN, deleteBulletinSaga),
     takeLatest(actions.LOCK_BULLETIN_QUEUE, lockBulletinQueueSaga),
-    takeLatest(actions.ADD_BULLETIN_VISITOR, addBulletinVisitorSaga),
-    takeLatest(actions.REMOVE_BULLETIN_VISITOR, removeBulletinVisitorSaga),
   ]);
 }

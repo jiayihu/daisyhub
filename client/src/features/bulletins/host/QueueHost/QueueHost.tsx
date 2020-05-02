@@ -1,16 +1,16 @@
 import './QueueHost.scss';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { lockBulletinQueue } from '../../../../store/actions/bulletin.actions';
 import {
   subscribeToVisitors,
   unsubscribeToVisitors,
-  lockBulletinQueue,
   removeBulletinVisitor,
-} from '../../../store/actions/bulletin.actions';
+} from '../../../../store/actions/visitors.actions';
 import { Button, Table, Badge } from 'reactstrap';
-import { getBulletinVisitorsSelector } from '../../../store/reducers';
-import { Bulletin } from '../../../types/bulletin';
-import { useSubscription } from '../../../hooks/useSubscription';
+import { selectBulletinVisitors } from '../../../../store/reducers';
+import { Bulletin } from '../../../../types/bulletin';
+import { useSubscription } from '../../../../hooks/useSubscription';
 
 export type Props = {
   bulletin: Bulletin;
@@ -21,7 +21,7 @@ export const QueueHost = (props: Props) => {
   const dispatch = useDispatch();
   const visitors = useSubscription(
     {
-      selector: getBulletinVisitorsSelector,
+      selector: selectBulletinVisitors,
       subscribe: () => dispatch(subscribeToVisitors(bulletin.id)),
       unsubscribe: () => dispatch(unsubscribeToVisitors(bulletin.id)),
     },

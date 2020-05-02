@@ -1,10 +1,9 @@
 import {
-  UPDATE_VISITORS,
   UPDATE_BULLETIN,
   NOTIFY_UNSUB_BULLETIN,
   UNSUBSCRIBE_TO_BULLETIN,
-  SET_BULLETIN_VISITOR_ID,
 } from '../actions/bulletin.actions';
+import { UPDATE_VISITORS, SET_BULLETIN_VISITOR_ID } from '../actions/visitors.actions';
 import { Action } from '../actions';
 import { Visitor } from '../../types/visitor';
 import { Bulletin } from '../../types/bulletin';

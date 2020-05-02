@@ -12,7 +12,7 @@ export function useSubscription<TState, TSelected>(
     subscribe();
 
     return unsubscribe;
-  }, deps);
+  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
 
   return selected;
 }

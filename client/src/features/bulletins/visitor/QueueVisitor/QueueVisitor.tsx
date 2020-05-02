@@ -7,12 +7,12 @@ import {
   removeBulletinVisitor,
   addBulletinVisitor,
   setBulletinVisitorId,
-} from '../../../store/actions/bulletin.actions';
+} from '../../../../store/actions/visitors.actions';
 import { Button, Table, Badge, Form, Input, FormGroup, Alert } from 'reactstrap';
-import { getBulletinVisitorsSelector, getBulletinVisitorIdSelector } from '../../../store/reducers';
-import { Bulletin } from '../../../types/bulletin';
-import { readVisitorId } from '../../../services/bulletin-history.service';
-import { useSubscription } from '../../../hooks/useSubscription';
+import { selectBulletinVisitors, selectBulletinVisitorId } from '../../../../store/reducers';
+import { Bulletin } from '../../../../types/bulletin';
+import { readVisitorId } from '../../../../services/bulletin-history.service';
+import { useSubscription } from '../../../../hooks/useSubscription';
 
 export type Props = {
   bulletin: Bulletin;
@@ -23,7 +23,7 @@ export const QueueVisitor = (props: Props) => {
   const dispatch = useDispatch();
   const visitors = useSubscription(
     {
-      selector: getBulletinVisitorsSelector,
+      selector: selectBulletinVisitors,
       subscribe: () => dispatch(subscribeToVisitors(bulletin.id)),
       unsubscribe: () => dispatch(unsubscribeToVisitors(bulletin.id)),
     },
@@ -33,7 +33,7 @@ export const QueueVisitor = (props: Props) => {
   const preferences = bulletin.preferences;
 
   const [visitorName, setVisitorName] = useState('');
-  const visitorId = useSelector(getBulletinVisitorIdSelector);
+  const visitorId = useSelector(selectBulletinVisitorId);
   const isActiveVisitor = visitorId && visitors.find(x => x.id === visitorId) !== undefined;
 
   useEffect(() => {

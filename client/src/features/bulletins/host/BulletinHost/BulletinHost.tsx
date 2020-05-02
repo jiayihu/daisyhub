@@ -5,13 +5,13 @@ import {
   subscribeToBulletin,
   unsubscribeToBulletin,
   deleteBulletin,
-} from '../../../store/actions/bulletin.actions';
-import { getBulletinSelector, getIsUnsubBulletin } from '../../../store/reducers';
+} from '../../../../store/actions/bulletin.actions';
+import { selectBulletin, selectIsUnsubBulletin } from '../../../../store/reducers';
 import { useRouteMatch } from 'react-router-dom';
 import { Spinner, Button, Alert } from 'reactstrap';
-import { BulletinDetails } from '../BulletinDetails/BulletinDetails';
+import { BulletinDetails } from '../../BulletinDetails/BulletinDetails';
 import { QueueHost } from '../QueueHost/QueueHost';
-import { ConfirmModal } from '../../ui/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../ui/ConfirmModal/ConfirmModal';
 
 function renderAlert() {
   return (
@@ -28,8 +28,8 @@ function renderAlert() {
 export const BulletinHost = () => {
   const match = useRouteMatch<{ bulletinId: string }>();
   const bulletinId = match.params.bulletinId;
-  const bulletin = useSelector(getBulletinSelector);
-  const isUnsubscribed = useSelector(getIsUnsubBulletin);
+  const bulletin = useSelector(selectBulletin);
+  const isUnsubscribed = useSelector(selectIsUnsubBulletin);
   const dispatch = useDispatch();
 
   const [isDeleting, setIsDeleting] = useState(false);
@@ -45,7 +45,7 @@ export const BulletinHost = () => {
   if (!bulletin) {
     return (
       <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6">
+        <div className="col-md-10 col-lg-8 col-xl-6">
           {isUnsubscribed ? renderAlert() : <Spinner type="grow" />}
         </div>
       </div>
@@ -54,7 +54,7 @@ export const BulletinHost = () => {
 
   return (
     <div className="row justify-content-center">
-      <div className="col-md-8 col-lg-6">
+      <div className="col-md-10 col-lg-8 col-xl-6">
         <div className="bulletin-host">
           {isUnsubscribed ? renderAlert() : null}
           <BulletinDetails bulletin={bulletin} />

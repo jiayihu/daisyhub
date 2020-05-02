@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { checkIsBulletinHost } from '../../../services/bulletin-history.service';
-import { BulletinHost } from '../BulletinHost/BulletinHost';
-import { BulletinVisitor } from '../BulletinVisitor/BulletinVisitor';
+import { BulletinHost } from '../host/BulletinHost/BulletinHost';
+import { BulletinVisitor } from '../visitor/BulletinVisitor/BulletinVisitor';
 
 export const ProtectedBulletin = () => {
   const match = useRouteMatch<{ bulletinId: string }>();

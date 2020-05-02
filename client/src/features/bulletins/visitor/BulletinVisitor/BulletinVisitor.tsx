@@ -4,13 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   subscribeToBulletin,
   unsubscribeToBulletin,
-} from '../../../store/actions/bulletin.actions';
-import { getBulletinSelector, getIsUnsubBulletin } from '../../../store/reducers';
+} from '../../../../store/actions/bulletin.actions';
+import { selectBulletin, selectIsUnsubBulletin } from '../../../../store/reducers';
 import { useRouteMatch } from 'react-router-dom';
 import { Spinner, Alert } from 'reactstrap';
-import { BulletinDetails } from '../BulletinDetails/BulletinDetails';
+import { BulletinDetails } from '../../BulletinDetails/BulletinDetails';
 import { QueueVisitor } from '../QueueVisitor/QueueVisitor';
-import { useSubscription } from '../../../hooks/useSubscription';
+import { useSubscription } from '../../../../hooks/useSubscription';
 
 function renderAlert() {
   return (
@@ -27,11 +27,11 @@ function renderAlert() {
 export const BulletinVisitor = () => {
   const match = useRouteMatch<{ bulletinId: string }>();
   const bulletinId = match.params.bulletinId;
-  const isUnsubscribed = useSelector(getIsUnsubBulletin);
+  const isUnsubscribed = useSelector(selectIsUnsubBulletin);
   const dispatch = useDispatch();
   const bulletin = useSubscription(
     {
-      selector: getBulletinSelector,
+      selector: selectBulletin,
       subscribe: () => dispatch(subscribeToBulletin(bulletinId)),
       unsubscribe: () => dispatch(unsubscribeToBulletin(bulletinId)),
     },
@@ -41,7 +41,7 @@ export const BulletinVisitor = () => {
   if (!bulletin) {
     return (
       <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6">
+        <div className="col-md-10 col-lg-8 col-xl-6">
           {isUnsubscribed ? renderAlert() : <Spinner type="grow" />}
         </div>
       </div>
@@ -50,7 +50,7 @@ export const BulletinVisitor = () => {
 
   return (
     <div className="row justify-content-center">
-      <div className="col-md-8 col-lg-6">
+      <div className="col-md-10 col-lg-8 col-xl-6">
         <div className="bulletin-visitor">
           {isUnsubscribed ? renderAlert() : null}
           <BulletinDetails bulletin={bulletin} />

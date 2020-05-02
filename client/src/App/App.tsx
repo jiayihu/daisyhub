@@ -3,7 +3,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { NotFound } from '../features/404/NotFound';
 import { Bulletins } from '../features/bulletins/Bulletins/Bulletins';
-import { BulletinCreation } from '../features/bulletins/BulletinCreation/BulletinCreation';
+import { BulletinCreation } from '../features/bulletins/host/BulletinCreation/BulletinCreation';
 import { JoinBulletin } from '../features/bulletins/JoinBulletin/JoinBulletin';
 import { NavigationItems } from '../features/navigation/NavigationItems/NavigationItems';
 import { Container } from 'reactstrap';
