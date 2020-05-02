@@ -11,6 +11,7 @@ import { Spinner, Alert } from 'reactstrap';
 import { BulletinDetails } from '../../BulletinDetails/BulletinDetails';
 import { QueueVisitor } from '../QueueVisitor/QueueVisitor';
 import { useSubscription } from '../../../../hooks/useSubscription';
+import { MessagesVisitor } from '../MessagesVisitor/MessagesVisitor';
 
 function renderAlert() {
   return (
@@ -55,6 +56,7 @@ export const BulletinVisitor = () => {
           {isUnsubscribed ? renderAlert() : null}
           <BulletinDetails bulletin={bulletin} />
           <QueueVisitor bulletin={bulletin} />
+          <MessagesVisitor bulletin={bulletin} />
           <p className="f6 text-right">
             Image credits:{' '}
             <a

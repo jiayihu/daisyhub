@@ -55,15 +55,15 @@ export const BulletinHost = () => {
   return (
     <div className="row justify-content-center">
       <div className="col-md-10 col-lg-8 col-xl-6">
+        <p className="d-flex justify-content-end">
+          <Button color="light">Edit island</Button>
+          <Button color="danger" className="ml-3" onClick={() => setIsDeleting(true)}>
+            Delete island
+          </Button>
+        </p>
         <div className="bulletin-host">
           {isUnsubscribed ? renderAlert() : null}
           <BulletinDetails bulletin={bulletin} />
-          <p className="d-flex justify-content-end">
-            <Button color="light">Edit island</Button>
-            <Button color="danger" className="ml-3" onClick={() => setIsDeleting(true)}>
-              Delete island
-            </Button>
-          </p>
           <QueueHost bulletin={bulletin} />
           <p className="f6 text-right">
             Image credits:{' '}

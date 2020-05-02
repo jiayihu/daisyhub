@@ -1,4 +1,4 @@
-GET http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/messages
+GET http://localhost:3001/bulletins/pDfsD2woza9g8v1gICk1J/messages
 
 ###
 
@@ -6,6 +6,7 @@ POST http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/messages
 Content-Type: application/json
 
 {
+  "authorId": "c06PwPZJPaVFJ5uwYsYbP",
   "name": "Brichi",
   "message": "Hello world!"
 }

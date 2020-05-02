@@ -7,10 +7,13 @@ import { UPDATE_VISITORS, SET_BULLETIN_VISITOR_ID } from '../actions/visitors.ac
 import { Action } from '../actions';
 import { Visitor } from '../../types/visitor';
 import { Bulletin } from '../../types/bulletin';
+import { Message } from '../../types/message';
+import { UPDATE_MESSAGES } from '../actions/messages.actions';
 
 export type BulletinState = {
   bulletin: Bulletin | null;
   visitors: Visitor[];
+  messages: Message[];
   visitorId: string | null;
   isUnsubscribed: boolean;
 };
@@ -18,6 +21,7 @@ export type BulletinState = {
 const initialState: BulletinState = {
   bulletin: null,
   visitors: [],
+  messages: [],
   visitorId: null,
   isUnsubscribed: false,
 };
@@ -38,6 +42,11 @@ export const bulletinReducer = (
       return {
         ...state,
         visitors: action.payload.visitors,
+      };
+    case UPDATE_MESSAGES:
+      return {
+        ...state,
+        messages: action.payload.messages,
       };
     case SET_BULLETIN_VISITOR_ID:
       return {
