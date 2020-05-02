@@ -12,6 +12,7 @@ import { Spinner, Button, Alert } from 'reactstrap';
 import { BulletinDetails } from '../../BulletinDetails/BulletinDetails';
 import { QueueHost } from '../QueueHost/QueueHost';
 import { ConfirmModal } from '../../../ui/ConfirmModal/ConfirmModal';
+import { MessagesHost } from '../MessagesHost/MessagesHost';
 
 function renderAlert() {
   return (
@@ -65,6 +66,7 @@ export const BulletinHost = () => {
           {isUnsubscribed ? renderAlert() : null}
           <BulletinDetails bulletin={bulletin} />
           <QueueHost bulletin={bulletin} />
+          <MessagesHost bulletin={bulletin} />
           <p className="f6 text-right">
             Image credits:{' '}
             <a

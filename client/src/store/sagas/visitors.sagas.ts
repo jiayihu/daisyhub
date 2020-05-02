@@ -32,7 +32,17 @@ function* watchVisitorsSaga(action: ReturnType<typeof actions.subscribeToVisitor
         // Just close the channel, notification is handled by the watchBulletin saga
         channel.close();
       } else if (cancel) channel.close();
-      else if (message) yield put(actions.updateVisitors(message));
+      else if (message) {
+        const visitors: Visitor[] = message;
+        yield put(actions.updateVisitors(message));
+
+        // Check if user has been removed by the host
+        const visitorId = yield select(selectBulletinVisitorId);
+        if (visitorId && !visitors.find(x => x.id === visitorId)) {
+          removeVisitorFromHistory(visitorId);
+          yield put(actions.setBulletinVisitorId(null));
+        }
+      }
     }
   } catch (error) {
     yield* handleSagaError(error);

@@ -15,7 +15,7 @@ export const PromptModal = (props: Props) => {
   const { isOpen, onConfirm, onCancel, inputProps = {} } = props;
 
   return (
-    <Modal isOpen={isOpen}>
+    <Modal isOpen={isOpen} toggle={onCancel}>
       <ModalHeader toggle={onCancel}>Confirm</ModalHeader>
       <form
         onSubmit={event => {

@@ -43,7 +43,7 @@ export const QueueHost = (props: Props) => {
           <Button
             color="primary"
             size="sm"
-            onClick={() => () => dispatch(lockBulletinQueue(bulletin.id, false))}
+            onClick={() => dispatch(lockBulletinQueue(bulletin.id, false))}
           >
             Unlock queue
           </Button>

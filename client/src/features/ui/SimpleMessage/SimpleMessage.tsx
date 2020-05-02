@@ -1,22 +1,27 @@
 import React from 'react';
+import classnames from 'classnames';
 import { Message } from '../../../types/message';
-import { Alert } from 'reactstrap';
 import { formatDistanceToNow } from 'date-fns';
 
 type Props = {
-  isOwner: boolean;
+  isHost: boolean;
   message: Message;
 };
 
 export const SimpleMessage = (props: Props) => {
-  const { isOwner, message } = props;
+  const { isHost, message } = props;
   const date = formatDistanceToNow(new Date(message.creationDate), { addSuffix: true });
+  const className = classnames('m-0 py-2 px-1');
 
   return (
-    <Alert color={isOwner ? 'secondary' : 'light'}>
-      <div>
-        <strong>{message.name}</strong> (<span>{date}</span>): <span>{message.message}</span>
+    <div className={className}>
+      <div className="d-flex">
+        <span className="">
+          <strong>{message.name}</strong> {isHost ? '(host)' : null}:
+        </span>
+        <small className="ml-auto">{date}</small>
       </div>
-    </Alert>
+      <div>{message.message}</div>
+    </div>
   );
 };

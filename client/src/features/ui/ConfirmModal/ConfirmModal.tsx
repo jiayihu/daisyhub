@@ -12,7 +12,7 @@ export const ConfirmModal = (props: Props) => {
   const { isOpen, onConfirm, onCancel } = props;
 
   return (
-    <Modal isOpen={isOpen}>
+    <Modal isOpen={isOpen} toggle={onCancel}>
       <ModalHeader toggle={onCancel}>Confirm</ModalHeader>
       <ModalBody>{props.children}</ModalBody>
       <ModalFooter>

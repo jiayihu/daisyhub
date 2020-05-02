@@ -1,4 +1,4 @@
-import './MessagesVisitor.scss';
+import './MessagesHost.scss';
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -6,12 +6,8 @@ import {
   unsubscribeToMessages,
   addBulletinMessage,
 } from '../../../../store/actions/messages.actions';
-import { Button, Form, Input, FormGroup, Col, Alert, FormText } from 'reactstrap';
-import {
-  selectBulletinMessages,
-  selectBulletinVisitorId,
-  selectBulletinVisitors,
-} from '../../../../store/reducers';
+import { Button, Form, Input, FormGroup, Col, Alert } from 'reactstrap';
+import { selectBulletinMessages, selectBulletinOwnerId } from '../../../../store/reducers';
 import { Bulletin } from '../../../../types/bulletin';
 import { useSubscription } from '../../../../hooks/useSubscription';
 import { SimpleMessage } from '../../../ui/SimpleMessage/SimpleMessage';
@@ -20,7 +16,7 @@ export type Props = {
   bulletin: Bulletin;
 };
 
-export const MessagesVisitor = (props: Props) => {
+export const MessagesHost = (props: Props) => {
   const { bulletin } = props;
   const dispatch = useDispatch();
   const messages = useSubscription(
@@ -31,11 +27,9 @@ export const MessagesVisitor = (props: Props) => {
     },
     [dispatch, bulletin.id],
   );
+  const ownerId = useSelector(selectBulletinOwnerId);
 
   const [messageText, setMessageText] = useState('');
-  const visitors = useSelector(selectBulletinVisitors);
-  const visitorId = useSelector(selectBulletinVisitorId);
-  const visitor = visitorId && (visitors.find(x => x.id === visitorId) || null);
 
   const orderedMessages = [...messages].sort((a, b) =>
     new Date(a.creationDate) > new Date(b.creationDate) ? 1 : -1,
@@ -45,22 +39,22 @@ export const MessagesVisitor = (props: Props) => {
     (event: React.FormEvent) => {
       event.preventDefault();
 
-      if (!visitor) return;
+      if (!ownerId) return;
 
       dispatch(
         addBulletinMessage(bulletin.id, {
-          authorId: visitor.id,
-          name: visitor.name,
+          authorId: ownerId,
+          name: bulletin.island.player,
           message: messageText,
         }),
       );
       setMessageText('');
     },
-    [visitor, messageText, bulletin.id, dispatch],
+    [ownerId, messageText, bulletin, dispatch],
   );
 
   return (
-    <div className="py-3">
+    <div>
       <h3>Messages</h3>
       <div className="pb-3">
         {orderedMessages.length ? (
@@ -84,13 +78,11 @@ export const MessagesVisitor = (props: Props) => {
               required
               value={messageText}
               onChange={event => setMessageText(event.target.value)}
-              disabled={!visitorId}
               placeholder="Send a message to everyone"
             />
-            {!visitorId ? <FormText>You must join the queue to send messages.</FormText> : null}
           </Col>
           <Col className="flex-grow-0">
-            <Button type="submit" color="primary" disabled={!visitorId}>
+            <Button type="submit" color="primary">
               Send
             </Button>
           </Col>

@@ -95,8 +95,8 @@ export const BulletinVisitor = () => {
               Cherryink
             </a>
           </div>
-          <div className="text-right" onClick={() => setIsClaiming(true)}>
-            <Button color="link" className="f6 p-0 text-muted">
+          <div className="text-right">
+            <Button color="link" className="f6 p-0 text-muted" onClick={() => setIsClaiming(true)}>
               Claim island ownership
             </Button>
           </div>
