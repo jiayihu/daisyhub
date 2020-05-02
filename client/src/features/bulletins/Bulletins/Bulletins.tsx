@@ -29,9 +29,13 @@ export const Bulletins = (_: Props) => {
       </Alert>
     );
 
+  const orderedBulletins = [...bulletins].sort((a, b) =>
+    new Date(a.meta.creationDate) < new Date(b.meta.creationDate) ? 1 : -1,
+  );
+
   return (
     <CardColumns className="bulletins">
-      {bulletins.map(bulletin => (
+      {orderedBulletins.map(bulletin => (
         <BulletinPreview bulletin={bulletin} key={bulletin.id} />
       ))}
     </CardColumns>

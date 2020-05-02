@@ -30,5 +30,6 @@ export const getBulletinSelector = (state: AppState) => state.bulletin.bulletin;
 export const getIsUnsubBulletin = (state: AppState) => state.bulletin.isUnsubscribed;
 
 export const getBulletinVisitorsSelector = (state: AppState) => state.bulletin.visitors;
+export const getBulletinVisitorIdSelector = (state: AppState) => state.bulletin.visitorId;
 
 export const getNotificationsSelector = (state: AppState) => state.notifications;
