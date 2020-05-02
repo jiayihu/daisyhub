@@ -1,6 +1,6 @@
 import './BulletinDetails.scss';
 import React from 'react';
-import { format } from 'date-fns';
+import { format, isEqual } from 'date-fns';
 import turnipImg from './turnip.png';
 import { Icons } from '../../ui/Icons/Icons';
 import { Bulletin } from '../../../types/bulletin';
@@ -21,7 +21,7 @@ export const BulletinDetails = (props: Props) => {
       </div>
       <h2 className="mb-0">
         {bulletin.island.name}
-        <span title={bulletin.island.fruit}>
+        <span title={bulletin.island.fruit} className="ml-3">
           <Icons name={bulletin.island.fruit} width={42} height={42} />
         </span>
         <span title="Fee">{bulletin.preferences.hasFee ? <Icons name="fee" /> : null}</span>
@@ -32,8 +32,14 @@ export const BulletinDetails = (props: Props) => {
         </span>
       </p>
       <p className="f6 d-flex justify-content-end">
-        <span>Time on the island was {format(islandDate, 'HH:mm')}</span>
-        <span className="ml-3">Real time was {format(creationDate, 'HH:mm')}</span>
+        {isEqual(islandDate, creationDate) ? (
+          <span>Created at time {format(islandDate, 'iii d/L HH:mm')}</span>
+        ) : (
+          <>
+            <span>Created at time {format(islandDate, 'iii d/L HH:mm')} on the island</span>
+            <span className="ml-3">{format(creationDate, 'iii d/L HH:mm')} in real-world</span>
+          </>
+        )}
       </p>
       <p>{bulletin.description}</p>
       <p>

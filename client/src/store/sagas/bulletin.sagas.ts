@@ -8,14 +8,19 @@ import {
   deleteBulletin,
   lockBulletinQueue,
   removeBulletinVisitor,
+  addBulletinVisitor,
 } from '../../services/bulletins.service';
 import { handleSagaError } from './handleSagaError';
 import { EventSource } from '../../services/real-time';
 import { eventChannel, EventChannel } from 'redux-saga';
 import { Visitor } from '../../types/visitor';
 import { Bulletin } from '../../types/bulletin';
-import { getStaticBulletinSelector } from '../reducers';
+import { getStaticBulletinSelector, getBulletinVisitorIdSelector } from '../reducers';
 import { push } from '../middlewares/router.middleware';
+import {
+  saveVisitorToHistory,
+  removeVisitorFromHistory,
+} from '../../services/bulletin-history.service';
 
 type END_REALTIME = { type: 'END_REALTIME' };
 
@@ -115,10 +120,32 @@ function* lockBulletinQueueSaga(action: ReturnType<typeof actions.lockBulletinQu
   }
 }
 
+function* addBulletinVisitorSaga(action: ReturnType<typeof actions.addBulletinVisitor>) {
+  try {
+    const { bulletinId, name } = action.payload;
+    const response = yield call<typeof addBulletinVisitor>(addBulletinVisitor, bulletinId, name);
+    yield put(actions.setBulletinVisitorId(response.id));
+    yield call(saveVisitorToHistory, bulletinId, response.id);
+  } catch (error) {
+    yield* handleSagaError(error);
+  }
+}
+
+/**
+ * The saga is invoked for both when an owner is removing a visitor and when
+ * the visitor is leaving the queue
+ */
 function* removeBulletinVisitorSaga(action: ReturnType<typeof actions.removeBulletinVisitor>) {
   try {
     const { bulletinId, visitorId } = action.payload;
     yield call<typeof removeBulletinVisitor>(removeBulletinVisitor, bulletinId, visitorId);
+    const activeVisitorId = yield select(getBulletinVisitorIdSelector);
+
+    if (activeVisitorId === visitorId) {
+      // The user is removing himself, aka leaving the queue
+      yield put(actions.setBulletinVisitorId(null));
+      yield call(removeVisitorFromHistory, visitorId);
+    }
   } catch (error) {
     yield* handleSagaError(error);
   }
@@ -131,6 +158,7 @@ export function* bulletinsSaga() {
     takeLatest(actions.SUBSCRIBE_TO_BULLETIN, watchBulletinSaga),
     takeLatest(actions.DELETE_BULLETIN, deleteBulletinSaga),
     takeLatest(actions.LOCK_BULLETIN_QUEUE, lockBulletinQueueSaga),
+    takeLatest(actions.ADD_BULLETIN_VISITOR, addBulletinVisitorSaga),
     takeLatest(actions.REMOVE_BULLETIN_VISITOR, removeBulletinVisitorSaga),
   ]);
 }

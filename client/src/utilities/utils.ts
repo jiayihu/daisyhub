@@ -27,6 +27,26 @@ export function getRandomColor(): string {
   return `#${hex}`;
 }
 
+export function readLocalStorage<T>(key: string): T | null {
+  try {
+    const item = window.localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+  } catch (error) {
+    console.log('Error reading from localStorage');
+    console.error(error);
+    return null;
+  }
+}
+
+export function saveLocalStorage<T>(key: string, value: T): void {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.log('Error saving to localStorage');
+    console.error(error);
+  }
+}
+
 export function isObject(value: unknown): value is object {
   return typeof value === 'object' && !Array.isArray(value) && value !== null;
 }
