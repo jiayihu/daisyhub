@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './BulletinCreation.scss';
 import { Col, Collapse, FormGroup, Label, Spinner } from 'reactstrap';
 import { format } from 'date-fns';
-import { Field, Form, Formik } from 'formik';
-// import * as Yup from 'yup';
+import { Field, Form, Formik, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
 export const BulletinCreation = () => {
   const [isOpen, setIsOpen] = useState({
@@ -15,6 +15,11 @@ export const BulletinCreation = () => {
   const [dateTime, setDateTime] = useState({ date: '', time: '' });
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    initDateTime();
+    setLoading(false);
+  }, []);
+
   const initDateTime = () => {
     const today = new Date();
     const date = format(today, 'yyyy-MM-dd');
@@ -22,12 +27,7 @@ export const BulletinCreation = () => {
     setDateTime({ date, time });
   };
 
-  useEffect(() => {
-    initDateTime();
-    setLoading(false);
-  }, []);
-
-  const toggle = (section: number) => {
+  const toggleSection = (section: number) => {
     switch (section) {
       case 1:
         setIsOpen({ first: true, second: false, third: false });
@@ -61,6 +61,15 @@ export const BulletinCreation = () => {
         queue: 25,
         isPrivate: false,
       }}
+      validationSchema={Yup.object({
+        dodoCode: Yup.string()
+          .length(5, 'Dodo Code must be exactly 5 characters')
+          .required('Required'),
+        playerName: Yup.string().required('Required'),
+        islandName: Yup.string().required('Required'),
+        fruit: Yup.string().required('Required'),
+        description: Yup.string().required('Required'),
+      })}
       onSubmit={fields => {
         alert('Success  ' + JSON.stringify(fields, null, 4));
       }}
@@ -68,27 +77,27 @@ export const BulletinCreation = () => {
       {props => {
         return (
           <Form>
-            <h2 onClick={() => toggle(1)}>About your Island</h2>
+            <h2 onClick={() => toggleSection(1)}>About your Island</h2>
             <Collapse isOpen={isOpen.first}>
               <Col>
                 <FormGroup>
                   <Label for="dodo">Dodo Code</Label>
                   <Field type="dodoCode" name="dodoCode" />
-                  {props.touched.dodoCode && props.errors.dodoCode}
+                  <ErrorMessage name="dodoCode" />
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="islandName">Island Name</Label>
                   <Field type="islandName" name="islandName" />
-                  {props.touched.islandName && props.errors.islandName}
+                  <ErrorMessage name="islandName" />
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="playerName">Player Name</Label>
                   <Field type="playerName" name="playerName" />
-                  {props.touched.playerName && props.errors.playerName}
+                  <ErrorMessage name="playerName" />
                 </FormGroup>
               </Col>
               <Col>
@@ -107,7 +116,7 @@ export const BulletinCreation = () => {
                     <option value="pears" label="Pears" />
                     <option value="cherries" label="Cherries" />
                   </select>
-                  {props.touched.fruit && props.errors.fruit}
+                  <ErrorMessage name="fruit" />
                 </FormGroup>
               </Col>
               <Col>
@@ -139,7 +148,7 @@ export const BulletinCreation = () => {
                 </FormGroup>
               </Col>
             </Collapse>
-            <h2 onClick={() => toggle(2)}>About your turnips</h2>
+            <h2 onClick={() => toggleSection(2)}>About your turnips</h2>
             <Collapse isOpen={isOpen.second}>
               <Col>
                 <FormGroup>
@@ -151,7 +160,7 @@ export const BulletinCreation = () => {
                     onBlur={props.handleBlur}
                     onChange={props.handleChange}
                     value={props.values.price}
-                    min={1}
+                    min={0}
                   />
                   {props.touched.price && props.errors.price}
                 </FormGroup>
@@ -166,6 +175,7 @@ export const BulletinCreation = () => {
                     onChange={props.handleChange}
                     onBlur={props.handleBlur}
                   />
+                  <ErrorMessage name="description" />
                 </FormGroup>
               </Col>
               <Col>
@@ -184,7 +194,7 @@ export const BulletinCreation = () => {
                 </FormGroup>
               </Col>
             </Collapse>
-            <h2 onClick={() => toggle(3)}>About your queue</h2>
+            <h2 onClick={() => toggleSection(3)}>About your queue</h2>
 
             <Collapse isOpen={isOpen.third}>
               <Col>
