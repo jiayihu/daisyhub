@@ -5,7 +5,8 @@
 }
 
 .app-container {
-  // background: white;
-  min-height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding-top: 2rem;
 }

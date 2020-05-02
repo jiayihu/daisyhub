@@ -9,6 +9,7 @@ import { NavigationItems } from '../features/navigation/NavigationItems/Navigati
 import { Container } from 'reactstrap';
 import { Notifications } from '../features/notifications/Notifications/Notifications';
 import { ProtectedBulletin } from '../features/bulletins/ProtectedBulletin/ProtectedBulletin';
+import { Footer } from '../features/navigation/Footer/Footer';
 
 function App() {
   const routes = (
@@ -25,7 +26,10 @@ function App() {
     <>
       <NavigationItems />
       <div className="app">
-        <Container className="app-container">{routes}</Container>
+        <Container className="app-container">
+          <div>{routes}</div>
+          <Footer />
+        </Container>
       </div>
       <Notifications />
     </>
