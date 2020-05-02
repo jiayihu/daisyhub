@@ -16,10 +16,10 @@ export const ConfirmModal = (props: Props) => {
       <ModalHeader toggle={onCancel}>Confirm</ModalHeader>
       <ModalBody>{props.children}</ModalBody>
       <ModalFooter>
-        <Button color="light" onClick={onCancel}>
+        <Button type="button" color="light" onClick={onCancel}>
           Cancel
         </Button>{' '}
-        <Button color="danger" onClick={onConfirm}>
+        <Button type="button" color="danger" onClick={onConfirm}>
           Confirm
         </Button>
       </ModalFooter>

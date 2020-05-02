@@ -30,6 +30,7 @@ export const selectBulletin = (state: AppState) => state.bulletin.bulletin;
 export const selectIsUnsubBulletin = (state: AppState) => state.bulletin.isUnsubscribed;
 
 export const selectBulletinVisitors = (state: AppState) => state.bulletin.visitors;
+export const selectBulletinOwnerId = (state: AppState) => state.bulletin.ownerId;
 export const selectBulletinVisitorId = (state: AppState) => state.bulletin.visitorId;
 
 export const selectBulletinMessages = (state: AppState) => state.bulletin.messages;

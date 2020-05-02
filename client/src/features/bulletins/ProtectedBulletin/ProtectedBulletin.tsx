@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { checkIsBulletinHost } from '../../../services/bulletin-history.service';
+import { readOwnerId } from '../../../services/bulletin-history.service';
 import { BulletinHost } from '../host/BulletinHost/BulletinHost';
 import { BulletinVisitor } from '../visitor/BulletinVisitor/BulletinVisitor';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectBulletinOwnerId } from '../../../store/reducers';
+import { setBulletinOwnerId } from '../../../store/actions/bulletin.actions';
 
 export const ProtectedBulletin = () => {
   const match = useRouteMatch<{ bulletinId: string }>();
   const bulletinId = match.params.bulletinId;
   const [checked, setChecked] = useState(false);
-  const [isOwner, setIsOwner] = useState(false);
+  const ownerId = useSelector(selectBulletinOwnerId);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    checkIsBulletinHost(bulletinId).then(isOwner => {
-      setIsOwner(isOwner);
-      setChecked(true);
-    });
-  }, [bulletinId]);
+    const id = readOwnerId(bulletinId);
+    if (id) dispatch(setBulletinOwnerId(id));
+    setChecked(true);
+  }, [bulletinId, dispatch]);
 
   if (!checked) return null;
 
-  return isOwner ? <BulletinHost /> : <BulletinVisitor />;
+  return ownerId ? <BulletinHost /> : <BulletinVisitor />;
 };

@@ -2,6 +2,7 @@ import {
   UPDATE_BULLETIN,
   NOTIFY_UNSUB_BULLETIN,
   UNSUBSCRIBE_TO_BULLETIN,
+  SET_BULLETIN_OWNER_ID,
 } from '../actions/bulletin.actions';
 import { UPDATE_VISITORS, SET_BULLETIN_VISITOR_ID } from '../actions/visitors.actions';
 import { Action } from '../actions';
@@ -14,6 +15,7 @@ export type BulletinState = {
   bulletin: Bulletin | null;
   visitors: Visitor[];
   messages: Message[];
+  ownerId: string | null;
   visitorId: string | null;
   isUnsubscribed: boolean;
 };
@@ -22,6 +24,7 @@ const initialState: BulletinState = {
   bulletin: null,
   visitors: [],
   messages: [],
+  ownerId: null,
   visitorId: null,
   isUnsubscribed: false,
 };
@@ -47,6 +50,11 @@ export const bulletinReducer = (
       return {
         ...state,
         messages: action.payload.messages,
+      };
+    case SET_BULLETIN_OWNER_ID:
+      return {
+        ...state,
+        ownerId: action.payload.ownerId,
       };
     case SET_BULLETIN_VISITOR_ID:
       return {

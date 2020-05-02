@@ -7,6 +7,7 @@ export function createBulletins(quantity: number) {
   const data: Bulletin[] = new Array(quantity).fill(null).map(() => {
     return {
       id: nanoid(),
+      ownerId: nanoid(),
       queue: {
         isLocked: false,
       },
