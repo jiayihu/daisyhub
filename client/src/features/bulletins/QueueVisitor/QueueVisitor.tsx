@@ -41,7 +41,7 @@ export const QueueVisitor = (props: Props) => {
     };
   }, [dispatch, bulletin.id]);
 
-  const orderedVisitors = visitors.sort((a, b) =>
+  const orderedVisitors = [...visitors].sort((a, b) =>
     new Date(a.joinDate) > new Date(b.joinDate) ? 1 : -1,
   );
 
