@@ -13,6 +13,7 @@ import { selectBulletinVisitorId } from '../reducers';
 import {
   saveVisitorToHistory,
   removeVisitorFromHistory,
+  readVisitorId,
 } from '../../services/bulletin-history.service';
 import { isEndMessage, createRealTimeChannel } from './realtime-channel';
 
@@ -20,6 +21,9 @@ function* watchVisitorsSaga(action: ReturnType<typeof actions.subscribeToVisitor
   const bulletinId = action.payload.bulletinId;
   const source = getRealtimeVisitors(bulletinId);
   const channel: EventChannel<Visitor[]> = yield call(createRealTimeChannel, source);
+
+  const id = yield call(readVisitorId, bulletinId);
+  if (id) yield put(actions.setBulletinVisitorId(id));
 
   try {
     while (true) {

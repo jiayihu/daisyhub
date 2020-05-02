@@ -6,12 +6,7 @@ export function* handleSagaError(error: any) {
   if (isRestError(error) && error.details) {
     yield all(
       error.details.map(detail =>
-        put(
-          addNotification({
-            message: detail.message,
-            type: 'danger',
-          }),
-        ),
+        put(addNotification({ message: detail.message, type: 'danger' })),
       ),
     );
   } else {

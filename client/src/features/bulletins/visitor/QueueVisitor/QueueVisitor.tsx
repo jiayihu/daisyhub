@@ -1,17 +1,15 @@
 import './QueueVisitor.scss';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   subscribeToVisitors,
   unsubscribeToVisitors,
   removeBulletinVisitor,
   addBulletinVisitor,
-  setBulletinVisitorId,
 } from '../../../../store/actions/visitors.actions';
 import { Button, Table, Badge, Form, Input, FormGroup, Alert } from 'reactstrap';
 import { selectBulletinVisitors, selectBulletinVisitorId } from '../../../../store/reducers';
 import { Bulletin } from '../../../../types/bulletin';
-import { readVisitorId } from '../../../../services/bulletin-history.service';
 import { useSubscription } from '../../../../hooks/useSubscription';
 import { Visitor } from '../../../../types/visitor';
 
@@ -43,11 +41,6 @@ export const QueueVisitor = (props: Props) => {
   const visitorId = useSelector(selectBulletinVisitorId);
   const isActive =
     visitorId !== null && isActiveVisitor(visitors, visitorId, preferences.concurrent);
-
-  useEffect(() => {
-    const id = readVisitorId(bulletin.id);
-    if (id) dispatch(setBulletinVisitorId(id));
-  }, [bulletin.id, dispatch]);
 
   const orderedVisitors = [...visitors].sort((a, b) =>
     new Date(a.joinDate) > new Date(b.joinDate) ? 1 : -1,

@@ -54,12 +54,7 @@ export const BulletinVisitor = () => {
          */
         window.location.reload();
       } else {
-        dispatch(
-          addNotification({
-            message: 'Invalid token',
-            type: 'danger',
-          }),
-        );
+        dispatch(addNotification({ message: 'Invalid token', type: 'danger' }));
       }
 
       setIsClaiming(false);

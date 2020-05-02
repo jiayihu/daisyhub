@@ -1,5 +1,5 @@
 import './BulletinHost.scss';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   subscribeToBulletin,
@@ -13,6 +13,7 @@ import { BulletinDetails } from '../../BulletinDetails/BulletinDetails';
 import { QueueHost } from '../QueueHost/QueueHost';
 import { ConfirmModal } from '../../../ui/ConfirmModal/ConfirmModal';
 import { MessagesHost } from '../MessagesHost/MessagesHost';
+import { useSubscription } from '../../../../hooks/useSubscription';
 
 function renderAlert() {
   return (
@@ -29,19 +30,18 @@ function renderAlert() {
 export const BulletinHost = () => {
   const match = useRouteMatch<{ bulletinId: string }>();
   const bulletinId = match.params.bulletinId;
-  const bulletin = useSelector(selectBulletin);
   const isUnsubscribed = useSelector(selectIsUnsubBulletin);
   const dispatch = useDispatch();
+  const bulletin = useSubscription(
+    {
+      selector: selectBulletin,
+      subscribe: () => dispatch(subscribeToBulletin(bulletinId)),
+      unsubscribe: () => dispatch(unsubscribeToBulletin(bulletinId)),
+    },
+    [bulletinId, dispatch],
+  );
 
   const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    dispatch(subscribeToBulletin(bulletinId));
-
-    return () => {
-      dispatch(unsubscribeToBulletin(bulletinId));
-    };
-  }, [bulletinId, dispatch]);
 
   if (!bulletin) {
     return (
