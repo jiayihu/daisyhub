@@ -1,5 +1,5 @@
 import './QueueHost.scss';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { lockBulletinQueue } from '../../../../store/actions/bulletin.actions';
 import {
@@ -19,14 +19,17 @@ export type Props = {
 export const QueueHost = (props: Props) => {
   const { bulletin } = props;
   const dispatch = useDispatch();
-  const visitors = useSubscription(
-    {
+  const subscription = useMemo(
+    () => ({
       selector: selectBulletinVisitors,
-      subscribe: () => dispatch(subscribeToVisitors(bulletin.id)),
-      unsubscribe: () => dispatch(unsubscribeToVisitors(bulletin.id)),
-    },
-    [dispatch, bulletin.id],
+      subscribe: () => {
+        dispatch(subscribeToVisitors(bulletin.id));
+        return () => dispatch(unsubscribeToVisitors(bulletin.id));
+      },
+    }),
+    [bulletin.id, dispatch],
   );
+  const visitors = useSubscription(subscription, [bulletin.id]);
 
   const preferences = bulletin.preferences;
   const isLocked = bulletin.queue.isLocked;

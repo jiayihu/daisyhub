@@ -1,5 +1,5 @@
 import './QueueVisitor.scss';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   subscribeToVisitors,
@@ -26,14 +26,17 @@ const isActiveVisitor = (visitors: Visitor[], visitorId: string, concurrent: num
 export const QueueVisitor = (props: Props) => {
   const { bulletin } = props;
   const dispatch = useDispatch();
-  const visitors = useSubscription(
-    {
+  const subscription = useMemo(
+    () => ({
       selector: selectBulletinVisitors,
-      subscribe: () => dispatch(subscribeToVisitors(bulletin.id)),
-      unsubscribe: () => dispatch(unsubscribeToVisitors(bulletin.id)),
-    },
+      subscribe: () => {
+        dispatch(subscribeToVisitors(bulletin.id));
+        return () => dispatch(unsubscribeToVisitors(bulletin.id));
+      },
+    }),
     [bulletin.id, dispatch],
   );
+  const visitors = useSubscription(subscription, [bulletin.id]);
 
   const preferences = bulletin.preferences;
 

@@ -1,5 +1,5 @@
 import './BulletinHost.scss';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   subscribeToBulletin,
@@ -32,14 +32,17 @@ export const BulletinHost = () => {
   const bulletinId = match.params.bulletinId;
   const isUnsubscribed = useSelector(selectIsUnsubBulletin);
   const dispatch = useDispatch();
-  const bulletin = useSubscription(
-    {
+  const subscription = useMemo(
+    () => ({
       selector: selectBulletin,
-      subscribe: () => dispatch(subscribeToBulletin(bulletinId)),
-      unsubscribe: () => dispatch(unsubscribeToBulletin(bulletinId)),
-    },
+      subscribe: () => {
+        dispatch(subscribeToBulletin(bulletinId));
+        return () => dispatch(unsubscribeToBulletin(bulletinId));
+      },
+    }),
     [bulletinId, dispatch],
   );
+  const bulletin = useSubscription(subscription, [bulletinId]);
 
   const [isDeleting, setIsDeleting] = useState(false);
 

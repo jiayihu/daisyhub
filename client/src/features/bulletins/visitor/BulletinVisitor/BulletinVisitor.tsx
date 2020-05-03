@@ -1,5 +1,5 @@
 import './BulletinVisitor.scss';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   subscribeToBulletin,
@@ -33,14 +33,17 @@ export const BulletinVisitor = () => {
   const bulletinId = match.params.bulletinId;
   const isUnsubscribed = useSelector(selectIsUnsubBulletin);
   const dispatch = useDispatch();
-  const bulletin = useSubscription(
-    {
+  const subscription = useMemo(
+    () => ({
       selector: selectBulletin,
-      subscribe: () => dispatch(subscribeToBulletin(bulletinId)),
-      unsubscribe: () => dispatch(unsubscribeToBulletin(bulletinId)),
-    },
+      subscribe: () => {
+        dispatch(subscribeToBulletin(bulletinId));
+        return () => dispatch(unsubscribeToBulletin(bulletinId));
+      },
+    }),
     [bulletinId, dispatch],
   );
+  const bulletin = useSubscription(subscription, [bulletinId]);
 
   const [isClaiming, setIsClaiming] = useState(false);
   const handleClaimConfirm = useCallback(

@@ -1,5 +1,5 @@
 import './MessagesVisitor.scss';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   subscribeToMessages,
@@ -23,14 +23,17 @@ export type Props = {
 export const MessagesVisitor = (props: Props) => {
   const { bulletin } = props;
   const dispatch = useDispatch();
-  const messages = useSubscription(
-    {
+  const subscription = useMemo(
+    () => ({
       selector: selectBulletinMessages,
-      subscribe: () => dispatch(subscribeToMessages(bulletin.id)),
-      unsubscribe: () => dispatch(unsubscribeToMessages(bulletin.id)),
-    },
+      subscribe: () => {
+        dispatch(subscribeToMessages(bulletin.id));
+        return () => dispatch(unsubscribeToMessages(bulletin.id));
+      },
+    }),
     [dispatch, bulletin.id],
   );
+  const messages = useSubscription(subscription, [bulletin.id]);
 
   const [messageText, setMessageText] = useState('');
   const visitors = useSelector(selectBulletinVisitors);
