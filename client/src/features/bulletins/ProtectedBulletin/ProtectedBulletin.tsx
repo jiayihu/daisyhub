@@ -6,6 +6,7 @@ import { BulletinVisitor } from '../visitor/BulletinVisitor/BulletinVisitor';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectBulletinOwnerId } from '../../../store/reducers';
 import { setBulletinOwnerId } from '../../../store/actions/bulletin.actions';
+import { useScrollTo } from '../../ui/ScrollToTop/ScrollToTop';
 
 export const ProtectedBulletin = () => {
   const match = useRouteMatch<{ bulletinId: string }>();
@@ -13,6 +14,7 @@ export const ProtectedBulletin = () => {
   const [checked, setChecked] = useState(false);
   const ownerId = useSelector(selectBulletinOwnerId);
   const dispatch = useDispatch();
+  useScrollTo(0, 0, []);
 
   useEffect(() => {
     const id = readOwnerId(bulletinId);
