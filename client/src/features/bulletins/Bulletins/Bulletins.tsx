@@ -2,25 +2,26 @@ import './Bulletins.scss';
 import React, { useEffect } from 'react';
 import { getBulletins } from '../../../store/actions/bulletin.actions';
 import { History } from 'history';
-import { Spinner, CardColumns, Alert } from 'reactstrap';
+import { CardColumns, Alert } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBulletinsSelector } from '../../../store/reducers';
+import { selectBulletins } from '../../../store/reducers';
 import { BulletinPreview } from '../BulletinPreview/BulletinPreview';
 import { Link } from 'react-router-dom';
+import { PostLoader } from '../../ui/PostLoader/PostLoader';
 
 type Props = {
   history: History;
 };
 
 export const Bulletins = (_: Props) => {
-  const bulletins = useSelector(getBulletinsSelector);
+  const bulletins = useSelector(selectBulletins);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getBulletins());
   }, [dispatch]);
 
-  if (!bulletins) return <Spinner type="grow" />;
+  if (!bulletins) return <PostLoader />;
   if (!bulletins.length)
     return (
       <Alert color="light">

@@ -1,17 +1,19 @@
 import './BulletinHost.scss';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   subscribeToBulletin,
   unsubscribeToBulletin,
   deleteBulletin,
-} from '../../../store/actions/bulletin.actions';
-import { getBulletinSelector, getIsUnsubBulletin } from '../../../store/reducers';
+} from '../../../../store/actions/bulletin.actions';
+import { selectBulletin, selectIsUnsubBulletin } from '../../../../store/reducers';
 import { useRouteMatch } from 'react-router-dom';
 import { Spinner, Button, Alert } from 'reactstrap';
-import { BulletinDetails } from '../BulletinDetails/BulletinDetails';
+import { BulletinDetails } from '../../BulletinDetails/BulletinDetails';
 import { QueueHost } from '../QueueHost/QueueHost';
-import { ConfirmModal } from '../../ui/ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../../../ui/ConfirmModal/ConfirmModal';
+import { MessagesHost } from '../MessagesHost/MessagesHost';
+import { useSubscription } from '../../../../hooks/useSubscription';
 
 function renderAlert() {
   return (
@@ -28,24 +30,26 @@ function renderAlert() {
 export const BulletinHost = () => {
   const match = useRouteMatch<{ bulletinId: string }>();
   const bulletinId = match.params.bulletinId;
-  const bulletin = useSelector(getBulletinSelector);
-  const isUnsubscribed = useSelector(getIsUnsubBulletin);
+  const isUnsubscribed = useSelector(selectIsUnsubBulletin);
   const dispatch = useDispatch();
+  const subscription = useMemo(
+    () => ({
+      selector: selectBulletin,
+      subscribe: () => {
+        dispatch(subscribeToBulletin(bulletinId));
+        return () => dispatch(unsubscribeToBulletin(bulletinId));
+      },
+    }),
+    [bulletinId, dispatch],
+  );
+  const bulletin = useSubscription(subscription, [bulletinId]);
 
   const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    dispatch(subscribeToBulletin(bulletinId));
-
-    return () => {
-      dispatch(unsubscribeToBulletin(bulletinId));
-    };
-  }, [bulletinId, dispatch]);
 
   if (!bulletin) {
     return (
       <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6">
+        <div className="col-md-10 col-lg-8 col-xl-6">
           {isUnsubscribed ? renderAlert() : <Spinner type="grow" />}
         </div>
       </div>
@@ -54,17 +58,18 @@ export const BulletinHost = () => {
 
   return (
     <div className="row justify-content-center">
-      <div className="col-md-8 col-lg-6">
+      <div className="col-md-10 col-lg-8 col-xl-6">
+        <p className="d-flex justify-content-end">
+          <Button color="light">Edit island</Button>
+          <Button color="danger" className="ml-3" onClick={() => setIsDeleting(true)}>
+            Delete island
+          </Button>
+        </p>
         <div className="bulletin-host">
           {isUnsubscribed ? renderAlert() : null}
           <BulletinDetails bulletin={bulletin} />
-          <p className="d-flex justify-content-end">
-            <Button color="light">Edit island</Button>
-            <Button color="danger" className="ml-3" onClick={() => setIsDeleting(true)}>
-              Delete island
-            </Button>
-          </p>
           <QueueHost bulletin={bulletin} />
+          <MessagesHost bulletin={bulletin} />
           <p className="f6 text-right">
             Image credits:{' '}
             <a

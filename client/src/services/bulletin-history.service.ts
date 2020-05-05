@@ -14,20 +14,16 @@ type BulletinEntry =
       bulletinId: string;
     };
 
-export function checkIsBulletinHost(bulletinId: string): Promise<boolean> {
+export function readOwnerId(bulletinId: string): string | null {
   const entries = readLocalStorage<BulletinEntry[]>(KEY);
-  const hasEntry =
-    entries && entries.find(entry => entry.kind === 'Host' && entry.bulletinId === bulletinId);
+  const entry = entries?.find(entry => entry.kind === 'Host' && entry.bulletinId === bulletinId);
 
-  if (!hasEntry) return Promise.resolve(false);
-
-  // @TODO: need server validation
-  return Promise.resolve(true);
+  return entry?.kind === 'Host' ? entry.ownerId : null;
 }
 
 export function readVisitorId(bulletinId: string): string | null {
   const entries = readLocalStorage<BulletinEntry[]>(KEY);
-  const entry = entries?.find(entry => entry.bulletinId === bulletinId);
+  const entry = entries?.find(entry => entry.kind === 'Visitor' && entry.bulletinId === bulletinId);
 
   return entry?.kind === 'Visitor' ? entry.visitorId : null;
 }

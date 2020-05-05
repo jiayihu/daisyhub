@@ -29,6 +29,7 @@ export const QueueBodyDec = D.type({
 export const BulletinDec = D.intersection(
   D.type({
     id: D.string,
+    ownerId: D.string,
     queue: QueueBodyDec,
     meta: D.type({
       creationDate: D.string,
@@ -76,12 +77,16 @@ export const readBulletin = (id: string): Reader<Firestore, Promise<Bulletin | n
   });
 };
 
-export const createBulletin = (body: BulletinBody): Reader<Firestore, Promise<string>> => db => {
+export const createBulletin = (
+  body: BulletinBody,
+): Reader<Firestore, Promise<{ id: string; ownerId: string }>> => db => {
   const id = nanoid();
+  const ownerId = nanoid();
   const ref = db.collection('bulletins').doc(id);
   const bulletin: Bulletin = {
     ...body,
     id,
+    ownerId,
     queue: {
       isLocked: false,
     },
@@ -90,7 +95,7 @@ export const createBulletin = (body: BulletinBody): Reader<Firestore, Promise<st
     },
   };
 
-  return ref.set(bulletinToDoc(bulletin)).then(() => id);
+  return ref.set(bulletinToDoc(bulletin)).then(() => ({ id, ownerId }));
 };
 
 export const updateBulletin = (

@@ -1,15 +1,16 @@
 import './QueueHost.scss';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { lockBulletinQueue } from '../../../../store/actions/bulletin.actions';
 import {
   subscribeToVisitors,
   unsubscribeToVisitors,
-  lockBulletinQueue,
   removeBulletinVisitor,
-} from '../../../store/actions/bulletin.actions';
+} from '../../../../store/actions/visitors.actions';
 import { Button, Table, Badge } from 'reactstrap';
-import { getBulletinVisitorsSelector } from '../../../store/reducers';
-import { Bulletin } from '../../../types/bulletin';
+import { selectBulletinVisitors } from '../../../../store/reducers';
+import { Bulletin } from '../../../../types/bulletin';
+import { useSubscription } from '../../../../hooks/useSubscription';
 
 export type Props = {
   bulletin: Bulletin;
@@ -18,18 +19,20 @@ export type Props = {
 export const QueueHost = (props: Props) => {
   const { bulletin } = props;
   const dispatch = useDispatch();
-  const visitors = useSelector(getBulletinVisitorsSelector);
+  const subscription = useMemo(
+    () => ({
+      selector: selectBulletinVisitors,
+      subscribe: () => {
+        dispatch(subscribeToVisitors(bulletin.id));
+        return () => dispatch(unsubscribeToVisitors(bulletin.id));
+      },
+    }),
+    [bulletin.id, dispatch],
+  );
+  const visitors = useSubscription(subscription, [bulletin.id]);
 
   const preferences = bulletin.preferences;
   const isLocked = bulletin.queue.isLocked;
-
-  useEffect(() => {
-    dispatch(subscribeToVisitors(bulletin.id));
-
-    return () => {
-      dispatch(unsubscribeToVisitors(bulletin.id));
-    };
-  }, [dispatch, bulletin.id]);
 
   const orderedVisitors = [...visitors].sort((a, b) =>
     new Date(a.joinDate) > new Date(b.joinDate) ? 1 : -1,
@@ -43,7 +46,7 @@ export const QueueHost = (props: Props) => {
           <Button
             color="primary"
             size="sm"
-            onClick={() => () => dispatch(lockBulletinQueue(bulletin.id, false))}
+            onClick={() => dispatch(lockBulletinQueue(bulletin.id, false))}
           >
             Unlock queue
           </Button>

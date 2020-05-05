@@ -22,7 +22,7 @@ export const createBulletinsRoutes = (db: Firestore) => {
 
   router.post('/', validator(BulletinBodyDec), (req, res, next) => {
     return addBulletin(req.body)(db)
-      .then(id => res.status(301).send({ status: 'success', data: { id } }))
+      .then(ids => res.status(301).send({ status: 'success', data: ids }))
       .catch(next);
   });
 

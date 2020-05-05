@@ -16,20 +16,23 @@ export const reducer = combineReducers<AppState, Action>({
   notifications: notificationsReducer,
 });
 
-export const getBulletinsSelector = (state: AppState) => state.bulletins;
+export const selectBulletins = (state: AppState) => state.bulletins;
 
-export const getStaticBulletinSelector = (bulletinId: string) => (state: AppState) => {
+export const selectStaticBulletin = (bulletinId: string) => (state: AppState) => {
   if (!state.bulletins) return null;
 
   const bulletin = state.bulletins.find(bulletin => bulletin.id === bulletinId);
   return bulletin ? bulletin : null;
 };
 
-export const getBulletinSelector = (state: AppState) => state.bulletin.bulletin;
+export const selectBulletin = (state: AppState) => state.bulletin.bulletin;
 
-export const getIsUnsubBulletin = (state: AppState) => state.bulletin.isUnsubscribed;
+export const selectIsUnsubBulletin = (state: AppState) => state.bulletin.isUnsubscribed;
 
-export const getBulletinVisitorsSelector = (state: AppState) => state.bulletin.visitors;
-export const getBulletinVisitorIdSelector = (state: AppState) => state.bulletin.visitorId;
+export const selectBulletinVisitors = (state: AppState) => state.bulletin.visitors;
+export const selectBulletinOwnerId = (state: AppState) => state.bulletin.ownerId;
+export const selectBulletinVisitorId = (state: AppState) => state.bulletin.visitorId;
 
-export const getNotificationsSelector = (state: AppState) => state.notifications;
+export const selectBulletinMessages = (state: AppState) => state.bulletin.messages;
+
+export const selectNotifications = (state: AppState) => state.notifications;

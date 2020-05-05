@@ -4,6 +4,7 @@ import { Firestore } from '@google-cloud/firestore';
 import * as D from 'io-ts/lib/Decoder';
 
 export const MessageBodyDec = D.type({
+  authorId: D.string,
   name: D.string,
   message: D.string,
 });

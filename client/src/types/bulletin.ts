@@ -4,6 +4,7 @@ export type BulletinBody = Omit<Bulletin, 'id' | 'meta' | 'queue'>;
 
 export interface Bulletin {
   id: string;
+  ownerId: string;
   queue: {
     isLocked: boolean;
   };
