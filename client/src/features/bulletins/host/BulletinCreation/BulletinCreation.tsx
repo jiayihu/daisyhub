@@ -5,9 +5,9 @@ import { format } from 'date-fns';
 import { Field, Form, Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { addBulletin } from '../../../store/actions/bulletin.actions';
-import { Fruit } from '../../../types/island';
-import { BulletinBody } from '../../../types/bulletin';
+import { addBulletin } from '../../../../store/actions/bulletin.actions';
+import { Fruit } from '../../../../types/island';
+import { BulletinBody } from '../../../../types/bulletin';
 
 interface ReqBulletin {
   dodoCode: string;
@@ -68,7 +68,7 @@ export const BulletinCreation = () => {
   if (loading) return <Spinner type="grow" />;
 
   return (
-    <Formik<BulletinBody>
+    <Formik<ReqBulletin>
       initialValues={{
         dodoCode: '',
         islandName: '',
@@ -115,6 +115,7 @@ export const BulletinCreation = () => {
           },
         };
         try {
+          console.log('sending ', reqJSON);
           dispatch(addBulletin(reqJSON));
         } catch (e) {
           console.log(e);
