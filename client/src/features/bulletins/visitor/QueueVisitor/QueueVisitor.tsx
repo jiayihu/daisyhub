@@ -42,12 +42,13 @@ export const QueueVisitor = (props: Props) => {
 
   const [visitorName, setVisitorName] = useState('');
   const visitorId = useSelector(selectBulletinVisitorId);
-  const isActive =
-    visitorId !== null && isActiveVisitor(visitors, visitorId, preferences.concurrent);
 
   const orderedVisitors = [...visitors].sort((a, b) =>
     new Date(a.joinDate) > new Date(b.joinDate) ? 1 : -1,
   );
+
+  const isActive =
+    visitorId !== null && isActiveVisitor(orderedVisitors, visitorId, preferences.concurrent);
 
   const handleSubmit = useCallback(
     (event: React.FormEvent) => {
