@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './BulletinCreation.scss';
-import { Col, Collapse, FormGroup, Label, Spinner } from 'reactstrap';
+import { Col, Collapse, FormGroup, Label, Spinner, Input, Button } from 'reactstrap';
 import { format } from 'date-fns';
-import { Field, Form, Formik, ErrorMessage } from 'formik';
+import { Form, Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { addBulletin } from '../../../../store/actions/bulletin.actions';
@@ -23,8 +23,6 @@ interface ReqBulletin {
   queue: number;
   isPrivate: boolean;
 }
-
-// import { BulletinBody } from '../../../types/bulletin';
 
 export const BulletinCreation = () => {
   const [isOpenSection, setIsOpenSection] = useState({
@@ -114,55 +112,103 @@ export const BulletinCreation = () => {
             isPrivate: fields.isPrivate,
           },
         };
-        try {
-          console.log('sending ', reqJSON);
-          dispatch(addBulletin(reqJSON));
-        } catch (e) {
-          console.log(e);
-        }
+        // console.log('sending ', reqJSON);
+        dispatch(addBulletin(reqJSON));
       }}
     >
       {props => {
         return (
-          <Form>
-            <h2 onClick={() => toggleSection(1)}>About your Island</h2>
+          <Form className="form">
+            <h2 onClick={() => toggleSection(1)} className="h1">
+              About your Island
+            </h2>
             <Collapse isOpen={isOpenSection.first}>
               <Col>
                 <FormGroup>
-                  <Label for="dodo">Dodo Code</Label>
-                  <Field type="dodoCode" name="dodoCode" required />
-                  <ErrorMessage name="dodoCode" />
+                  <Label for="dodo" className="h5">
+                    Dodo Code
+                  </Label>
+                  <Input
+                    type="text"
+                    name="dodoCode"
+                    id="dodoCode"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                    className={props.touched.dodoCode && props.errors.dodoCode ? 'error-box' : ''}
+                  />
+                  <p className="error">
+                    <ErrorMessage name="dodoCode" />
+                  </p>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="islandName">Island Name</Label>
-                  <Field type="islandName" name="islandName" required />
+                  <Label for="islandName" className="h5">
+                    Island Name
+                  </Label>
+                  <Input
+                    type="text"
+                    name="islandName"
+                    id="islandName"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                    className={
+                      props.touched.islandName && props.errors.islandName ? 'error-box' : ''
+                    }
+                  />
+                  <p className="error">
+                    <ErrorMessage name="islandName" />
+                  </p>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="playerName">Player Name</Label>
-                  <Field type="playerName" name="playerName" required />
+                  <Label for="playerName" className="h5">
+                    Player Name
+                  </Label>
+                  <Input
+                    type="text"
+                    name="playerName"
+                    id="playerName"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                    className={
+                      props.touched.playerName && props.errors.playerName ? 'error-box' : ''
+                    }
+                  />
+                  <p className="error">
+                    <ErrorMessage name="playerName" />
+                  </p>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="description">Description and requests</Label>
-                  <input
+                  <Label for="description" className="h5">
+                    Description and requests
+                  </Label>
+                  <Input
                     type="textarea"
                     name="description"
                     id="description"
                     onChange={props.handleChange}
                     onBlur={props.handleBlur}
+                    required
+                    className={
+                      props.touched.description && props.errors.description ? 'error-box' : ''
+                    }
                   />
-                  <ErrorMessage name="description" />
+                  <p className="error ">
+                    <ErrorMessage name="description" />
+                  </p>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="fruit">Fruit</Label>
-                  <select
+                  <Label for="fruit" className="h5">
+                    Fruit
+                  </Label>
+                  <Input
+                    type="select"
                     name="fruit"
                     value={props.values.fruit}
                     onChange={props.handleChange}
@@ -173,13 +219,15 @@ export const BulletinCreation = () => {
                     <option value="orange" label="Oranges" />
                     <option value="pear" label="Pears" />
                     <option value="cherry" label="Cherries" />
-                  </select>
+                  </Input>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="date">Date</Label>
-                  <input
+                  <Label for="date" className="h5">
+                    Date
+                  </Label>
+                  <Input
                     name="date"
                     type="date"
                     onChange={date => {
@@ -192,8 +240,10 @@ export const BulletinCreation = () => {
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="time">Time</Label>
-                  <input
+                  <Label for="time" className="h5">
+                    Time
+                  </Label>
+                  <Input
                     name="time"
                     type="time"
                     onChange={time => {
@@ -205,12 +255,16 @@ export const BulletinCreation = () => {
                 </FormGroup>
               </Col>
             </Collapse>
-            <h2 onClick={() => toggleSection(2)}>About your turnips</h2>
+            <h2 onClick={() => toggleSection(2)} className="h1">
+              About your turnips
+            </h2>
             <Collapse isOpen={isOpenSection.second}>
               <Col>
                 <FormGroup>
-                  <Label for="price">Selling price</Label>
-                  <input
+                  <Label for="price" className="h5">
+                    Selling price
+                  </Label>
+                  <Input
                     type="number"
                     name="price"
                     id="price"
@@ -225,8 +279,8 @@ export const BulletinCreation = () => {
 
               <Col>
                 <FormGroup>
-                  <Label for="fees">
-                    <input
+                  <Label for="fees" className="h5">
+                    <Input
                       type="checkbox"
                       name="fees"
                       id="fees"
@@ -239,15 +293,16 @@ export const BulletinCreation = () => {
                 </FormGroup>
               </Col>
             </Collapse>
-            <h2 onClick={() => toggleSection(3)}>About your queue</h2>
-
+            <h2 onClick={() => toggleSection(3)} className="h1">
+              About your queue
+            </h2>
             <Collapse isOpen={isOpenSection.third}>
               <Col>
                 <FormGroup>
-                  <Label for="concurrent">
+                  <Label for="concurrent" className="h5">
                     How many people you want in your island (At the same time)
                   </Label>
-                  <input
+                  <Input
                     type="number"
                     name="concurrent"
                     id="concurrent"
@@ -260,8 +315,10 @@ export const BulletinCreation = () => {
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="queue">Max queue length</Label>
-                  <input
+                  <Label for="queue" className="h5">
+                    Max queue length
+                  </Label>
+                  <Input
                     type="number"
                     name="queue"
                     id="queue"
@@ -274,8 +331,8 @@ export const BulletinCreation = () => {
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="isPrivate">
-                    <input
+                  <Label for="isPrivate" className="h5">
+                    <Input
                       type="checkbox"
                       name="isPrivate"
                       id="isPrivate"
@@ -288,8 +345,20 @@ export const BulletinCreation = () => {
                 </FormGroup>
               </Col>
             </Collapse>
-
-            <button type="submit">Submit</button>
+            <Button
+              onClick={e => {
+                e.preventDefault();
+                if (!props.isValid) {
+                  toggleSection(1);
+                } else {
+                  props.submitForm();
+                }
+              }}
+              type="submit"
+              color="primary"
+            >
+              Submit
+            </Button>
           </Form>
         );
       }}
