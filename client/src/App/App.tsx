@@ -11,6 +11,7 @@ import { Notifications } from '../features/notifications/Notifications/Notificat
 import { ProtectedBulletin } from '../features/bulletins/ProtectedBulletin/ProtectedBulletin';
 import { Footer } from '../features/navigation/Footer/Footer';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { OfflineNotification } from '../features/ui/OfflineNotification/OfflineNotification';
 
 function App() {
   const location = useLocation();
@@ -20,6 +21,7 @@ function App() {
       <NavigationItems />
       <div className="app">
         <Container className="app-container">
+          <OfflineNotification />
           <TransitionGroup>
             <CSSTransition key={location.key} classNames="page" timeout={300}>
               <div className="page">
