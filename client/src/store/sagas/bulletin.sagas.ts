@@ -6,6 +6,7 @@ import {
   getRealtimeVisitors,
   getRealtimeBulletin,
   deleteBulletin,
+  addBulletin,
   lockBulletinQueue,
   removeBulletinVisitor,
   addBulletinVisitor,
@@ -111,6 +112,16 @@ function* deleteBulletinSaga(action: ReturnType<typeof actions.deleteBulletin>) 
   }
 }
 
+function* addBulletinSaga(action: ReturnType<typeof actions.addBulletin>) {
+  try {
+    const bulletin = action.payload.bulletin;
+    yield call<typeof addBulletin>(addBulletin, bulletin);
+    //TODO
+  } catch (error) {
+    yield* handleSagaError(error);
+  }
+}
+
 function* lockBulletinQueueSaga(action: ReturnType<typeof actions.lockBulletinQueue>) {
   try {
     const { bulletinId, isLocked } = action.payload;
@@ -157,6 +168,7 @@ export function* bulletinsSaga() {
     takeLatest(actions.SUBSCRIBE_TO_VISITORS, watchVisitorsSaga),
     takeLatest(actions.SUBSCRIBE_TO_BULLETIN, watchBulletinSaga),
     takeLatest(actions.DELETE_BULLETIN, deleteBulletinSaga),
+    takeLatest(actions.ADD_BULLETIN, addBulletinSaga),
     takeLatest(actions.LOCK_BULLETIN_QUEUE, lockBulletinQueueSaga),
     takeLatest(actions.ADD_BULLETIN_VISITOR, addBulletinVisitorSaga),
     takeLatest(actions.REMOVE_BULLETIN_VISITOR, removeBulletinVisitorSaga),

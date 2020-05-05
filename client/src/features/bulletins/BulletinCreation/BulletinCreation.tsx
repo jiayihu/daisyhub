@@ -4,21 +4,38 @@ import { Col, Collapse, FormGroup, Label, Spinner } from 'reactstrap';
 import { format } from 'date-fns';
 import { Field, Form, Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { addBulletin } from '../../../store/actions/bulletin.actions';
+import { Fruit } from '../../../types/island';
+import { BulletinBody } from '../../../types/bulletin';
+
+interface ReqBulletin {
+  dodoCode: string;
+  islandName: string;
+  playerName: string;
+  fruit: Fruit;
+  date: string;
+  time: string;
+  price: number;
+  description: string;
+  fees: boolean;
+  concurrent: number;
+  queue: number;
+  isPrivate: boolean;
+}
+
+// import { BulletinBody } from '../../../types/bulletin';
 
 export const BulletinCreation = () => {
-  const [isOpen, setIsOpen] = useState({
+  const [isOpenSection, setIsOpenSection] = useState({
     first: true,
     second: false,
     third: false,
   });
-
   const [dateTime, setDateTime] = useState({ date: '', time: '' });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    initDateTime();
-    setLoading(false);
-  }, []);
+  const dispatch = useDispatch();
 
   const initDateTime = () => {
     const today = new Date();
@@ -27,31 +44,36 @@ export const BulletinCreation = () => {
     setDateTime({ date, time });
   };
 
+  useEffect(() => {
+    initDateTime();
+    setLoading(false);
+  }, []);
+
   const toggleSection = (section: number) => {
     switch (section) {
       case 1:
-        setIsOpen({ first: true, second: false, third: false });
+        setIsOpenSection({ first: true, second: false, third: false });
         break;
       case 2:
-        setIsOpen({ first: false, second: true, third: false });
+        setIsOpenSection({ first: false, second: true, third: false });
         break;
       case 3:
-        setIsOpen({ first: false, second: false, third: true });
+        setIsOpenSection({ first: false, second: false, third: true });
         break;
       default:
         return 0;
     }
   };
 
-  return loading ? (
-    <Spinner type="grow" />
-  ) : (
-    <Formik
+  if (loading) return <Spinner type="grow" />;
+
+  return (
+    <Formik<BulletinBody>
       initialValues={{
         dodoCode: '',
         islandName: '',
         playerName: '',
-        fruit: '',
+        fruit: 'apple',
         date: dateTime.date,
         time: dateTime.time,
         price: 100,
@@ -71,33 +93,69 @@ export const BulletinCreation = () => {
         description: Yup.string().required('Required'),
       })}
       onSubmit={fields => {
-        alert('Success  ' + JSON.stringify(fields, null, 4));
+        const dateTime = new Date(`${fields.date}T${fields.time}`);
+
+        const reqJSON: BulletinBody = {
+          dodo: fields.dodoCode,
+          island: {
+            name: fields.islandName,
+            player: fields.playerName,
+            fruit: fields.fruit,
+            hemisphere: 'north',
+            villager: 'neither',
+          },
+          time: dateTime.toISOString(),
+          turnipPrice: fields.price,
+          description: fields.description,
+          preferences: {
+            concurrent: fields.concurrent,
+            queue: fields.queue,
+            hasFee: fields.fees,
+            isPrivate: fields.isPrivate,
+          },
+        };
+        try {
+          dispatch(addBulletin(reqJSON));
+        } catch (e) {
+          console.log(e);
+        }
       }}
     >
       {props => {
         return (
           <Form>
             <h2 onClick={() => toggleSection(1)}>About your Island</h2>
-            <Collapse isOpen={isOpen.first}>
+            <Collapse isOpen={isOpenSection.first}>
               <Col>
                 <FormGroup>
                   <Label for="dodo">Dodo Code</Label>
-                  <Field type="dodoCode" name="dodoCode" />
+                  <Field type="dodoCode" name="dodoCode" required />
                   <ErrorMessage name="dodoCode" />
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="islandName">Island Name</Label>
-                  <Field type="islandName" name="islandName" />
-                  <ErrorMessage name="islandName" />
+                  <Field type="islandName" name="islandName" required />
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="playerName">Player Name</Label>
-                  <Field type="playerName" name="playerName" />
-                  <ErrorMessage name="playerName" />
+                  <Field type="playerName" name="playerName" required />
+                </FormGroup>
+              </Col>
+              <Col>
+                <FormGroup>
+                  <Label for="description">Description and requests</Label>
+                  <input
+                    type="textarea"
+                    name="description"
+                    id="description"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                  />
+                  <ErrorMessage name="description" />
                 </FormGroup>
               </Col>
               <Col>
@@ -109,14 +167,12 @@ export const BulletinCreation = () => {
                     onChange={props.handleChange}
                     onBlur={props.handleBlur}
                   >
-                    <option value="" label="Choose your native fruit" />
-                    <option value="apples" label="Apples" />
-                    <option value="peaches" label="Peaches" />
-                    <option value="oranges" label="Oranges" />
-                    <option value="pears" label="Pears" />
-                    <option value="cherries" label="Cherries" />
+                    <option value="apple" label="Apples" />
+                    <option value="peach" label="Peaches" />
+                    <option value="orange" label="Oranges" />
+                    <option value="pear" label="Pears" />
+                    <option value="cherry" label="Cherries" />
                   </select>
-                  <ErrorMessage name="fruit" />
                 </FormGroup>
               </Col>
               <Col>
@@ -149,7 +205,7 @@ export const BulletinCreation = () => {
               </Col>
             </Collapse>
             <h2 onClick={() => toggleSection(2)}>About your turnips</h2>
-            <Collapse isOpen={isOpen.second}>
+            <Collapse isOpen={isOpenSection.second}>
               <Col>
                 <FormGroup>
                   <Label for="price">Selling price</Label>
@@ -165,19 +221,7 @@ export const BulletinCreation = () => {
                   {props.touched.price && props.errors.price}
                 </FormGroup>
               </Col>
-              <Col>
-                <FormGroup>
-                  <Label for="description">Description and requests</Label>
-                  <input
-                    type="textarea"
-                    name="description"
-                    id="description"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                  />
-                  <ErrorMessage name="description" />
-                </FormGroup>
-              </Col>
+
               <Col>
                 <FormGroup>
                   <Label for="fees">
@@ -196,7 +240,7 @@ export const BulletinCreation = () => {
             </Collapse>
             <h2 onClick={() => toggleSection(3)}>About your queue</h2>
 
-            <Collapse isOpen={isOpen.third}>
+            <Collapse isOpen={isOpenSection.third}>
               <Col>
                 <FormGroup>
                   <Label for="concurrent">

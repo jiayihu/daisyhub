@@ -1,4 +1,4 @@
-import { Bulletin } from '../../types/bulletin';
+import { Bulletin, BulletinBody } from '../../types/bulletin';
 import { Visitor } from '../../types/visitor';
 
 export const GET_BULLETINS_REQUESTED = 'GET_BULLETINS_REQUESTED';
@@ -18,6 +18,7 @@ export const UPDATE_VISITORS = 'UPDATE_VISITORS';
 export const NOTIFY_UNSUB_BULLETIN = 'NOTIFY_UNSUB_BULLETIN';
 
 export const DELETE_BULLETIN = 'DELETE_BULLETIN';
+export const ADD_BULLETIN = 'ADD_BULLETIN';
 export const LOCK_BULLETIN_QUEUE = 'LOCK_BULLETIN_QUEUE';
 
 export const ADD_BULLETIN_VISITOR = 'ADD_BULLETIN_VISITOR';
@@ -106,6 +107,13 @@ export const deleteBulletin = (bulletinId: string) => {
   };
 };
 
+export const addBulletin = (bulletin: BulletinBody) => {
+  return {
+    type: ADD_BULLETIN as typeof ADD_BULLETIN,
+    payload: { bulletin },
+  };
+};
+
 export const lockBulletinQueue = (bulletinId: string, isLocked: boolean) => {
   return {
     type: LOCK_BULLETIN_QUEUE as typeof LOCK_BULLETIN_QUEUE,
@@ -147,6 +155,7 @@ export type BulletinsAction =
   | ReturnType<typeof updateVisitors>
   | ReturnType<typeof notifyUnsubBulletin>
   | ReturnType<typeof deleteBulletin>
+  | ReturnType<typeof addBulletin>
   | ReturnType<typeof lockBulletinQueue>
   | ReturnType<typeof addBulletinVisitor>
   | ReturnType<typeof setBulletinVisitorId>
