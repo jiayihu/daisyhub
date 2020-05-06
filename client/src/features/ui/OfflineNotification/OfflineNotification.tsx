@@ -14,7 +14,8 @@ export const OfflineNotification = () => {
 
   return (
     <Alert color="dark">
-      <strong>You are offline.</strong> It seems there is a problem with your connection.
+      <strong>You are offline.</strong> It seems there is a problem with your connection, try to
+      reconnect and then reload the page.
     </Alert>
   );
 };

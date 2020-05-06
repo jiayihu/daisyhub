@@ -10,7 +10,6 @@ import App from './App/App';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import { rootSaga } from './store/sagas';
-import * as serviceWorker from './serviceWorker';
 import { createBrowserHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { reducer } from './store/reducers';
@@ -45,7 +44,19 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+if ('serviceWorker' in navigator) {
+  const swUrl = `${process.env.PUBLIC_URL}/sw.js`;
+
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register(swUrl)
+      .then(registration => {
+        console.log('[ServiceWorker] registered', registration);
+
+        registration.addEventListener('updatefound', () => {
+          console.log('[ServiceWorker] update found');
+        });
+      })
+      .catch(err => console.log('[ServiceWorker] registration failed: ', err));
+  });
+}
