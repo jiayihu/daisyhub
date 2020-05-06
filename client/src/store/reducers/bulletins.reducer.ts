@@ -2,7 +2,6 @@ import {
   GET_BULLETINS_SUCCEEDED,
   GET_BULLETIN_SUCCEEDED,
   DELETE_BULLETIN,
-  ADD_BULLETIN,
 } from '../actions/bulletin.actions';
 import { Bulletin } from '../../types/bulletin';
 import { Action } from '../actions';
@@ -21,9 +20,7 @@ export const bulletinsReducer = (state: BulletinsState = null, action: Action): 
     case DELETE_BULLETIN:
       if (!state) return state;
       return state.filter(x => x.id !== action.payload.bulletinId);
-    case ADD_BULLETIN:
-      // TODO
-      return state;
+
     default:
       return state;
   }

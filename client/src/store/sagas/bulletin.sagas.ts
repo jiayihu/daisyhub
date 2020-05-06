@@ -14,6 +14,7 @@ import { Bulletin } from '../../types/bulletin';
 import { selectStaticBulletin } from '../reducers';
 import { push } from '../middlewares/router.middleware';
 import { isEndMessage, createRealTimeChannel } from './realtime-channel';
+import { saveOwnerToHistory } from './../../services/bulletin-history.service';
 
 function* fetchBulletinsSaga() {
   try {
@@ -66,8 +67,12 @@ function* deleteBulletinSaga(action: ReturnType<typeof actions.deleteBulletin>) 
 function* addBulletinSaga(action: ReturnType<typeof actions.addBulletin>) {
   try {
     const bulletin = action.payload.bulletin;
-    yield call<typeof addBulletin>(addBulletin, bulletin);
-    //TODO
+    const res: { id: string; ownerId: string } = yield call<typeof addBulletin>(
+      addBulletin,
+      bulletin,
+    );
+    yield saveOwnerToHistory(res.id, res.ownerId);
+    yield put(push(`/bulletins/${res.id}`));
   } catch (error) {
     yield* handleSagaError(error);
   }
