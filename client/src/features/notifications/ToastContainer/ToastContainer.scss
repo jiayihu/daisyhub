@@ -3,9 +3,8 @@
 .toast-container {
   min-height: 12.5rem;
   position: fixed;
-  left: 50%;
+  right: 1rem;
   bottom: 1rem;
-  transform: translate(-50%, 0);
   max-width: 40rem;
   z-index: $zindex-fixed;
 }

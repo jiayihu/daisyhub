@@ -4,11 +4,18 @@ import { useSelector } from 'react-redux';
 import { selectBulletinVisitorId, selectBulletinOwnerId } from '../../store/reducers';
 import { Button, Toast, ToastHeader, ToastBody } from 'reactstrap';
 import { ToastContainer } from '../notifications/ToastContainer/ToastContainer';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { differenceInDays } from 'date-fns/esm';
+
+const STORAGE_KEY = 'daisyhub/install-prompt-date';
 
 export const AddToHomeScreen = () => {
   const [isInstallable, setIsInstallable] = useState(false);
   const visitorId = useSelector(selectBulletinVisitorId);
   const ownerId = useSelector(selectBulletinOwnerId);
+
+  // Used to avoid prompting the request again immediately
+  const [lastDate, setLastDate] = useLocalStorage(STORAGE_KEY, new Date(1970, 0, 1));
 
   const promptEventRef = useRef<BeforeInstallPromptEvent>();
   const promptHandler = useCallback(
@@ -22,7 +29,10 @@ export const AddToHomeScreen = () => {
   );
   useEventListener(window, 'beforeinstallprompt', promptHandler);
 
-  const handleCancel = useCallback(() => setIsInstallable(false), [setIsInstallable]);
+  const handleCancel = useCallback(() => {
+    setIsInstallable(false);
+    setLastDate(new Date());
+  }, [setIsInstallable, setLastDate]);
   const handleConfirm = useCallback(() => {
     setIsInstallable(false);
 
@@ -42,7 +52,8 @@ export const AddToHomeScreen = () => {
 
   if (!isInstallable) return null;
 
-  const isOpen = isInstallable && Boolean(visitorId || ownerId);
+  const isOpen =
+    isInstallable && Boolean(visitorId || ownerId) && differenceInDays(new Date(), lastDate) >= 1;
   const message = visitorId ? "Such as when it's your turn in the queue." : ownerId ? '' : '';
 
   return (

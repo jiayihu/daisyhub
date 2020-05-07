@@ -7,9 +7,8 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T)
   });
 
   const setValue = (value: T) => {
-    const valueToStore = typeof value === 'function' ? value(storedValue) : value;
-    saveLocalStorage(key, valueToStore);
-    setStoredValue(valueToStore);
+    saveLocalStorage(key, value);
+    setStoredValue(value);
   };
 
   return [storedValue, setValue];
