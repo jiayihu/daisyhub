@@ -12,7 +12,13 @@ _self.addEventListener('install', event => {
 
   event.waitUntil(
     caches.open(CACHE_STATIC).then(cache => {
-      return cache.addAll(staticUrlsToCache);
+      return Promise.all(
+        staticUrlsToCache.map(url =>
+          cache.add(url).catch(error => {
+            console.log('Failed to add', url, 'to the cache', error);
+          }),
+        ),
+      );
     }),
   );
 });
@@ -39,29 +45,7 @@ _self.addEventListener('fetch', event => {
   const imagesRegxp = /(\.(png|jpeg|svg|ico))$/;
 
   if (imagesRegxp.test(request.url)) {
-    return event.respondWith(
-      caches.match(request).then(response => {
-        if (response) {
-          event.waitUntil(
-            caches.open(CACHE_IMAGES).then(cache => {
-              return fetch(request).then(response => {
-                return cache.put(request, response.clone());
-              });
-            }),
-          );
-
-          return response;
-        }
-
-        return caches.open(CACHE_IMAGES).then(cache => {
-          return fetch(request).then(response => {
-            event.waitUntil(cache.put(request, response.clone()));
-
-            return response;
-          });
-        });
-      }),
-    );
+    return event.respondWith(staleWhileRevalidate(CACHE_IMAGES, request));
   }
 
   const url = new URL(request.url);
@@ -80,3 +64,17 @@ _self.addEventListener('fetch', event => {
     }),
   );
 });
+
+function staleWhileRevalidate(cacheName, request) {
+  return caches.open(cacheName).then(cache => {
+    return cache.match(request).then(response => {
+      const fetchRequest = fetch(request).then(fetchResponse => {
+        cache.put(request, fetchResponse.clone());
+
+        return fetchResponse;
+      });
+
+      return response || fetchRequest;
+    });
+  });
+}

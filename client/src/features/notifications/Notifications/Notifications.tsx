@@ -4,13 +4,14 @@ import { Toast, ToastHeader, ToastBody } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectNotifications } from '../../../store/reducers';
 import { removeNotification } from '../../../store/actions/notifications.actions';
+import { ToastContainer } from '../ToastContainer/ToastContainer';
 
 export const Notifications = () => {
   const notifications = useSelector(selectNotifications);
   const dispatch = useDispatch();
 
   return (
-    <div className="notifications" aria-live="polite" aria-atomic="true">
+    <ToastContainer style={{ maxWidth: '16rem' }}>
       {notifications.map((notification, i) => (
         <Toast isOpen={true} key={i}>
           <ToastHeader
@@ -24,6 +25,6 @@ export const Notifications = () => {
           <ToastBody>{notification.message}</ToastBody>
         </Toast>
       ))}
-    </div>
+    </ToastContainer>
   );
 };

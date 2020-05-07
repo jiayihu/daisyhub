@@ -12,6 +12,7 @@ import { ProtectedBulletin } from '../features/bulletins/ProtectedBulletin/Prote
 import { Footer } from '../features/navigation/Footer/Footer';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { OfflineNotification } from '../features/ui/OfflineNotification/OfflineNotification';
+import { AddToHomeScreen } from '../features/pwa/AddToHomeScreen';
 
 function App() {
   const location = useLocation();
@@ -19,6 +20,7 @@ function App() {
   return (
     <>
       <NavigationItems />
+      <AddToHomeScreen />
       <div className="app">
         <Container className="app-container">
           <OfflineNotification />

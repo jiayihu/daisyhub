@@ -91,6 +91,7 @@ export const BulletinHost = () => {
             dispatch(deleteBulletin(bulletinId));
             setIsDeleting(false);
           }}
+          color="danger"
         >
           Deleting the island will remove it from the website and no further people will receive
           your DODO code.
