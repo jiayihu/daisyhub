@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Collapse, FormGroup, Label, Spinner, Input, Button } from 'reactstrap';
+import { Col, Collapse, FormGroup, Label, Spinner, Button } from 'reactstrap';
 import { format } from 'date-fns';
-import { Form, Formik, Field } from 'formik';
+import { Form, Formik, Field, FieldProps } from 'formik';
 import { string, object, number, ref } from 'yup';
 import { useDispatch } from 'react-redux';
 import { addBulletin } from '../../../../store/actions/bulletin.actions';
@@ -12,7 +12,6 @@ import {
   TextInputComponent,
   TextAreaInputComponent,
   NumberInputComponent,
-  CheckboxInputComponent,
 } from './CustomInputComponent/CustomInputComponent';
 
 enum sections {
@@ -164,7 +163,15 @@ export const BulletinCreation = () => {
                 <FormGroup>
                   <Label for="fees" className={labelClass}>
                     Entry fees
-                    <Field name="preferences.hasFee" component={CheckboxInputComponent} />
+                    <Field name="preferences.hasFee">
+                      {({ field }: FieldProps) => {
+                        return (
+                          <div>
+                            <input type="checkbox" {...field} />
+                          </div>
+                        );
+                      }}
+                    </Field>
                   </Label>
                 </FormGroup>
               </Col>
@@ -178,15 +185,15 @@ export const BulletinCreation = () => {
                   <Label for="date" className={labelClass}>
                     Date
                   </Label>
-                  <Input
-                    name="date"
-                    type="date"
-                    onChange={date => {
-                      formikProps.setFieldValue('date', date.target.value);
+                  <Field name="date">
+                    {({ field }: FieldProps) => {
+                      return (
+                        <div>
+                          <input type="date" className="form-control" {...field} />
+                        </div>
+                      );
                     }}
-                    onBlur={formikProps.handleBlur}
-                    value={formikProps.values.date}
-                  />
+                  </Field>
                 </FormGroup>
               </Col>
               <Col>
@@ -194,15 +201,15 @@ export const BulletinCreation = () => {
                   <Label for="time" className={labelClass}>
                     Time
                   </Label>
-                  <Input
-                    name="time"
-                    type="time"
-                    onChange={time => {
-                      formikProps.setFieldValue('time', time.target.value);
+                  <Field name="time">
+                    {({ field }: FieldProps) => {
+                      return (
+                        <div>
+                          <input type="time" className="form-control" {...field} />
+                        </div>
+                      );
                     }}
-                    onBlur={formikProps.handleBlur}
-                    value={formikProps.values.time}
-                  />
+                  </Field>
                 </FormGroup>
               </Col>
               <Col>
@@ -224,8 +231,16 @@ export const BulletinCreation = () => {
               <Col>
                 <FormGroup>
                   <Label for="isPrivate" className={labelClass}>
-                    <Field name="preferences.isPrivate" component={CheckboxInputComponent} />
                     Private island
+                    <Field name="preferences.isPrivate">
+                      {({ field }: FieldProps) => {
+                        return (
+                          <div>
+                            <input type="checkbox" {...field} />
+                          </div>
+                        );
+                      }}
+                    </Field>
                   </Label>
                 </FormGroup>
               </Col>

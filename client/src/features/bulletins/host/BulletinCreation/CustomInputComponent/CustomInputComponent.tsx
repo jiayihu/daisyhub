@@ -73,11 +73,3 @@ export const NumberInputComponent = ({
     </div>
   );
 };
-
-export const CheckboxInputComponent = ({ field, form, ...props }: FieldProps) => {
-  return (
-    <div className="center">
-      <input type="checkbox" {...field} {...props} />
-    </div>
-  );
-};
