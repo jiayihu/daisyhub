@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Col, Collapse, FormGroup, Label, Spinner, Button } from 'reactstrap';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { Form, Formik, Field, FieldProps } from 'formik';
 import { string, object, number, ref } from 'yup';
 import { useDispatch } from 'react-redux';
@@ -8,19 +8,15 @@ import { addBulletin } from '../../../../store/actions/bulletin.actions';
 import { Fruit, Villager } from '../../../../types/island';
 import { BulletinBody } from '../../../../types/bulletin';
 
-import {
-  TextInputComponent,
-  TextAreaInputComponent,
-  NumberInputComponent,
-} from './CustomInputComponent/CustomInputComponent';
+import { FormInput } from './FormInput/FormInput';
 
 enum sections {
-  FIRST = 'first',
-  SECOND = 'second',
+  ESSENTIAL = 'essential',
+  ADVANCED = 'advanced',
 }
 
 export const BulletinCreation = () => {
-  const [isOpenSection, setIsOpenSection] = useState(sections.FIRST);
+  const [isOpenSection, setIsOpenSection] = useState(sections.ESSENTIAL);
   const [dateTime, setDateTime] = useState({ date: '', time: '' });
   const [loading, setLoading] = useState(true);
 
@@ -89,22 +85,29 @@ export const BulletinCreation = () => {
       onSubmit={fields => {
         const bulletinBody: BulletinBody = { ...fields };
 
-        bulletinBody.time = new Date(fields.date + 'T' + fields.time).toISOString();
+        const date = parse(fields.date, 'yyyy-MM-dd', new Date());
+        const time = parse(fields.time, 'HH:mm', new Date());
+        date.setHours(time.getHours());
+        date.setMinutes(time.getMinutes());
+        date.setSeconds(time.getSeconds());
+
+        bulletinBody.time = date.toISOString();
+
         dispatch(addBulletin(bulletinBody));
       }}
     >
       {formikProps => {
         return (
           <Form>
-            <h2 onClick={() => setIsOpenSection(sections.FIRST)} className="h1">
+            <h2 onClick={() => setIsOpenSection(sections.ESSENTIAL)} className="h1">
               Essential informations
             </h2>
-            <Collapse isOpen={isOpenSection === sections.FIRST}>
+            <Collapse isOpen={isOpenSection === sections.ESSENTIAL}>
               <Col>
                 <FormGroup>
                   <Label className={labelClass}>
                     DODO Code
-                    <Field name="dodo" component={TextInputComponent} />
+                    <Field name="dodo" type="text" component={FormInput} />
                   </Label>
                 </FormGroup>
               </Col>
@@ -112,7 +115,7 @@ export const BulletinCreation = () => {
                 <FormGroup>
                   <Label className={labelClass}>
                     Island Name
-                    <Field name="island.name" component={TextInputComponent} />
+                    <Field name="island.name" type={'text'} component={FormInput} />
                   </Label>
                 </FormGroup>
               </Col>
@@ -120,7 +123,7 @@ export const BulletinCreation = () => {
                 <FormGroup>
                   <Label className={labelClass}>
                     Player Name
-                    <Field name="island.player" component={TextInputComponent} />
+                    <Field name="island.player" type="text" component={FormInput} />
                   </Label>
                 </FormGroup>
               </Col>
@@ -128,7 +131,7 @@ export const BulletinCreation = () => {
                 <FormGroup>
                   <Label className={labelClass}>
                     Description and requests
-                    <Field name="description" component={TextAreaInputComponent} />
+                    <Field name="description" type="textarea" component={FormInput} />
                   </Label>
                 </FormGroup>
               </Col>
@@ -155,7 +158,7 @@ export const BulletinCreation = () => {
                 <FormGroup>
                   <Label for="price" className={labelClass}>
                     Selling price
-                    <Field name="turnipPrice" component={NumberInputComponent} min={0} />
+                    <Field name="turnipPrice" type="number" component={FormInput} min={0} />
                   </Label>
                 </FormGroup>
               </Col>
@@ -164,7 +167,7 @@ export const BulletinCreation = () => {
                   <Label for="fees" className={labelClass}>
                     Entry fees
                     <Field name="preferences.hasFee">
-                      {({ field }: FieldProps) => {
+                      {({ field }: FieldProps<string>) => {
                         return (
                           <div>
                             <input type="checkbox" {...field} />
@@ -176,22 +179,18 @@ export const BulletinCreation = () => {
                 </FormGroup>
               </Col>
             </Collapse>
-            <h2 onClick={() => setIsOpenSection(sections.SECOND)} className="h1">
+            <h2 onClick={() => setIsOpenSection(sections.ADVANCED)} className="h1">
               Advanced Options
             </h2>
-            <Collapse isOpen={isOpenSection === sections.SECOND}>
+            <Collapse isOpen={isOpenSection === sections.ADVANCED}>
               <Col>
                 <FormGroup>
                   <Label for="date" className={labelClass}>
                     Date
                   </Label>
                   <Field name="date">
-                    {({ field }: FieldProps) => {
-                      return (
-                        <div>
-                          <input type="date" className="form-control" {...field} />
-                        </div>
-                      );
+                    {({ field }: FieldProps<string>) => {
+                      return <input type="date" className="form-control" {...field} />;
                     }}
                   </Field>
                 </FormGroup>
@@ -202,12 +201,8 @@ export const BulletinCreation = () => {
                     Time
                   </Label>
                   <Field name="time">
-                    {({ field }: FieldProps) => {
-                      return (
-                        <div>
-                          <input type="time" className="form-control" {...field} />
-                        </div>
-                      );
+                    {({ field }: FieldProps<string>) => {
+                      return <input type="time" className="form-control" {...field} />;
                     }}
                   </Field>
                 </FormGroup>
@@ -217,7 +212,12 @@ export const BulletinCreation = () => {
                   <Label for="concurrent" className={labelClass}>
                     How many people you want in your island (at the same time)
                   </Label>
-                  <Field name="preferences.concurrent" component={NumberInputComponent} min={1} />
+                  <Field
+                    name="preferences.concurrent"
+                    type="number"
+                    component={FormInput}
+                    min={1}
+                  />
                 </FormGroup>
               </Col>
               <Col>
@@ -225,7 +225,7 @@ export const BulletinCreation = () => {
                   <Label for="queue" className={labelClass}>
                     Max queue length
                   </Label>
-                  <Field name="preferences.queue" component={NumberInputComponent} min={1} />
+                  <Field name="preferences.queue" type="number" component={FormInput} min={1} />
                 </FormGroup>
               </Col>
               <Col>
@@ -233,7 +233,7 @@ export const BulletinCreation = () => {
                   <Label for="isPrivate" className={labelClass}>
                     Private island
                     <Field name="preferences.isPrivate">
-                      {({ field }: FieldProps) => {
+                      {({ field }: FieldProps<string>) => {
                         return (
                           <div>
                             <input type="checkbox" {...field} />
@@ -248,7 +248,7 @@ export const BulletinCreation = () => {
             <Button
               onClick={() => {
                 if (!formikProps.isValid) {
-                  setIsOpenSection(sections.FIRST);
+                  setIsOpenSection(sections.ESSENTIAL);
                 }
                 if (formikProps.isValid) {
                   formikProps.submitForm();
