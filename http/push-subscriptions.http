@@ -1,0 +1,19 @@
+POST http://localhost:3001/bulletins/VWZPWo0iHYWKNku7A9Js1/push-subscriptions
+Content-Type: application/json
+
+{
+  "endpoint": "https://fcm.googleapis.com/fcm/send/f1f9wU5uWf0:APA91bF4laDW00KCs-Twi1eNmtcz-otpz1seHiAMHR1zvVb8wXRW1Q60J3kE3J0Kuvtxgpl4HKSSWc6cWrpCA3hRqdgWfqposv3hLgeTFFKJVnVk-zxgf63gJnDY9DzStRHPhOXpRtL3",
+  "expirationTime": null,
+  "keys": {
+    "p256dh": "BKsjzTMuVXeuDx7Ac2ccEXuMlAzIPiytyCnkUuB34gOHtxp5GBJeuksY3gKDxAti1b8kSgaaDOIRQCxIMDLZboA",
+    "auth": "ugNjT6RtpDd1IP9GzjWSRA"
+  }
+}
+
+###
+
+DELETE http://localhost:3001/bulletins/VWZPWo0iHYWKNku7A9Js1/push-subscriptions/5LRVvbDTF5gJb757KIm5g
+
+###
+
+POST http://localhost:3001/bulletins/VWZPWo0iHYWKNku7A9Js1/push-subscriptions/all

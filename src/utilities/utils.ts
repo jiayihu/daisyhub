@@ -1,6 +1,22 @@
 export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 export type ValueOf<T> = T[keyof T];
 
+export function allSettled<T>(promises: Promise<T>[]) {
+  return Promise.all(
+    promises.map(promise =>
+      promise
+        .then(value => ({
+          status: 'fulfilled' as 'fulfilled',
+          value,
+        }))
+        .catch(reason => ({
+          status: 'rejected' as 'rejected',
+          reason,
+        })),
+    ),
+  );
+}
+
 export function assertNever(_: never): never {
   throw new Error('Unreachable code');
 }

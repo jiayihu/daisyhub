@@ -14,6 +14,7 @@ export type MessageBody = D.TypeOf<typeof MessageBodyDec>;
 export type Message = {
   id: string;
   creationDate: string;
+  bulletinId: string;
 } & MessageBody;
 
 export const readMessages = (
@@ -29,16 +30,17 @@ export const readMessages = (
 export const createMessage = (
   bulletinId: string,
   body: MessageBody,
-): Reader<Firestore, Promise<string>> => db => {
+): Reader<Firestore, Promise<Message>> => db => {
   const id = nanoid();
   const ref = db.collection('bulletins').doc(bulletinId).collection('messages').doc(id);
   const message: Message = {
     ...body,
     id,
     creationDate: new Date().toISOString(),
+    bulletinId,
   };
 
-  return ref.set(message).then(() => id);
+  return ref.set(message).then(() => message);
 };
 
 export const deleteMessage = (

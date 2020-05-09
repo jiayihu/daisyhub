@@ -2,7 +2,7 @@ GET http://localhost:3001/bulletins/pDfsD2woza9g8v1gICk1J/messages
 
 ###
 
-POST http://localhost:3001/bulletins/H1X5IFqg50o9NbnepXouY/messages
+POST http://localhost:3001/bulletins/VWZPWo0iHYWKNku7A9Js1/messages
 Content-Type: application/json
 
 {
