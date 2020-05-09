@@ -16,6 +16,7 @@ import { PromptModal } from '../../../ui/PromptModal/PromptModal';
 import { saveOwnerToHistory } from '../../../../services/bulletin-history.service';
 import { addNotification } from '../../../../store/actions/notifications.actions';
 import { PushNotifications } from '../../../pwa/PushNotifications/PushNotifitcations';
+import { NarrowContainer } from '../../../ui/NarrowContainer/NarrowContainer';
 
 function renderAlert() {
   return (
@@ -68,58 +69,52 @@ export const BulletinVisitor = () => {
 
   if (!bulletin) {
     return (
-      <div className="row justify-content-center">
-        <div className="col-md-10 col-lg-8 col-xl-6">
-          {isUnsubscribed ? renderAlert() : <Spinner type="grow" />}
-        </div>
-      </div>
+      <NarrowContainer>{isUnsubscribed ? renderAlert() : <Spinner type="grow" />}</NarrowContainer>
     );
   }
 
   return (
-    <div className="row justify-content-center">
-      <div className="col-md-10 col-lg-8 col-xl-6">
-        {PushNotifications.isSupported() ? (
-          <p className="d-flex justify-content-end">
-            <PushNotifications bulletinId={bulletinId} />
-          </p>
-        ) : null}
-        <div className="bulletin-visitor">
-          {isUnsubscribed ? renderAlert() : null}
-          <BulletinDetails bulletin={bulletin} />
-          <QueueVisitor bulletin={bulletin} />
-          <MessagesVisitor bulletin={bulletin} />
-          <div className="f6 text-right">
-            Image credits:{' '}
-            <a
-              href="https://dribbble.com/shots/11137115-Turnip"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Cherryink
-            </a>
-          </div>
-          <div className="text-right">
-            <Button color="link" className="f6 p-0 text-muted" onClick={() => setIsClaiming(true)}>
-              Claim island ownership
-            </Button>
-          </div>
-        </div>
-
-        {isClaiming ? (
-          <PromptModal
-            isOpen={isClaiming}
-            onCancel={() => setIsClaiming(false)}
-            onConfirm={handleClaimConfirm}
-            inputProps={{ placeholder: 'Token' }}
+    <NarrowContainer>
+      {PushNotifications.isSupported() ? (
+        <p className="d-flex justify-content-end">
+          <PushNotifications bulletinId={bulletinId} />
+        </p>
+      ) : null}
+      <div className="bulletin-visitor">
+        {isUnsubscribed ? renderAlert() : null}
+        <BulletinDetails bulletin={bulletin} />
+        <QueueVisitor bulletin={bulletin} />
+        <MessagesVisitor bulletin={bulletin} />
+        <div className="f6 text-right">
+          Image credits:{' '}
+          <a
+            href="https://dribbble.com/shots/11137115-Turnip"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <p>
-              You can claim the ownership of the island if you know the secret token. This feature
-              is useful if you created the post on the computer then you move to the phone.
-            </p>
-          </PromptModal>
-        ) : null}
+            Cherryink
+          </a>
+        </div>
+        <div className="text-right">
+          <Button color="link" className="f6 p-0 text-muted" onClick={() => setIsClaiming(true)}>
+            Claim island ownership
+          </Button>
+        </div>
       </div>
-    </div>
+
+      {isClaiming ? (
+        <PromptModal
+          isOpen={isClaiming}
+          onCancel={() => setIsClaiming(false)}
+          onConfirm={handleClaimConfirm}
+          inputProps={{ placeholder: 'Token' }}
+        >
+          <p>
+            You can claim the ownership of the island if you know the secret token. This feature is
+            useful if you created the post on the computer then you move to the phone.
+          </p>
+        </PromptModal>
+      ) : null}
+    </NarrowContainer>
   );
 };

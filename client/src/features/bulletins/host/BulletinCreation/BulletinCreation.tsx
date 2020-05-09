@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Collapse, FormGroup, Label, Spinner, Button } from 'reactstrap';
+import { Col, Collapse, FormGroup, Label, Spinner, Button, Row } from 'reactstrap';
 import { format, parse } from 'date-fns';
-import { Form, Formik, Field, FieldProps } from 'formik';
+import { Form, Formik } from 'formik';
 import { string, object, number, ref } from 'yup';
 import { useDispatch } from 'react-redux';
 import { addBulletin } from '../../../../store/actions/bulletin.actions';
 import { Fruit, Villager } from '../../../../types/island';
 import { BulletinBody } from '../../../../types/bulletin';
-
-import { FormInput } from './FormInput/FormInput';
+import { NarrowContainer } from '../../../ui/NarrowContainer/NarrowContainer';
+import { CollapseHeader } from '../../../ui/CollapseHeader/CollapseHeader';
+import {
+  TextFieldWithMessage,
+  SelectFieldWithMessage,
+  NumberFieldWithMessage,
+} from '../../../ui/Formik';
+import { CheckboxFieldWithMessage } from '../../../ui/Formik/CheckboxFieldWithMessage ';
+import { DateFieldWithMessage } from '../../../ui/Formik/DateFieldWithMessage';
+import { TimeFieldWithMessage } from '../../../ui/Formik/TimeFieldWithMessage';
 
 enum sections {
   ESSENTIAL = 'essential',
@@ -34,234 +42,192 @@ export const BulletinCreation = () => {
     setLoading(false);
   }, []);
 
-  const labelClass = 'h5';
-
   if (loading) return <Spinner type="grow" />;
 
   return (
-    <Formik
-      initialValues={{
-        dodo: '',
-        island: {
-          name: '',
-          player: '',
-          fruit: 'apple' as Fruit,
-          villager: 'neither' as Villager,
-          hemisphere: 'north' as 'north' | 'south',
-        },
-        turnipPrice: 100,
-        description: '',
-        date: dateTime.date,
-        time: dateTime.time,
-        preferences: {
-          concurrent: 4,
-          queue: 25,
-          hasFee: false,
-          isPrivate: false,
-        },
-      }}
-      validationSchema={object({
-        dodo: string()
-          .length(5, 'Dodo Code must be exactly 5 characters')
-          .required('DODO Code is required'),
-        island: object({
-          player: string().required('Player name is required'),
-          name: string().required('Island name is required'),
-        }),
-        turnipPrice: number().min(0, "The price can't be lower than 0 ").max(999, 'Price too high'),
-        description: string().required('A description is required'),
-        preferences: object({
-          queue: number()
-            .min(1, "Queue can't be lower than 1")
-            .min(
-              ref('concurrent'),
-              "You can't have less people in your queue than the concurrent ones",
-            ),
-          concurrent: number()
-            .min(1, 'You need to have at least 1 person in your island')
-            .max(ref('queue'), 'You cannot exceed your queue limits '),
-        }),
-      })}
-      onSubmit={fields => {
-        const bulletinBody: BulletinBody = { ...fields };
+    <NarrowContainer hasBg>
+      <Formik
+        initialValues={{
+          dodo: '',
+          island: {
+            name: '',
+            player: '',
+            fruit: 'apple' as Fruit,
+            villager: 'neither' as Villager,
+            hemisphere: 'north' as 'north' | 'south',
+          },
+          turnipPrice: 100,
+          description: '',
+          date: dateTime.date,
+          time: dateTime.time,
+          preferences: {
+            concurrent: 4,
+            queue: 25,
+            hasFee: false,
+            isPrivate: false,
+          },
+        }}
+        validationSchema={object({
+          dodo: string()
+            .length(5, 'Dodo Code must be exactly 5 characters')
+            .required('DODO Code is required'),
+          island: object({
+            player: string().required('Player name is required'),
+            name: string().required('Island name is required'),
+          }),
+          turnipPrice: number()
+            .min(0, "The price can't be lower than 0 ")
+            .max(999, 'Price too high'),
+          description: string().required('A description is required'),
+          preferences: object({
+            queue: number()
+              .min(1, "Queue can't be lower than 1")
+              .min(
+                ref('concurrent'),
+                "You can't have less people in your queue than the concurrent ones",
+              ),
+            concurrent: number()
+              .min(1, 'You need to have at least 1 person in your island')
+              .max(ref('queue'), 'You cannot exceed your queue limits '),
+          }),
+        })}
+        onSubmit={fields => {
+          const bulletinBody: BulletinBody = { ...fields };
 
-        const date = parse(fields.date, 'yyyy-MM-dd', new Date());
-        const time = parse(fields.time, 'HH:mm', new Date());
-        date.setHours(time.getHours());
-        date.setMinutes(time.getMinutes());
-        date.setSeconds(time.getSeconds());
+          const date = parse(fields.date, 'yyyy-MM-dd', new Date());
+          const time = parse(fields.time, 'HH:mm', new Date());
+          date.setHours(time.getHours());
+          date.setMinutes(time.getMinutes());
+          date.setSeconds(time.getSeconds());
 
-        bulletinBody.time = date.toISOString();
+          bulletinBody.time = date.toISOString();
 
-        dispatch(addBulletin(bulletinBody));
-      }}
-    >
-      {formikProps => {
-        return (
-          <Form>
-            <h2 onClick={() => setIsOpenSection(sections.ESSENTIAL)} className="h1">
-              Essential informations
-            </h2>
-            <Collapse isOpen={isOpenSection === sections.ESSENTIAL}>
-              <Col>
+          dispatch(addBulletin(bulletinBody));
+        }}
+      >
+        {formikProps => {
+          return (
+            <Form>
+              <CollapseHeader
+                isOpen={isOpenSection === sections.ESSENTIAL}
+                onClick={() => setIsOpenSection(sections.ESSENTIAL)}
+              >
+                <h2 className="h3">Essential informations</h2>
+              </CollapseHeader>
+              <Collapse isOpen={isOpenSection === sections.ESSENTIAL}>
                 <FormGroup>
-                  <Label className={labelClass}>
-                    DODO Code
-                    <Field name="dodo" type="text" component={FormInput} />
-                  </Label>
+                  <Label for="dodo">DODO Code</Label>
+                  <TextFieldWithMessage id="dodo" name="dodo" />
                 </FormGroup>
-              </Col>
-              <Col>
+                <Row form>
+                  <Col>
+                    <FormGroup>
+                      <Label for="island-name">Island Name</Label>
+                      <TextFieldWithMessage id="island-name" name="island.name" />
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup>
+                      <Label for="player-name">Player Name</Label>
+                      <TextFieldWithMessage id="player-name" name="island.player" />
+                    </FormGroup>
+                  </Col>
+                </Row>
                 <FormGroup>
-                  <Label className={labelClass}>
-                    Island Name
-                    <Field name="island.name" type={'text'} component={FormInput} />
-                  </Label>
+                  <Label for="description">Description and requests</Label>
+                  <TextFieldWithMessage id="description" name="description" />
                 </FormGroup>
-              </Col>
-              <Col>
                 <FormGroup>
-                  <Label className={labelClass}>
-                    Player Name
-                    <Field name="island.player" type="text" component={FormInput} />
-                  </Label>
+                  <Label for="fruit">Fruit</Label>
+                  <SelectFieldWithMessage id="fruit" name="island.fruit">
+                    <option value="apple">Apples</option>
+                    <option value="peach">Peaches</option>
+                    <option value="orange">Oranges</option>
+                    <option value="pear">Pears</option>
+                    <option value="cherry">Cherries</option>
+                  </SelectFieldWithMessage>
                 </FormGroup>
-              </Col>
-              <Col>
+                <Row form>
+                  <Col>
+                    <FormGroup>
+                      <Label for="price">Selling price</Label>
+                      <NumberFieldWithMessage id="price" name="turnipPrice" min={0} />
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <Label for="fees">Entry fees</Label>
+                    <FormGroup check>
+                      <div>
+                        <CheckboxFieldWithMessage id="fees" name="preferences.hasFee" />
+                      </div>
+                    </FormGroup>
+                  </Col>
+                </Row>
+              </Collapse>
+              <CollapseHeader
+                isOpen={isOpenSection === sections.ADVANCED}
+                onClick={() => setIsOpenSection(sections.ADVANCED)}
+              >
+                <h2 className="h3">Additional options</h2>
+              </CollapseHeader>
+              <Collapse isOpen={isOpenSection === sections.ADVANCED}>
+                <Row>
+                  <Col>
+                    <FormGroup>
+                      <Label for="date">Date</Label>
+                      <DateFieldWithMessage id="date" name="date" />
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup>
+                      <Label for="time">Time</Label>
+                      <TimeFieldWithMessage id="time" name="time" />
+                    </FormGroup>
+                  </Col>
+                </Row>
                 <FormGroup>
-                  <Label className={labelClass}>
-                    Description and requests
-                    <Field name="description" type="textarea" component={FormInput} />
+                  <Label for="concurrent">
+                    How many people can visit your island at the same time?
                   </Label>
+                  <NumberFieldWithMessage id="concurrent" name="preferences.concurrent" min={1} />
                 </FormGroup>
-              </Col>
-              <Col>
-                <FormGroup>
-                  <Label for="fruit" className={labelClass}>
-                    Fruit
-                    <Field
-                      as="select"
-                      name="island.fruit"
-                      value={formikProps.values.island.fruit}
-                      className="form-control"
-                    >
-                      <option value="apple" label="Apples" />
-                      <option value="peach" label="Peaches" />
-                      <option value="orange" label="Oranges" />
-                      <option value="pear" label="Pears" />
-                      <option value="cherry" label="Cherries" />
-                    </Field>
-                  </Label>
-                </FormGroup>
-              </Col>
-              <Col>
-                <FormGroup>
-                  <Label for="price" className={labelClass}>
-                    Selling price
-                    <Field name="turnipPrice" type="number" component={FormInput} min={0} />
-                  </Label>
-                </FormGroup>
-              </Col>
-              <Col>
-                <FormGroup>
-                  <Label for="fees" className={labelClass}>
-                    Entry fees
-                    <Field name="preferences.hasFee">
-                      {({ field }: FieldProps<string>) => {
-                        return (
-                          <div>
-                            <input type="checkbox" {...field} />
-                          </div>
-                        );
-                      }}
-                    </Field>
-                  </Label>
-                </FormGroup>
-              </Col>
-            </Collapse>
-            <h2 onClick={() => setIsOpenSection(sections.ADVANCED)} className="h1">
-              Advanced Options
-            </h2>
-            <Collapse isOpen={isOpenSection === sections.ADVANCED}>
-              <Col>
-                <FormGroup>
-                  <Label for="date" className={labelClass}>
-                    Date
-                  </Label>
-                  <Field name="date">
-                    {({ field }: FieldProps<string>) => {
-                      return <input type="date" className="form-control" {...field} />;
-                    }}
-                  </Field>
-                </FormGroup>
-              </Col>
-              <Col>
-                <FormGroup>
-                  <Label for="time" className={labelClass}>
-                    Time
-                  </Label>
-                  <Field name="time">
-                    {({ field }: FieldProps<string>) => {
-                      return <input type="time" className="form-control" {...field} />;
-                    }}
-                  </Field>
-                </FormGroup>
-              </Col>
-              <Col>
-                <FormGroup>
-                  <Label for="concurrent" className={labelClass}>
-                    How many people you want in your island (at the same time)
-                  </Label>
-                  <Field
-                    name="preferences.concurrent"
-                    type="number"
-                    component={FormInput}
-                    min={1}
-                  />
-                </FormGroup>
-              </Col>
-              <Col>
-                <FormGroup>
-                  <Label for="queue" className={labelClass}>
-                    Max queue length
-                  </Label>
-                  <Field name="preferences.queue" type="number" component={FormInput} min={1} />
-                </FormGroup>
-              </Col>
-              <Col>
-                <FormGroup>
-                  <Label for="isPrivate" className={labelClass}>
-                    Private island
-                    <Field name="preferences.isPrivate">
-                      {({ field }: FieldProps<string>) => {
-                        return (
-                          <div>
-                            <input type="checkbox" {...field} />
-                          </div>
-                        );
-                      }}
-                    </Field>
-                  </Label>
-                </FormGroup>
-              </Col>
-            </Collapse>
-            <Button
-              onClick={() => {
-                if (!formikProps.isValid) {
-                  setIsOpenSection(sections.ESSENTIAL);
-                }
-                if (formikProps.isValid) {
-                  formikProps.submitForm();
-                }
-              }}
-              type="submit"
-              color="primary"
-            >
-              Submit
-            </Button>
-          </Form>
-        );
-      }}
-    </Formik>
+                <Row form>
+                  <Col>
+                    <FormGroup>
+                      <Label for="queue">Max queue length</Label>
+                      <NumberFieldWithMessage id="queue" name="preferences.queue" min={1} />
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <Label for="is-private">
+                      Private island - <small>Won't be listed publicly</small>
+                    </Label>
+                    <FormGroup check>
+                      <div>
+                        <CheckboxFieldWithMessage id="is-private" name="preferences.isPrivate" />
+                      </div>
+                    </FormGroup>
+                  </Col>
+                </Row>
+              </Collapse>
+              <Button
+                onClick={() => {
+                  if (!formikProps.isValid) {
+                    setIsOpenSection(sections.ESSENTIAL);
+                  }
+                  if (formikProps.isValid) {
+                    formikProps.submitForm();
+                  }
+                }}
+                type="submit"
+                color="primary"
+              >
+                Submit
+              </Button>
+            </Form>
+          );
+        }}
+      </Formik>
+    </NarrowContainer>
   );
 };

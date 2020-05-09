@@ -1,6 +1,18 @@
 import { Island } from './island';
 
-export type BulletinBody = Omit<Bulletin, 'id' | 'meta' | 'queue' | 'ownerId'>;
+export type BulletinBody = {
+  dodo: string;
+  island: Island;
+  time: string;
+  turnipPrice: number;
+  description: string;
+  preferences: {
+    concurrent: number;
+    queue: number;
+    hasFee: boolean;
+    isPrivate: boolean;
+  };
+};
 
 export interface Bulletin {
   id: string;
