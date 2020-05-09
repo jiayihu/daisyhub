@@ -1,9 +1,17 @@
 import { useState } from 'react';
-import { saveLocalStorage, readLocalStorage } from '../utilities/utils';
+import { saveLocalStorage, readLocalStorage, Reviver } from '../utilities/utils';
 
-export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
+export function useLocalStorage<T>({
+  key,
+  initialValue,
+  reviver,
+}: {
+  key: string;
+  initialValue: T;
+  reviver?: Reviver;
+}): [T, (value: T) => void] {
   const [storedValue, setStoredValue] = useState(() => {
-    return readLocalStorage<T>(key) || initialValue;
+    return readLocalStorage<T>(key, reviver) || initialValue;
   });
 
   const setValue = (value: T) => {

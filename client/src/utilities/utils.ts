@@ -27,10 +27,12 @@ export function getRandomColor(): string {
   return `#${hex}`;
 }
 
-export function readLocalStorage<T>(key: string): T | null {
+export type Reviver = (this: any, key: string, value: any) => any;
+
+export function readLocalStorage<T>(key: string, reviver?: Reviver): T | null {
   try {
     const item = window.localStorage.getItem(key);
-    return item ? JSON.parse(item) : null;
+    return item ? JSON.parse(item, reviver) : null;
   } catch (error) {
     console.log('Error reading from localStorage');
     console.error(error);
