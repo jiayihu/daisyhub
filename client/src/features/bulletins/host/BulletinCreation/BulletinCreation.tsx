@@ -1,35 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import './BulletinCreation.scss';
-import { Col, Collapse, FormGroup, Label, Spinner, Input, Button } from 'reactstrap';
-import { format } from 'date-fns';
-import { Form, Formik, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import { Col, Collapse, FormGroup, Label, Spinner, Button } from 'reactstrap';
+import { format, parse } from 'date-fns';
+import { Form, Formik, Field, FieldProps } from 'formik';
+import { string, object, number, ref } from 'yup';
 import { useDispatch } from 'react-redux';
 import { addBulletin } from '../../../../store/actions/bulletin.actions';
-import { Fruit } from '../../../../types/island';
+import { Fruit, Villager } from '../../../../types/island';
 import { BulletinBody } from '../../../../types/bulletin';
 
-interface FormParams {
-  dodoCode: string;
-  islandName: string;
-  playerName: string;
-  fruit: Fruit;
-  date: string;
-  time: string;
-  price: number;
-  description: string;
-  fees: boolean;
-  concurrent: number;
-  queue: number;
-  isPrivate: boolean;
+import { FormInput } from './FormInput/FormInput';
+
+enum sections {
+  ESSENTIAL = 'essential',
+  ADVANCED = 'advanced',
 }
 
 export const BulletinCreation = () => {
-  const [isOpenSection, setIsOpenSection] = useState({
-    first: true,
-    second: false,
-    third: false,
-  });
+  const [isOpenSection, setIsOpenSection] = useState(sections.ESSENTIAL);
   const [dateTime, setDateTime] = useState({ date: '', time: '' });
   const [loading, setLoading] = useState(true);
 
@@ -47,233 +34,165 @@ export const BulletinCreation = () => {
     setLoading(false);
   }, []);
 
-  const toggleSection = (section: number) => {
-    switch (section) {
-      case 1:
-        setIsOpenSection({ first: true, second: false, third: false });
-        break;
-      case 2:
-        setIsOpenSection({ first: false, second: true, third: false });
-        break;
-      case 3:
-        setIsOpenSection({ first: false, second: false, third: true });
-        break;
-      default:
-        return 0;
-    }
-  };
-
   const labelClass = 'h5';
 
   if (loading) return <Spinner type="grow" />;
 
   return (
-    <Formik<FormParams>
+    <Formik
       initialValues={{
-        dodoCode: '',
-        islandName: '',
-        playerName: '',
-        fruit: 'apple',
+        dodo: '',
+        island: {
+          name: '',
+          player: '',
+          fruit: 'apple' as Fruit,
+          villager: 'neither' as Villager,
+          hemisphere: 'north' as 'north' | 'south',
+        },
+        turnipPrice: 100,
+        description: '',
         date: dateTime.date,
         time: dateTime.time,
-        price: 100,
-        description: '',
-        fees: false,
-        concurrent: 4,
-        queue: 25,
-        isPrivate: false,
+        preferences: {
+          concurrent: 4,
+          queue: 25,
+          hasFee: false,
+          isPrivate: false,
+        },
       }}
-      validationSchema={Yup.object({
-        dodoCode: Yup.string()
+      validationSchema={object({
+        dodo: string()
           .length(5, 'Dodo Code must be exactly 5 characters')
-          .required('Required'),
-        playerName: Yup.string().required('Required'),
-        islandName: Yup.string().required('Required'),
-        fruit: Yup.string().required('Required'),
-        description: Yup.string().required('Required'),
+          .required('DODO Code is required'),
+        island: object({
+          player: string().required('Player name is required'),
+          name: string().required('Island name is required'),
+        }),
+        turnipPrice: number().min(0, "The price can't be lower than 0 ").max(999, 'Price too high'),
+        description: string().required('A description is required'),
+        preferences: object({
+          queue: number()
+            .min(1, "Queue can't be lower than 1")
+            .min(
+              ref('concurrent'),
+              "You can't have less people in your queue than the concurrent ones",
+            ),
+          concurrent: number()
+            .min(1, 'You need to have at least 1 person in your island')
+            .max(ref('queue'), 'You cannot exceed your queue limits '),
+        }),
       })}
       onSubmit={fields => {
-        const dateTime = new Date(`${fields.date}T${fields.time}`);
+        const bulletinBody: BulletinBody = { ...fields };
 
-        const bulletinBody: BulletinBody = {
-          dodo: fields.dodoCode,
-          island: {
-            name: fields.islandName,
-            player: fields.playerName,
-            fruit: fields.fruit,
-            hemisphere: 'north',
-            villager: 'neither',
-          },
-          time: dateTime.toISOString(),
-          turnipPrice: fields.price,
-          description: fields.description,
-          preferences: {
-            concurrent: fields.concurrent,
-            queue: fields.queue,
-            hasFee: fields.fees,
-            isPrivate: fields.isPrivate,
-          },
-        };
+        const date = parse(fields.date, 'yyyy-MM-dd', new Date());
+        const time = parse(fields.time, 'HH:mm', new Date());
+        date.setHours(time.getHours());
+        date.setMinutes(time.getMinutes());
+        date.setSeconds(time.getSeconds());
+
+        bulletinBody.time = date.toISOString();
 
         dispatch(addBulletin(bulletinBody));
       }}
     >
-      {props => {
+      {formikProps => {
         return (
-          <Form className="form">
-            <h2 onClick={() => toggleSection(1)} className="h1">
+          <Form>
+            <h2 onClick={() => setIsOpenSection(sections.ESSENTIAL)} className="h1">
               Essential informations
             </h2>
-            <Collapse isOpen={isOpenSection.first}>
+            <Collapse isOpen={isOpenSection === sections.ESSENTIAL}>
               <Col>
                 <FormGroup>
-                  <Label for="dodo" className={labelClass}>
-                    Dodo Code
+                  <Label className={labelClass}>
+                    DODO Code
+                    <Field name="dodo" type="text" component={FormInput} />
                   </Label>
-                  <Input
-                    type="text"
-                    name="dodoCode"
-                    id="dodoCode"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    className={props.touched.dodoCode && props.errors.dodoCode ? 'error-box' : ''}
-                  />
-                  <p className="error">
-                    <ErrorMessage name="dodoCode" />
-                  </p>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="islandName" className={labelClass}>
+                  <Label className={labelClass}>
                     Island Name
+                    <Field name="island.name" type={'text'} component={FormInput} />
                   </Label>
-                  <Input
-                    type="text"
-                    name="islandName"
-                    id="islandName"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    className={
-                      props.touched.islandName && props.errors.islandName ? 'error-box' : ''
-                    }
-                  />
-                  <p className="error">
-                    <ErrorMessage name="islandName" />
-                  </p>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="playerName" className={labelClass}>
+                  <Label className={labelClass}>
                     Player Name
+                    <Field name="island.player" type="text" component={FormInput} />
                   </Label>
-                  <Input
-                    type="text"
-                    name="playerName"
-                    id="playerName"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    className={
-                      props.touched.playerName && props.errors.playerName ? 'error-box' : ''
-                    }
-                  />
-                  <p className="error">
-                    <ErrorMessage name="playerName" />
-                  </p>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
-                  <Label for="description" className={labelClass}>
+                  <Label className={labelClass}>
                     Description and requests
+                    <Field name="description" type="textarea" component={FormInput} />
                   </Label>
-                  <Input
-                    type="textarea"
-                    name="description"
-                    id="description"
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                    className={
-                      props.touched.description && props.errors.description ? 'error-box' : ''
-                    }
-                  />
-                  <p className="error ">
-                    <ErrorMessage name="description" />
-                  </p>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="fruit" className={labelClass}>
                     Fruit
+                    <Field
+                      as="select"
+                      name="island.fruit"
+                      value={formikProps.values.island.fruit}
+                      className="form-control"
+                    >
+                      <option value="apple" label="Apples" />
+                      <option value="peach" label="Peaches" />
+                      <option value="orange" label="Oranges" />
+                      <option value="pear" label="Pears" />
+                      <option value="cherry" label="Cherries" />
+                    </Field>
                   </Label>
-                  <Input
-                    type="select"
-                    name="fruit"
-                    value={props.values.fruit}
-                    onChange={props.handleChange}
-                    onBlur={props.handleBlur}
-                  >
-                    <option value="apple" label="Apples" />
-                    <option value="peach" label="Peaches" />
-                    <option value="orange" label="Oranges" />
-                    <option value="pear" label="Pears" />
-                    <option value="cherry" label="Cherries" />
-                  </Input>
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="price" className={labelClass}>
                     Selling price
+                    <Field name="turnipPrice" type="number" component={FormInput} min={0} />
                   </Label>
-                  <Input
-                    type="number"
-                    name="price"
-                    id="price"
-                    onBlur={props.handleBlur}
-                    onChange={props.handleChange}
-                    value={props.values.price}
-                    min={0}
-                  />
-                  {props.touched.price && props.errors.price}
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="fees" className={labelClass}>
-                    <Input
-                      type="checkbox"
-                      name="fees"
-                      id="fees"
-                      onChange={props.handleChange}
-                      onBlur={props.handleBlur}
-                      checked={props.values.fees}
-                    />
                     Entry fees
+                    <Field name="preferences.hasFee">
+                      {({ field }: FieldProps<string>) => {
+                        return (
+                          <div>
+                            <input type="checkbox" {...field} />
+                          </div>
+                        );
+                      }}
+                    </Field>
                   </Label>
                 </FormGroup>
               </Col>
             </Collapse>
-            <h2 onClick={() => toggleSection(2)} className="h1">
-              Your island date
+            <h2 onClick={() => setIsOpenSection(sections.ADVANCED)} className="h1">
+              Advanced Options
             </h2>
-            <Collapse isOpen={isOpenSection.second}>
+            <Collapse isOpen={isOpenSection === sections.ADVANCED}>
               <Col>
                 <FormGroup>
                   <Label for="date" className={labelClass}>
                     Date
                   </Label>
-                  <Input
-                    name="date"
-                    type="date"
-                    onChange={date => {
-                      props.setFieldValue('date', date.target.value);
+                  <Field name="date">
+                    {({ field }: FieldProps<string>) => {
+                      return <input type="date" className="form-control" {...field} />;
                     }}
-                    onBlur={props.handleBlur}
-                    value={props.values.date}
-                  />
+                  </Field>
                 </FormGroup>
               </Col>
               <Col>
@@ -281,34 +200,22 @@ export const BulletinCreation = () => {
                   <Label for="time" className={labelClass}>
                     Time
                   </Label>
-                  <Input
-                    name="time"
-                    type="time"
-                    onChange={time => {
-                      props.setFieldValue('time', time.target.value);
+                  <Field name="time">
+                    {({ field }: FieldProps<string>) => {
+                      return <input type="time" className="form-control" {...field} />;
                     }}
-                    onBlur={props.handleBlur}
-                    value={props.values.time}
-                  />
+                  </Field>
                 </FormGroup>
               </Col>
-            </Collapse>
-            <h2 onClick={() => toggleSection(3)} className="h1">
-              Manage the queue
-            </h2>
-            <Collapse isOpen={isOpenSection.third}>
               <Col>
                 <FormGroup>
                   <Label for="concurrent" className={labelClass}>
-                    How many people you want in your island (At the same time)
+                    How many people you want in your island (at the same time)
                   </Label>
-                  <Input
+                  <Field
+                    name="preferences.concurrent"
                     type="number"
-                    name="concurrent"
-                    id="concurrent"
-                    onBlur={props.handleBlur}
-                    onChange={props.handleChange}
-                    value={props.values.concurrent}
+                    component={FormInput}
                     min={1}
                   />
                 </FormGroup>
@@ -318,40 +225,33 @@ export const BulletinCreation = () => {
                   <Label for="queue" className={labelClass}>
                     Max queue length
                   </Label>
-                  <Input
-                    type="number"
-                    name="queue"
-                    id="queue"
-                    onBlur={props.handleBlur}
-                    onChange={props.handleChange}
-                    value={props.values.queue}
-                    min={5}
-                  />
+                  <Field name="preferences.queue" type="number" component={FormInput} min={1} />
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="isPrivate" className={labelClass}>
-                    <Input
-                      type="checkbox"
-                      name="isPrivate"
-                      id="isPrivate"
-                      onChange={props.handleChange}
-                      onBlur={props.handleBlur}
-                      checked={props.values.isPrivate}
-                    />
                     Private island
+                    <Field name="preferences.isPrivate">
+                      {({ field }: FieldProps<string>) => {
+                        return (
+                          <div>
+                            <input type="checkbox" {...field} />
+                          </div>
+                        );
+                      }}
+                    </Field>
                   </Label>
                 </FormGroup>
               </Col>
             </Collapse>
             <Button
               onClick={() => {
-                if (!props.isSubmitting) {
-                  toggleSection(1);
+                if (!formikProps.isValid) {
+                  setIsOpenSection(sections.ESSENTIAL);
                 }
-                if (props.isSubmitting) {
-                  props.submitForm();
+                if (formikProps.isValid) {
+                  formikProps.submitForm();
                 }
               }}
               type="submit"
