@@ -44,6 +44,8 @@ _self.addEventListener('fetch', event => {
   const request = event.request;
   const imagesRegxp = /(\.(png|jpeg|svg|ico))$/;
 
+  if (request.method !== 'GET') return;
+
   if (imagesRegxp.test(request.url)) {
     return event.respondWith(staleWhileRevalidate(CACHE_IMAGES, request));
   }
@@ -78,3 +80,56 @@ function staleWhileRevalidate(cacheName, request) {
     });
   });
 }
+
+_self.addEventListener('push', event => {
+  if (!event.data) return;
+
+  const message = event.data.json();
+  console.log(message);
+
+  let notification = Promise.resolve();
+
+  switch (message.type) {
+    case 'TRIGGER':
+      notification = _self.registration.showNotification("It's your turn in the queue", {
+        body: 'This is the description',
+        icon: '/images/icons/icon-192x192.png',
+        data: { url: '/' },
+      });
+    case 'BULLETIN_MESSAGE': {
+      const bulletinMessage = message.payload;
+
+      notification = _self.registration.showNotification('There is a message in the queue', {
+        body: bulletinMessage.message,
+        icon: '/images/icons/icon-192x192.png',
+        data: { url: `/bulletins/${bulletinMessage.bulletinId}` },
+      });
+    }
+    default:
+      break;
+  }
+
+  event.waitUntil(notification);
+});
+
+_self.addEventListener('notificationclick', event => {
+  const notification = event.notification;
+  notification.close();
+
+  event.waitUntil(
+    _self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      const thereIsFocused = clientList.find(client => client.focused);
+      if (thereIsFocused) return;
+
+      const hasWindowToFocus = clientList.length > 0;
+
+      if (hasWindowToFocus) clientList[0].focus();
+
+      if (!hasWindowToFocus) {
+        clients
+          .openWindow(notification.data.url)
+          .then(windowClient => (windowClient ? windowClient.focus() : null));
+      }
+    }),
+  );
+});

@@ -7,4 +7,5 @@ export type MessageBody = {
 export type Message = {
   id: string;
   creationDate: string;
+  bulletinId: string;
 } & MessageBody;
