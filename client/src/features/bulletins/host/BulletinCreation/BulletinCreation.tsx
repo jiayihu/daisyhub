@@ -13,10 +13,10 @@ import {
   TextFieldWithMessage,
   SelectFieldWithMessage,
   NumberFieldWithMessage,
+  CheckboxFieldWithMessage,
+  DateFieldWithMessage,
+  TimeFieldWithMessage,
 } from '../../../ui/Formik';
-import { CheckboxFieldWithMessage } from '../../../ui/Formik/CheckboxFieldWithMessage ';
-import { DateFieldWithMessage } from '../../../ui/Formik/DateFieldWithMessage';
-import { TimeFieldWithMessage } from '../../../ui/Formik/TimeFieldWithMessage';
 
 enum sections {
   ESSENTIAL = 'essential',
