@@ -1,5 +1,5 @@
 import { request } from './request';
-import { Bulletin } from '../types/bulletin';
+import { Bulletin, BulletinBody } from '../types/bulletin';
 import { getFirestore } from './db';
 import { getRealtimeDocument } from './real-time';
 import { firestore } from 'firebase';
@@ -15,6 +15,13 @@ export function getBulletin(bulletinId: string) {
 export function deleteBulletin(bulletinId: string) {
   return request<void>(`bulletins/${bulletinId}`, {
     method: 'DELETE',
+  });
+}
+
+export function addBulletin(bulletin: BulletinBody) {
+  return request<BulletinBody>(`bulletins`, {
+    method: 'POST',
+    body: JSON.stringify(bulletin),
   });
 }
 

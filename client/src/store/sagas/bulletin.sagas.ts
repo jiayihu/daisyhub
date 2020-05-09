@@ -5,6 +5,7 @@ import {
   getBulletins,
   getRealtimeBulletin,
   deleteBulletin,
+  addBulletin,
   lockBulletinQueue,
 } from '../../services/bulletins.service';
 import { handleSagaError } from './handleSagaError';
@@ -13,6 +14,7 @@ import { Bulletin } from '../../types/bulletin';
 import { selectStaticBulletin } from '../reducers';
 import { push } from '../middlewares/router.middleware';
 import { isEndMessage, createRealTimeChannel } from './realtime-channel';
+import { saveOwnerToHistory } from './../../services/bulletin-history.service';
 
 function* fetchBulletinsSaga() {
   try {
@@ -62,6 +64,20 @@ function* deleteBulletinSaga(action: ReturnType<typeof actions.deleteBulletin>) 
   }
 }
 
+function* addBulletinSaga(action: ReturnType<typeof actions.addBulletin>) {
+  try {
+    const bulletin = action.payload.bulletin;
+    const res: { id: string; ownerId: string } = yield call<typeof addBulletin>(
+      addBulletin,
+      bulletin,
+    );
+    yield saveOwnerToHistory(res.id, res.ownerId);
+    yield put(push(`/bulletins/${res.id}`));
+  } catch (error) {
+    yield* handleSagaError(error);
+  }
+}
+
 function* lockBulletinQueueSaga(action: ReturnType<typeof actions.lockBulletinQueue>) {
   try {
     const { bulletinId, isLocked } = action.payload;
@@ -76,6 +92,7 @@ export function* bulletinsSaga() {
     takeLatest(actions.GET_BULLETINS_REQUESTED, fetchBulletinsSaga),
     takeLatest(actions.SUBSCRIBE_TO_BULLETIN, watchBulletinSaga),
     takeLatest(actions.DELETE_BULLETIN, deleteBulletinSaga),
+    takeLatest(actions.ADD_BULLETIN, addBulletinSaga),
     takeLatest(actions.LOCK_BULLETIN_QUEUE, lockBulletinQueueSaga),
   ]);
 }

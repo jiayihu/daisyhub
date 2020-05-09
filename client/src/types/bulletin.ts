@@ -1,6 +1,6 @@
 import { Island } from './island';
 
-export type BulletinBody = Exclude<Bulletin, 'id' | 'meta'>;
+export type BulletinBody = Omit<Bulletin, 'id' | 'meta' | 'queue' | 'ownerId'>;
 
 export interface Bulletin {
   id: string;

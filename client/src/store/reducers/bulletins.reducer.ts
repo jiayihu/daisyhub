@@ -19,8 +19,8 @@ export const bulletinsReducer = (state: BulletinsState = null, action: Action): 
     }
     case DELETE_BULLETIN:
       if (!state) return state;
-
       return state.filter(x => x.id !== action.payload.bulletinId);
+
     default:
       return state;
   }

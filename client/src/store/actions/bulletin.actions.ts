@@ -1,4 +1,4 @@
-import { Bulletin } from '../../types/bulletin';
+import { Bulletin, BulletinBody } from '../../types/bulletin';
 
 export const GET_BULLETINS_REQUESTED = 'GET_BULLETINS_REQUESTED';
 export const GET_BULLETINS_SUCCEEDED = 'GET_BULLETINS_SUCCEEDED';
@@ -12,6 +12,7 @@ export const UPDATE_BULLETIN = 'UPDATE_BULLETIN';
 
 export const NOTIFY_UNSUB_BULLETIN = 'NOTIFY_UNSUB_BULLETIN';
 
+export const ADD_BULLETIN = 'ADD_BULLETIN';
 export const DELETE_BULLETIN = 'DELETE_BULLETIN';
 export const SET_BULLETIN_OWNER_ID = 'SET_BULLETIN_OWNER_ID';
 export const LOCK_BULLETIN_QUEUE = 'LOCK_BULLETIN_QUEUE';
@@ -77,6 +78,13 @@ export const deleteBulletin = (bulletinId: string) => {
   };
 };
 
+export const addBulletin = (bulletin: BulletinBody) => {
+  return {
+    type: ADD_BULLETIN as typeof ADD_BULLETIN,
+    payload: { bulletin },
+  };
+};
+
 export const setBulletinOwnerId = (ownerId: string) => {
   return {
     type: SET_BULLETIN_OWNER_ID as typeof SET_BULLETIN_OWNER_ID,
@@ -101,5 +109,6 @@ export type BulletinsAction =
   | ReturnType<typeof updateBulletin>
   | ReturnType<typeof notifyUnsubBulletin>
   | ReturnType<typeof deleteBulletin>
+  | ReturnType<typeof addBulletin>
   | ReturnType<typeof setBulletinOwnerId>
   | ReturnType<typeof lockBulletinQueue>;
