@@ -92,15 +92,13 @@ export const BulletinCreation = () => {
           }),
         })}
         onSubmit={fields => {
-          const bulletinBody: BulletinBody = { ...fields };
-
           const date = parse(fields.date, 'yyyy-MM-dd', new Date());
           const time = parse(fields.time, 'HH:mm', new Date());
           date.setHours(time.getHours());
           date.setMinutes(time.getMinutes());
           date.setSeconds(time.getSeconds());
 
-          bulletinBody.time = date.toISOString();
+          const bulletinBody: BulletinBody = { ...fields, time: date.toISOString() };
 
           dispatch(addBulletin(bulletinBody));
         }}
