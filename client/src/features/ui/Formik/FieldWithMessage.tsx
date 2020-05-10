@@ -13,7 +13,11 @@ export const FieldWithMessage = (props: FieldWithMessageProps) => {
   return (
     <>
       <Field name={name}>
-        {(fieldProps: FieldProps) => renderField(fieldProps, getIn(fieldProps.form.errors, name))}
+        {(fieldProps: FieldProps) => {
+          const isInvalid =
+            getIn(fieldProps.form.touched, name) && getIn(fieldProps.form.errors, name);
+          return renderField(fieldProps, isInvalid);
+        }}
       </Field>
       <ErrorMessage name={name}>{msg => <FormFeedback>{msg}</FormFeedback>}</ErrorMessage>
     </>
