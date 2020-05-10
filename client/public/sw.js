@@ -42,15 +42,15 @@ _self.addEventListener('activate', event => {
  */
 _self.addEventListener('fetch', event => {
   const request = event.request;
+  const url = new URL(request.url);
+
+  // Don't handle not GET or not local requests
+  if (request.method !== 'GET' || url.origin !== location.origin) return;
+
   const imagesRegxp = /(\.(png|jpeg|svg|ico))$/;
-
-  if (request.method !== 'GET') return;
-
   if (imagesRegxp.test(request.url)) {
     return event.respondWith(staleWhileRevalidate(CACHE_IMAGES, request));
   }
-
-  const url = new URL(request.url);
 
   if (url.pathname === '/') {
     return event.respondWith(
@@ -60,11 +60,8 @@ _self.addEventListener('fetch', event => {
     );
   }
 
-  event.respondWith(
-    caches.match(request).then(response => {
-      return response || fetch(request);
-    }),
-  );
+  // Do nothing, the request won't show as handled by the SW
+  return;
 });
 
 function staleWhileRevalidate(cacheName, request) {
