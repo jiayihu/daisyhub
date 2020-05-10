@@ -14,12 +14,10 @@
 .gitignore
 
 node_modules
-#!include:.gitignore
+#!include:../.gitignore
 
 # Include dist folder ignored by Git
 !dist/
-!.env
-!db-owner.json
 
 client/
 src/

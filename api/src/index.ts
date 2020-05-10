@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import express from 'express';
 import { cors, jsonError } from './middlewares';
 import { createBulletinsRoutes } from './routers/bulletins.router';
