@@ -71,10 +71,10 @@ export const notifyUnsubBulletin = () => {
   };
 };
 
-export const deleteBulletin = (bulletinId: string) => {
+export const deleteBulletin = (bulletinId: string, ownerId: string) => {
   return {
     type: DELETE_BULLETIN as typeof DELETE_BULLETIN,
-    payload: { bulletinId },
+    payload: { bulletinId, ownerId },
   };
 };
 

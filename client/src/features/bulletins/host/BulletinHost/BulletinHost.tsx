@@ -6,7 +6,11 @@ import {
   unsubscribeToBulletin,
   deleteBulletin,
 } from '../../../../store/actions/bulletin.actions';
-import { selectBulletin, selectIsUnsubBulletin } from '../../../../store/reducers';
+import {
+  selectBulletin,
+  selectIsUnsubBulletin,
+  selectBulletinOwnerId,
+} from '../../../../store/reducers';
 import { useRouteMatch } from 'react-router-dom';
 import { Spinner, Button, Alert } from 'reactstrap';
 import { BulletinDetails } from '../../BulletinDetails/BulletinDetails';
@@ -31,6 +35,7 @@ function renderAlert() {
 export const BulletinHost = () => {
   const match = useRouteMatch<{ bulletinId: string }>();
   const bulletinId = match.params.bulletinId;
+  const ownerId = useSelector(selectBulletinOwnerId);
   const isUnsubscribed = useSelector(selectIsUnsubBulletin);
   const dispatch = useDispatch();
   const subscription = useMemo(
@@ -47,7 +52,7 @@ export const BulletinHost = () => {
 
   const [isDeleting, setIsDeleting] = useState(false);
 
-  if (!bulletin) {
+  if (!bulletin || !ownerId) {
     return (
       <NarrowContainer>{isUnsubscribed ? renderAlert() : <Spinner type="grow" />}</NarrowContainer>
     );
@@ -83,7 +88,7 @@ export const BulletinHost = () => {
           isOpen={isDeleting}
           onCancel={() => setIsDeleting(false)}
           onConfirm={() => {
-            dispatch(deleteBulletin(bulletinId));
+            dispatch(deleteBulletin(bulletinId, ownerId));
             setIsDeleting(false);
           }}
           color="danger"

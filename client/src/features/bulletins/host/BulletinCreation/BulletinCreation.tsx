@@ -103,7 +103,7 @@ export const BulletinCreation = () => {
           dispatch(addBulletin(bulletinBody));
         }}
       >
-        {formikProps => {
+        {() => {
           return (
             <Form>
               <CollapseHeader
@@ -208,18 +208,7 @@ export const BulletinCreation = () => {
                   </Col>
                 </Row>
               </Collapse>
-              <Button
-                onClick={() => {
-                  if (!formikProps.isValid) {
-                    setIsOpenSection(sections.ESSENTIAL);
-                  }
-                  if (formikProps.isValid) {
-                    formikProps.submitForm();
-                  }
-                }}
-                type="submit"
-                color="primary"
-              >
+              <Button type="submit" color="primary">
                 Submit
               </Button>
             </Form>

@@ -14,11 +14,14 @@ import { Bulletin } from '../../types/bulletin';
 import { selectStaticBulletin } from '../reducers';
 import { push } from '../middlewares/router.middleware';
 import { isEndMessage, createRealTimeChannel } from './realtime-channel';
-import { saveOwnerToHistory } from './../../services/bulletin-history.service';
+import {
+  saveOwnerToHistory,
+  removeOwnerFromHistory,
+} from './../../services/bulletin-history.service';
 
 function* fetchBulletinsSaga() {
   try {
-    const bulletins = yield call<typeof getBulletins>(getBulletins);
+    const bulletins = yield call(getBulletins);
     yield put(actions.getBulletinsSucceeded(bulletins));
   } catch (error) {
     yield* handleSagaError(error);
@@ -56,8 +59,9 @@ function* watchBulletinSaga(action: ReturnType<typeof actions.getBulletin>) {
 
 function* deleteBulletinSaga(action: ReturnType<typeof actions.deleteBulletin>) {
   try {
-    const bulletinId = action.payload.bulletinId;
-    yield call<typeof deleteBulletin>(deleteBulletin, bulletinId);
+    const { ownerId, bulletinId } = action.payload;
+    yield call(deleteBulletin, bulletinId);
+    yield call(removeOwnerFromHistory, ownerId);
     yield put(push('/'));
   } catch (error) {
     yield* handleSagaError(error);
@@ -71,7 +75,7 @@ function* addBulletinSaga(action: ReturnType<typeof actions.addBulletin>) {
       addBulletin,
       bulletin,
     );
-    yield saveOwnerToHistory(res.id, res.ownerId);
+    yield call(saveOwnerToHistory, res.id, res.ownerId);
     yield put(push(`/bulletins/${res.id}`));
   } catch (error) {
     yield* handleSagaError(error);
@@ -81,7 +85,7 @@ function* addBulletinSaga(action: ReturnType<typeof actions.addBulletin>) {
 function* lockBulletinQueueSaga(action: ReturnType<typeof actions.lockBulletinQueue>) {
   try {
     const { bulletinId, isLocked } = action.payload;
-    yield call<typeof lockBulletinQueue>(lockBulletinQueue, bulletinId, isLocked);
+    yield call(lockBulletinQueue, bulletinId, isLocked);
   } catch (error) {
     yield* handleSagaError(error);
   }
