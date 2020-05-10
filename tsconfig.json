@@ -14,7 +14,6 @@
     "forceConsistentCasingInFileNames": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "outDir": "dist"
+    "resolveJsonModule": true
   }
 }
