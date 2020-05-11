@@ -93,15 +93,18 @@ _self.addEventListener('push', event => {
         icon: '/images/icons/icon-192x192.png',
         data: { url: '/' },
       });
-    case 'BULLETIN_MESSAGE': {
-      const bulletinMessage = message.payload;
+      break;
+    case 'BULLETIN_MESSAGE':
+      {
+        const bulletinMessage = message.payload;
 
-      notification = _self.registration.showNotification('There is a message in the queue', {
-        body: bulletinMessage.message,
-        icon: '/images/icons/icon-192x192.png',
-        data: { url: `/bulletins/${bulletinMessage.bulletinId}` },
-      });
-    }
+        notification = _self.registration.showNotification('There is a message in the queue', {
+          body: bulletinMessage.message,
+          icon: '/images/icons/icon-192x192.png',
+          data: { url: `/bulletins/${bulletinMessage.bulletinId}` },
+        });
+      }
+      break;
     default:
       break;
   }
@@ -130,3 +133,79 @@ _self.addEventListener('notificationclick', event => {
     }),
   );
 });
+
+_self.addEventListener('sync', event => {
+  switch (event.tag) {
+    case 'new-message': {
+      const operation = getIDB('daisyhub', 1)
+        .then(db => db.transaction('new-messages').objectStore('new-messages').openCursor())
+        .then(cursorRequest => {
+          return new Promise(resolve => {
+            cursorRequest.addEventListener('success', event => resolve(event.target.result));
+          });
+        })
+        .then(cursor => {
+          let messages = [];
+          while (cursor) {
+            messages.push(cursor.value);
+            cursor = cursor.continue();
+          }
+
+          return Promise.all(
+            messages.map(message => {
+              const { bulletinId, body } = message;
+
+              return fetch(
+                `https://europe-west2-turnips-274820.cloudfunctions.net/app/bulletins/${bulletinId}/messages`,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  method: 'POST',
+                  body: JSON.stringify(body),
+                },
+              );
+            }),
+          );
+        })
+        .then()
+        .catch(error => {
+          if (event.lastChance) {
+            _self.registration.showNotification('Message error', {
+              body: 'A message could not be sent due to connection issues',
+            });
+          }
+
+          throw error;
+        });
+      event.waitUntil(operation);
+      break;
+    }
+    default:
+      break;
+  }
+});
+
+function getIDB() {
+  /** @type Promise<IDBDatabase> */
+  const db = new Promise((resolve, reject) => {
+    /** @type IDBOpenDBRequest */
+    const request = indexedDB.open('daisyhub', 1);
+
+    request.addEventListener('error', () => {
+      const error = request.result.errorCode;
+      console.log('IDB error', error);
+      reject(error);
+    });
+
+    request.addEventListener('success', () => {
+      resolve(request.result);
+    });
+
+    request.addEventListener('blocked', () => {
+      reject('Request to open IDB was blocked');
+    });
+  });
+
+  return db;
+}

@@ -19,7 +19,7 @@ export function deleteBulletin(bulletinId: string) {
 }
 
 export function addBulletin(bulletin: BulletinBody) {
-  return request<BulletinBody>(`bulletins`, {
+  return request<{ id: string; ownerId: string }>(`bulletins`, {
     method: 'POST',
     body: JSON.stringify(bulletin),
   });
