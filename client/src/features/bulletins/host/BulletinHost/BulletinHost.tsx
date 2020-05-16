@@ -33,6 +33,7 @@ function renderAlert() {
 }
 
 export const BulletinHost = () => {
+  const [tokenVisible, setTokenVisible] = useState(true);
   const match = useRouteMatch<{ bulletinId: string }>();
   const bulletinId = match.params.bulletinId;
   const ownerId = useSelector(selectBulletinOwnerId);
@@ -60,6 +61,18 @@ export const BulletinHost = () => {
 
   return (
     <NarrowContainer>
+      <Alert
+        color="primary"
+        isOpen={tokenVisible}
+        toggle={() => {
+          setTokenVisible(false);
+        }}
+      >
+        Redeem the ownership of your island from any device using this token:
+        <p>
+          <strong>{ownerId}</strong>
+        </p>
+      </Alert>
       <p className="d-flex justify-content-end">
         <Button color="light">Edit island</Button>
         <Button color="danger" className="ml-3" onClick={() => setIsDeleting(true)}>
