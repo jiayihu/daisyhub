@@ -138,21 +138,11 @@ _self.addEventListener('sync', event => {
   switch (event.tag) {
     case 'new-message': {
       const operation = getIDB('daisyhub', 1)
-        .then(db => db.transaction('new-messages').objectStore('new-messages').openCursor())
-        .then(cursorRequest => {
-          return new Promise(resolve => {
-            cursorRequest.addEventListener('success', event => resolve(event.target.result));
-          });
-        })
-        .then(cursor => {
-          let messages = [];
-          while (cursor) {
-            messages.push(cursor.value);
-            cursor = cursor.continue();
-          }
+        .then(db => {
+          const request = db.transaction('new-messages').objectStore('new-messages').getAll();
 
-          return Promise.all(
-            messages.map(message => {
+          return promisifyRequest(request).then(messages => {
+            const fetches = messages.map(message => {
               const { bulletinId, body } = message;
 
               return fetch(
@@ -164,11 +154,19 @@ _self.addEventListener('sync', event => {
                   method: 'POST',
                   body: JSON.stringify(body),
                 },
-              );
-            }),
-          );
+              ).then(() => {
+                const request = db
+                  .transaction('new-messages', 'readwrite')
+                  .objectStore('new-messages')
+                  .delete(body.authorId);
+
+                return promisifyRequest(request);
+              });
+            });
+
+            return Promise.all(fetches);
+          });
         })
-        .then()
         .catch(error => {
           if (event.lastChance) {
             _self.registration.showNotification('Message error', {
@@ -193,8 +191,7 @@ function getIDB() {
     const request = indexedDB.open('daisyhub', 1);
 
     request.addEventListener('error', () => {
-      const error = request.result.errorCode;
-      console.log('IDB error', error);
+      const error = event.target.error;
       reject(error);
     });
 
@@ -208,4 +205,21 @@ function getIDB() {
   });
 
   return db;
+}
+
+/**
+ * @template T
+ * @param {IDBRequest<T>} request - A generic parameter that flows through to the return type
+ * @return {Promise<T>}
+ */
+function promisifyRequest(request) {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = function () {
+      resolve(request.result);
+    };
+
+    request.onerror = function () {
+      reject(request.error);
+    };
+  });
 }

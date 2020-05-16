@@ -45,7 +45,9 @@ export const PushNotifications = (props: Props) => {
 
   const handleEnable = useCallback(() => {
     requestNotifications()
-      .then(() => subscribeToPush())
+      .then(permission => {
+        if (permission) return subscribeToPush();
+      })
       .then(subscription => {
         if (subscription) {
           setIsSubscribed(true);

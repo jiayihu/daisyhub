@@ -11,7 +11,7 @@ import { Notifications } from '../features/notifications/Notifications/Notificat
 import { ProtectedBulletin } from '../features/bulletins/ProtectedBulletin/ProtectedBulletin';
 import { Footer } from '../features/navigation/Footer/Footer';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { OfflineNotification } from '../features/ui/OfflineNotification/OfflineNotification';
+import { OfflineNotification } from '../features/pwa/OfflineNotification/OfflineNotification';
 import { AddToHomeScreen } from '../features/pwa/AddToHomeScreen/AddToHomeScreen';
 
 function App() {
