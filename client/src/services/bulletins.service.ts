@@ -25,6 +25,13 @@ export function addBulletin(bulletin: BulletinBody) {
   });
 }
 
+export function editBulletin(id: string, body: BulletinBody) {
+  return request<{ id: string; ownerId: string }>(`bulletins/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(body),
+  });
+}
+
 export function lockBulletinQueue(bulletinId: string, isLocked: boolean) {
   return request<void>(`bulletins/${bulletinId}/queue`, {
     method: 'PATCH',

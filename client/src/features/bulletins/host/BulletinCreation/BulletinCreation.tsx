@@ -96,7 +96,6 @@ export const BulletinCreation = () => {
           const time = parse(fields.time, 'HH:mm', new Date());
           date.setHours(time.getHours());
           date.setMinutes(time.getMinutes());
-          date.setSeconds(time.getSeconds());
 
           const bulletinBody: BulletinBody = { ...fields, time: date.toISOString() };
 

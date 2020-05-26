@@ -6,6 +6,7 @@ import {
   getRealtimeBulletin,
   deleteBulletin,
   addBulletin,
+  editBulletin,
   lockBulletinQueue,
 } from '../../services/bulletins.service';
 import { handleSagaError } from './handleSagaError';
@@ -82,6 +83,16 @@ function* addBulletinSaga(action: ReturnType<typeof actions.addBulletin>) {
   }
 }
 
+function* editBulletinSaga(action: ReturnType<typeof actions.editBulletin>) {
+  try {
+    const bulletin = action.payload.body;
+    const id = action.payload.id;
+    yield call<typeof editBulletin>(editBulletin, id, bulletin);
+  } catch (error) {
+    yield* handleSagaError(error);
+  }
+}
+
 function* lockBulletinQueueSaga(action: ReturnType<typeof actions.lockBulletinQueue>) {
   try {
     const { bulletinId, isLocked } = action.payload;
@@ -97,6 +108,7 @@ export function* bulletinsSaga() {
     takeLatest(actions.SUBSCRIBE_TO_BULLETIN, watchBulletinSaga),
     takeLatest(actions.DELETE_BULLETIN, deleteBulletinSaga),
     takeLatest(actions.ADD_BULLETIN, addBulletinSaga),
+    takeLatest(actions.EDIT_BULLETIN, editBulletinSaga),
     takeLatest(actions.LOCK_BULLETIN_QUEUE, lockBulletinQueueSaga),
   ]);
 }

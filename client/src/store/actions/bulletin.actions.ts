@@ -13,6 +13,7 @@ export const UPDATE_BULLETIN = 'UPDATE_BULLETIN';
 export const NOTIFY_UNSUB_BULLETIN = 'NOTIFY_UNSUB_BULLETIN';
 
 export const ADD_BULLETIN = 'ADD_BULLETIN';
+export const EDIT_BULLETIN = 'EDIT_BULLETIN';
 export const DELETE_BULLETIN = 'DELETE_BULLETIN';
 export const SET_BULLETIN_OWNER_ID = 'SET_BULLETIN_OWNER_ID';
 export const LOCK_BULLETIN_QUEUE = 'LOCK_BULLETIN_QUEUE';
@@ -82,6 +83,13 @@ export const addBulletin = (bulletin: BulletinBody) => {
   return {
     type: ADD_BULLETIN as typeof ADD_BULLETIN,
     payload: { bulletin },
+  };
+};
+
+export const editBulletin = (id: string, body: BulletinBody) => {
+  return {
+    type: EDIT_BULLETIN as typeof EDIT_BULLETIN,
+    payload: { id, body },
   };
 };
 
