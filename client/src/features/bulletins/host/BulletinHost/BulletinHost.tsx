@@ -12,7 +12,7 @@ import {
   selectBulletinOwnerId,
 } from '../../../../store/reducers';
 import { useRouteMatch } from 'react-router-dom';
-import { Spinner, Button, Alert } from 'reactstrap';
+import { Spinner, Button, Alert, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { BulletinDetails } from '../../BulletinDetails/BulletinDetails';
 import { QueueHost } from '../QueueHost/QueueHost';
 import { ConfirmModal } from '../../../ui/ConfirmModal/ConfirmModal';
@@ -61,62 +61,68 @@ export const BulletinHost = () => {
     );
   }
 
-  if (isEditing) {
-    return <BulletinEdit bulletin={bulletin} setIsEditing={setIsEditing} />;
-  } else
-    return (
-      <NarrowContainer>
-        <Alert
-          color="primary"
-          isOpen={tokenVisible}
-          toggle={() => {
-            setTokenVisible(false);
-          }}
-        >
-          Redeem the ownership of your island from any device using this token:
-          <p>
-            <strong>{ownerId}</strong>
-          </p>
-        </Alert>
-        <p className="d-flex justify-content-end">
-          <Button color="light" onClick={() => setIsEditing(true)}>
-            Edit island
-          </Button>
-          <Button color="danger" className="ml-3" onClick={() => setIsDeleting(true)}>
-            Delete island
-          </Button>
+  return (
+    <NarrowContainer>
+      <Alert
+        color="primary"
+        isOpen={tokenVisible}
+        toggle={() => {
+          setTokenVisible(false);
+        }}
+      >
+        Redeem the ownership of your island from any device using this token:
+        <p>
+          <strong>{ownerId}</strong>
         </p>
-        <div className="bulletin-host">
-          {isUnsubscribed ? renderAlert() : null}
-          <BulletinDetails bulletin={bulletin} />
-          <QueueHost bulletin={bulletin} />
-          <MessagesHost bulletin={bulletin} />
-          <p className="f6 text-right">
-            Image credits:{' '}
-            <a
-              href="https://dribbble.com/shots/11137115-Turnip"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Cherryink
-            </a>
-          </p>
-        </div>
-
-        {isDeleting ? (
-          <ConfirmModal
-            isOpen={isDeleting}
-            onCancel={() => setIsDeleting(false)}
-            onConfirm={() => {
-              dispatch(deleteBulletin(bulletinId, ownerId));
-              setIsDeleting(false);
-            }}
-            color="danger"
+      </Alert>
+      <p className="d-flex justify-content-end">
+        <Button color="light" onClick={() => setIsEditing(true)}>
+          Edit island
+        </Button>
+        <Button color="danger" className="ml-3" onClick={() => setIsDeleting(true)}>
+          Delete island
+        </Button>
+      </p>
+      <div className="bulletin-host">
+        {isUnsubscribed ? renderAlert() : null}
+        <BulletinDetails bulletin={bulletin} />
+        <QueueHost bulletin={bulletin} />
+        <MessagesHost bulletin={bulletin} />
+        <p className="f6 text-right">
+          Image credits:{' '}
+          <a
+            href="https://dribbble.com/shots/11137115-Turnip"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            Deleting the island will remove it from the website and no further people will receive
-            your DODO code.
-          </ConfirmModal>
-        ) : null}
-      </NarrowContainer>
-    );
+            Cherryink
+          </a>
+        </p>
+      </div>
+
+      {isDeleting ? (
+        <ConfirmModal
+          isOpen={isDeleting}
+          onCancel={() => setIsDeleting(false)}
+          onConfirm={() => {
+            dispatch(deleteBulletin(bulletinId, ownerId));
+            setIsDeleting(false);
+          }}
+          color="danger"
+        >
+          Deleting the island will remove it from the website and no further people will receive
+          your DODO code.
+        </ConfirmModal>
+      ) : null}
+
+      {isEditing ? (
+        <Modal isOpen={isEditing} toggle={() => setIsEditing(false)}>
+          <ModalHeader toggle={() => setIsEditing(false)}>Edit your island</ModalHeader>
+          <ModalBody>
+            <BulletinEdit bulletin={bulletin} onCancel={() => setIsEditing(false)} />
+          </ModalBody>
+        </Modal>
+      ) : null}
+    </NarrowContainer>
+  );
 };

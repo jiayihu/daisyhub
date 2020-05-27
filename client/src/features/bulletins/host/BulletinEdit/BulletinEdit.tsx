@@ -24,10 +24,10 @@ enum sections {
 
 type Props = {
   bulletin: Bulletin;
-  setIsEditing: (isEditing: boolean) => void;
+  onCancel: () => void;
 };
 
-export const BulletinEdit = ({ bulletin, setIsEditing }: Props) => {
+export const BulletinEdit = ({ bulletin, onCancel }: Props) => {
   const [isOpenSection, setIsOpenSection] = useState(sections.ESSENTIAL);
   const [dateTime, setDateTime] = useState({ date: '', time: '' });
   const [loading, setLoading] = useState(true);
@@ -108,7 +108,7 @@ export const BulletinEdit = ({ bulletin, setIsEditing }: Props) => {
           };
 
           dispatch(editBulletin(bulletin.id, bulletinBody));
-          setIsEditing(false);
+          onCancel();
         }}
       >
         {() => {
@@ -118,7 +118,7 @@ export const BulletinEdit = ({ bulletin, setIsEditing }: Props) => {
                 isOpen={isOpenSection === sections.ESSENTIAL}
                 onClick={() => setIsOpenSection(sections.ESSENTIAL)}
               >
-                <h2 className="h3">Edit your island</h2>
+                <h2 className="h3">Essential informations</h2>
               </CollapseHeader>
               <Collapse isOpen={isOpenSection === sections.ESSENTIAL}>
                 <FormGroup>
@@ -228,7 +228,7 @@ export const BulletinEdit = ({ bulletin, setIsEditing }: Props) => {
                 Submit
               </Button>
 
-              <Button color="light" className="ml-3 " onClick={() => setIsEditing(false)}>
+              <Button color="light" className="ml-3 " onClick={() => onCancel()}>
                 Cancel
               </Button>
             </Form>
