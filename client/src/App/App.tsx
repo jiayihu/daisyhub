@@ -3,7 +3,7 @@ import React from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import { NotFound } from '../features/404/NotFound';
 import { Bulletins } from '../features/bulletins/Bulletins/Bulletins';
-import { BulletinCreation } from '../features/bulletins/host/BulletinCreation/BulletinCreation';
+import { BulletinForm } from '../features/bulletins/host/BulletinForm/BulletinForm';
 import { JoinBulletin } from '../features/bulletins/JoinBulletin/JoinBulletin';
 import { NavigationItems } from '../features/navigation/NavigationItems/NavigationItems';
 import { Container } from 'reactstrap';
@@ -28,7 +28,7 @@ function App() {
             <CSSTransition key={location.key} classNames="page" timeout={300}>
               <div className="page">
                 <Switch location={location}>
-                  <Route exact path="/host" component={BulletinCreation} />
+                  <Route exact path="/host" component={BulletinForm} />
                   <Route exact path="/join" component={JoinBulletin} />
                   <Route exact path="/bulletins/:bulletinId" component={ProtectedBulletin} />
                   <Route exact path="/" component={Bulletins} />

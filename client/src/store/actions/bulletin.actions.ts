@@ -86,10 +86,10 @@ export const addBulletin = (bulletin: BulletinBody) => {
   };
 };
 
-export const editBulletin = (id: string, body: BulletinBody) => {
+export const editBulletin = (id: string, bulletin: BulletinBody) => {
   return {
     type: EDIT_BULLETIN as typeof EDIT_BULLETIN,
-    payload: { id, body },
+    payload: { id, bulletin },
   };
 };
 

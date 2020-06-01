@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Col, Collapse, FormGroup, Label, Spinner, Button, Row } from 'reactstrap';
 import { parse, format } from 'date-fns';
 import { Form, Formik } from 'formik';
 import { string, object, number, ref } from 'yup';
 import { useDispatch } from 'react-redux';
-import { editBulletin } from '../../../../store/actions/bulletin.actions';
+import { editBulletin, addBulletin } from '../../../../store/actions/bulletin.actions';
 import { Bulletin, BulletinBody } from '../../../../types/bulletin';
 import { NarrowContainer } from '../../../ui/NarrowContainer/NarrowContainer';
 import { CollapseHeader } from '../../../ui/CollapseHeader/CollapseHeader';
@@ -23,29 +23,30 @@ enum sections {
 }
 
 type Props = {
-  bulletin: Bulletin;
-  onCancel: () => void;
+  bulletin?: Bulletin;
+  onCancel?: () => void;
 };
 
-export const BulletinEdit = ({ bulletin, onCancel }: Props) => {
+export const BulletinForm = ({ bulletin, onCancel }: Props) => {
   const [isOpenSection, setIsOpenSection] = useState(sections.ESSENTIAL);
   const [dateTime, setDateTime] = useState({ date: '', time: '' });
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
 
-  const initDateTime = useCallback(() => {
-    const islandDate = bulletin.time;
-    const islandDateParsed = Date.parse(islandDate);
-    const date = format(islandDateParsed, 'yyyy-MM-dd');
-    const time = format(islandDateParsed, 'HH:mm');
-    setDateTime({ date, time });
-  }, [bulletin.time]);
-
   useEffect(() => {
-    initDateTime();
+    let msTime: number;
+    if (bulletin) {
+      const islandDate = bulletin.time;
+      msTime = Date.parse(islandDate);
+    } else {
+      msTime = new Date().getTime();
+    }
+    const date = format(msTime, 'yyyy-MM-dd');
+    const time = format(msTime, 'HH:mm');
+    setDateTime({ date, time });
     setLoading(false);
-  }, [initDateTime]);
+  }, [bulletin]);
 
   if (loading) return <Spinner type="grow" />;
 
@@ -53,23 +54,23 @@ export const BulletinEdit = ({ bulletin, onCancel }: Props) => {
     <NarrowContainer hasBg>
       <Formik
         initialValues={{
-          dodo: bulletin.dodo,
+          dodo: bulletin ? bulletin.dodo : '',
           island: {
-            name: bulletin.island.name,
-            player: bulletin.island.player,
-            fruit: bulletin.island.fruit,
-            villager: bulletin.island.villager,
-            hemisphere: bulletin.island.hemisphere,
+            name: bulletin ? bulletin.island.name : '',
+            player: bulletin ? bulletin.island.player : '',
+            fruit: bulletin ? bulletin.island.fruit : 'apple',
+            villager: bulletin ? bulletin.island.villager : 'neither',
+            hemisphere: bulletin ? bulletin.island.hemisphere : 'north',
           },
-          turnipPrice: bulletin.turnipPrice,
-          description: bulletin.description,
+          turnipPrice: bulletin ? bulletin.turnipPrice : 100,
+          description: bulletin ? bulletin.description : '',
           date: dateTime.date,
           time: dateTime.time,
           preferences: {
-            concurrent: bulletin.preferences.concurrent,
-            queue: bulletin.preferences.queue,
-            hasFee: bulletin.preferences.hasFee,
-            isPrivate: bulletin.preferences.isPrivate,
+            concurrent: bulletin ? bulletin.preferences.concurrent : 4,
+            queue: bulletin ? bulletin.preferences.queue : 25,
+            hasFee: bulletin ? bulletin.preferences.hasFee : false,
+            isPrivate: bulletin ? bulletin.preferences.isPrivate : false,
           },
         }}
         validationSchema={object({
@@ -107,8 +108,11 @@ export const BulletinEdit = ({ bulletin, onCancel }: Props) => {
             time: date.toISOString(),
           };
 
-          dispatch(editBulletin(bulletin.id, bulletinBody));
-          onCancel();
+          console.log('hola');
+          if (bulletin && onCancel) {
+            dispatch(editBulletin(bulletin.id, bulletinBody));
+            onCancel();
+          } else dispatch(addBulletin(bulletinBody));
         }}
       >
         {() => {
@@ -167,7 +171,7 @@ export const BulletinEdit = ({ bulletin, onCancel }: Props) => {
                         <CheckboxFieldWithMessage
                           id="fees"
                           name="preferences.hasFee"
-                          defaultChecked={bulletin.preferences.hasFee}
+                          defaultChecked={bulletin?.preferences.hasFee}
                         />
                       </div>
                     </FormGroup>
@@ -217,7 +221,7 @@ export const BulletinEdit = ({ bulletin, onCancel }: Props) => {
                         <CheckboxFieldWithMessage
                           id="is-private"
                           name="preferences.isPrivate"
-                          defaultChecked={bulletin.preferences.isPrivate}
+                          defaultChecked={bulletin?.preferences.isPrivate}
                         />
                       </div>
                     </FormGroup>
@@ -228,9 +232,11 @@ export const BulletinEdit = ({ bulletin, onCancel }: Props) => {
                 Submit
               </Button>
 
-              <Button color="light" className="ml-3 " onClick={() => onCancel()}>
-                Cancel
-              </Button>
+              {onCancel ? (
+                <Button color="light" className="ml-3 " onClick={() => onCancel()}>
+                  Cancel
+                </Button>
+              ) : null}
             </Form>
           );
         }}

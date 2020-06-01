@@ -19,7 +19,7 @@ import { ConfirmModal } from '../../../ui/ConfirmModal/ConfirmModal';
 import { MessagesHost } from '../MessagesHost/MessagesHost';
 import { useSubscription } from '../../../../hooks/useSubscription';
 import { NarrowContainer } from '../../../ui/NarrowContainer/NarrowContainer';
-import { BulletinEdit } from '../BulletinEdit/BulletinEdit';
+import { BulletinForm } from '../BulletinForm/BulletinForm';
 
 function renderAlert() {
   return (
@@ -119,7 +119,7 @@ export const BulletinHost = () => {
         <Modal isOpen={isEditing} toggle={() => setIsEditing(false)}>
           <ModalHeader toggle={() => setIsEditing(false)}>Edit your island</ModalHeader>
           <ModalBody>
-            <BulletinEdit bulletin={bulletin} onCancel={() => setIsEditing(false)} />
+            <BulletinForm bulletin={bulletin} onCancel={() => setIsEditing(false)} />
           </ModalBody>
         </Modal>
       ) : null}

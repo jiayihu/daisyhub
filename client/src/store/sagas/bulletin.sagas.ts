@@ -85,8 +85,7 @@ function* addBulletinSaga(action: ReturnType<typeof actions.addBulletin>) {
 
 function* editBulletinSaga(action: ReturnType<typeof actions.editBulletin>) {
   try {
-    const bulletin = action.payload.body;
-    const id = action.payload.id;
+    const { id, bulletin } = action.payload;
     yield call<typeof editBulletin>(editBulletin, id, bulletin);
   } catch (error) {
     yield* handleSagaError(error);
