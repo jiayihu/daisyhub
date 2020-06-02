@@ -5,6 +5,7 @@ import {
   subscribeToBulletin,
   unsubscribeToBulletin,
   deleteBulletin,
+  editBulletin,
 } from '../../../../store/actions/bulletin.actions';
 import {
   selectBulletin,
@@ -12,13 +13,14 @@ import {
   selectBulletinOwnerId,
 } from '../../../../store/reducers';
 import { useRouteMatch } from 'react-router-dom';
-import { Spinner, Button, Alert } from 'reactstrap';
+import { Spinner, Button, Alert, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { BulletinDetails } from '../../BulletinDetails/BulletinDetails';
 import { QueueHost } from '../QueueHost/QueueHost';
 import { ConfirmModal } from '../../../ui/ConfirmModal/ConfirmModal';
 import { MessagesHost } from '../MessagesHost/MessagesHost';
 import { useSubscription } from '../../../../hooks/useSubscription';
 import { NarrowContainer } from '../../../ui/NarrowContainer/NarrowContainer';
+import { BulletinForm } from '../BulletinForm/BulletinForm';
 
 function renderAlert() {
   return (
@@ -52,6 +54,7 @@ export const BulletinHost = () => {
   const bulletin = useSubscription(subscription, [bulletinId]);
 
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   if (!bulletin || !ownerId) {
     return (
@@ -74,7 +77,9 @@ export const BulletinHost = () => {
         </p>
       </Alert>
       <p className="d-flex justify-content-end">
-        <Button color="light">Edit island</Button>
+        <Button color="light" onClick={() => setIsEditing(true)}>
+          Edit island
+        </Button>
         <Button color="danger" className="ml-3" onClick={() => setIsDeleting(true)}>
           Delete island
         </Button>
@@ -109,6 +114,21 @@ export const BulletinHost = () => {
           Deleting the island will remove it from the website and no further people will receive
           your DODO code.
         </ConfirmModal>
+      ) : null}
+
+      {isEditing ? (
+        <Modal isOpen={isEditing} toggle={() => setIsEditing(false)}>
+          <ModalHeader toggle={() => setIsEditing(false)}>Edit your island</ModalHeader>
+          <ModalBody>
+            <BulletinForm
+              bulletin={bulletin}
+              onSubmit={bulletinBody => {
+                dispatch(editBulletin(bulletinId, bulletinBody));
+                setIsEditing(false);
+              }}
+            />
+          </ModalBody>
+        </Modal>
       ) : null}
     </NarrowContainer>
   );
