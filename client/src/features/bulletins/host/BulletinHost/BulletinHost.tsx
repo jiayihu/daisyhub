@@ -122,8 +122,8 @@ export const BulletinHost = () => {
           <ModalBody>
             <BulletinForm
               bulletin={bulletin}
-              onSubmit={(bulletinBody, id) => {
-                dispatch(editBulletin(id, bulletinBody));
+              onSubmit={bulletinBody => {
+                dispatch(editBulletin(bulletinId, bulletinBody));
                 setIsEditing(false);
               }}
             />

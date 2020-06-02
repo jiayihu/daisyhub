@@ -22,7 +22,7 @@ enum sections {
 
 type Props = {
   bulletin: Bulletin;
-  onSubmit: (bulletinBody: BulletinBody, id: string) => void;
+  onSubmit: (bulletinBody: BulletinBody) => void;
 };
 
 export const BulletinForm = ({ bulletin, onSubmit }: Props) => {
@@ -98,7 +98,7 @@ export const BulletinForm = ({ bulletin, onSubmit }: Props) => {
             time: date.toISOString(),
           };
 
-          onSubmit(bulletinBody, bulletin.id);
+          onSubmit(bulletinBody);
         }}
       >
         {() => {
