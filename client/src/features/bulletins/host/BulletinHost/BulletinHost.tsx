@@ -5,6 +5,7 @@ import {
   subscribeToBulletin,
   unsubscribeToBulletin,
   deleteBulletin,
+  editBulletin,
 } from '../../../../store/actions/bulletin.actions';
 import {
   selectBulletin,
@@ -119,7 +120,13 @@ export const BulletinHost = () => {
         <Modal isOpen={isEditing} toggle={() => setIsEditing(false)}>
           <ModalHeader toggle={() => setIsEditing(false)}>Edit your island</ModalHeader>
           <ModalBody>
-            <BulletinForm bulletin={bulletin} onCancel={() => setIsEditing(false)} />
+            <BulletinForm
+              bulletin={bulletin}
+              onSubmit={(bulletinBody, id) => {
+                dispatch(editBulletin(id, bulletinBody));
+                setIsEditing(false);
+              }}
+            />
           </ModalBody>
         </Modal>
       ) : null}
