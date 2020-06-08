@@ -1,0 +1,161 @@
+.price-slider input {
+  pointer-events: none;
+  position: absolute;
+  left: 3rem;
+  top: 5rem;
+  width: 95%;
+  outline: none;
+  height: 10px;
+  padding-right: 5rem;
+  border-radius: 8px;
+}
+.price-slider input::-webkit-slider-thumb {
+  pointer-events: all;
+  position: relative;
+  z-index: 1;
+  outline: 0;
+  -webkit-appearance: none;
+  height: 15px;
+  width: 22px;
+  border-radius: 12px;
+  background-color: white;
+  border: 2px solid black;
+}
+
+// Base Colors
+$shade-10: #2c3e50 !default;
+$shade-1: #d7dcdf !default;
+$shade-0: #fff !default;
+$teal: #1abc9c !default;
+
+// Reset
+* {
+  &,
+  &:before,
+  &:after {
+    box-sizing: border-box;
+  }
+}
+// Range Slider
+$range-handle-color: $shade-10 !default;
+$range-handle-color-hover: $teal !default;
+$range-handle-size: 10px !default;
+
+$range-track-color: $shade-1 !default;
+$range-label-color: $shade-10 !default;
+$range-label-width: 60px !default;
+
+.range-slider__range {
+  // Range Handle
+  &::-webkit-slider-thumb {
+    appearance: none;
+    border-radius: 50%;
+    background: $range-handle-color;
+    cursor: pointer;
+    transition: background 0.15s ease-in-out;
+
+    &:hover {
+      background: $range-handle-color-hover;
+    }
+  }
+
+  &:active::-webkit-slider-thumb {
+    background: $range-handle-color-hover;
+  }
+
+  &::-moz-range-thumb {
+    width: $range-handle-size;
+    height: $range-handle-size;
+    border: 0;
+    border-radius: 50%;
+    background: $range-handle-color;
+    cursor: pointer;
+    transition: background 0.15s ease-in-out;
+
+    &:hover {
+      background: $range-handle-color-hover;
+    }
+  }
+
+  &:active::-moz-range-thumb {
+    background: $range-handle-color-hover;
+  }
+
+  // Focus state
+  &:focus {
+    &::-webkit-slider-thumb {
+      box-shadow: 0 0 0 3px $shade-0, 0 0 0 6px $teal;
+    }
+  }
+}
+
+// Range Label
+.range-min-value {
+  position: absolute;
+  top: 25%;
+}
+.range-min-value span {
+  width: 50px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background: #1abc9c;
+  color: #fff;
+  font-size: 16px;
+  display: block;
+  position: absolute;
+  transform: translate(-200%, 0);
+  border-radius: 100px;
+}
+.range-min-value span:before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 100%;
+  left: 50%;
+}
+
+.range-max-value {
+  position: absolute;
+  top: 25%;
+}
+
+.range-max-value span {
+  width: 50px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background: #1abc9c;
+  color: #fff;
+  font-size: 16px;
+  display: block;
+  position: absolute;
+  transform: translate(-100%, 0);
+  border-radius: 100px;
+}
+
+.range-max-value span:before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 100%;
+  left: 50%;
+}
+
+// Firefox Overrides
+::-moz-range-track {
+  background: $range-track-color;
+  border: 0;
+}
+
+input::-moz-focus-inner,
+input::-moz-focus-outer {
+  border: 0;
+}
+
+.middle {
+  width: 70%;
+  margin-left: 15px;
+}

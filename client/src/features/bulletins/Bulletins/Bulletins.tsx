@@ -37,7 +37,6 @@ export const Bulletins = (_: Props) => {
   }, [dispatch]);
 
   const handleSetFilters = useCallback((minPrice: number, maxPrice: number, fees: hasFees) => {
-    console.log('hi');
     setFilters({ minPrice, maxPrice, fees });
   }, []);
 
@@ -48,7 +47,7 @@ export const Bulletins = (_: Props) => {
           setFilteredBulletins(
             bulletins.filter(bulletin => {
               return (
-                bulletin.turnipPrice > filters.minPrice && bulletin.turnipPrice < filters.maxPrice
+                bulletin.turnipPrice >= filters.minPrice && bulletin.turnipPrice <= filters.maxPrice
               );
             }),
           );
@@ -57,8 +56,8 @@ export const Bulletins = (_: Props) => {
           setFilteredBulletins(
             bulletins.filter(bulletin => {
               return (
-                bulletin.turnipPrice > filters.minPrice &&
-                bulletin.turnipPrice < filters.maxPrice &&
+                bulletin.turnipPrice >= filters.minPrice &&
+                bulletin.turnipPrice <= filters.maxPrice &&
                 !bulletin.preferences.hasFee
               );
             }),

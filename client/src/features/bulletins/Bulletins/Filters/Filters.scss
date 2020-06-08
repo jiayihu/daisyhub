@@ -1,193 +1,43 @@
 @import '../../../ui/bootstrap/variables.scss';
 
-.filter__toggler {
+.filter-box {
+  background-color: white;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.toggler {
   width: 100%;
   height: 3rem;
   display: block;
 }
 
-.filter__toggler-box-icon {
+.toggler-box-icon {
   display: inline-block;
   padding: 3px;
 }
 
-.filter__text {
-  display: inline;
-  position: relative;
-}
-
-.filter__toggler-icon {
+.toggler-icon {
   background-color: $gray-700;
   border-radius: 7px;
   height: 2px;
   display: block;
   margin: 2px 0;
 }
-.filter__toggler-icon:nth-child(1) {
+.toggler-icon:nth-child(1) {
   width: 20px;
 }
 
-.filter__toggler-icon:nth-child(2) {
+.toggler-icon:nth-child(2) {
   width: 14px;
   margin-left: 3px;
 }
 
-.filter__toggler-icon:nth-child(3) {
+.toggler-icon:nth-child(3) {
   width: 7px;
   margin-left: 6.5px;
 }
 
-.filter__container {
-  background-color: white;
-  padding: 3rem;
-}
-.price-slider {
-  position: relative;
-  margin: 0 auto 20px;
-  height: 35px;
-  text-align: center;
-}
-.price-slider input {
-  pointer-events: none;
-  position: absolute;
-  left: 2rem;
-  top: 15px;
-  width: 100%;
-  outline: none;
-  height: 10px;
-  margin: 0;
-
-  border-radius: 8px;
-}
-.price-slider input::-webkit-slider-thumb {
-  pointer-events: all;
-  position: relative;
-  z-index: 1;
-  outline: 0;
-  -webkit-appearance: none;
-  height: 15px;
-  width: 22px;
-  border-radius: 12px;
-  background-color: white;
-  border: 2px solid black;
-}
-
-// Slider SCSS
-
-.slider__container {
-  width: 70%;
-}
-
-// Base Colors
-$shade-10: #2c3e50 !default;
-$shade-1: #d7dcdf !default;
-$shade-0: #fff !default;
-$teal: #1abc9c !default;
-
-// Reset
-* {
-  &,
-  &:before,
-  &:after {
-    box-sizing: border-box;
-  }
-}
-// Range Slider
-
-$range-handle-color: $shade-10 !default;
-$range-handle-color-hover: $teal !default;
-$range-handle-size: 10px !default;
-
-$range-track-color: $shade-1 !default;
-
-$range-label-color: $shade-10 !default;
-$range-label-width: 60px !default;
-
-.range-slider__range {
-  // Range Handle
-  &::-webkit-slider-thumb {
-    appearance: none;
-
-    border-radius: 50%;
-    background: $range-handle-color;
-    cursor: pointer;
-    transition: background 0.15s ease-in-out;
-
-    &:hover {
-      background: $range-handle-color-hover;
-    }
-  }
-
-  &:active::-webkit-slider-thumb {
-    background: $range-handle-color-hover;
-  }
-
-  &::-moz-range-thumb {
-    width: $range-handle-size;
-    height: $range-handle-size;
-    border: 0;
-    border-radius: 50%;
-    background: $range-handle-color;
-    cursor: pointer;
-    transition: background 0.15s ease-in-out;
-
-    &:hover {
-      background: $range-handle-color-hover;
-    }
-  }
-
-  &:active::-moz-range-thumb {
-    background: $range-handle-color-hover;
-  }
-
-  // Focus state
-  &:focus {
-    &::-webkit-slider-thumb {
-      box-shadow: 0 0 0 3px $shade-0, 0 0 0 6px $teal;
-    }
-  }
-}
-
-// Range Label
-.range-slider__min-value {
-  display: inline-block;
-  position: absolute;
-  left: 0%;
-  top: 33px;
-  width: 3.3rem;
-  color: $shade-0;
-  line-height: 15px;
-  text-align: center;
-  border-radius: 3px;
-  background: $range-label-color;
-  padding: 5px 10px;
-  margin-left: 2px;
-  z-index: 30;
-}
-
-.range-slider__max-value {
-  display: inline-block;
-  position: absolute;
-  left: 100%;
-  top: 33px;
-  width: $range-label-width;
-  color: $shade-0;
-  line-height: 15px;
-  text-align: center;
-  border-radius: 3px;
-  background: $range-label-color;
-  padding: 5px 10px;
-  margin-left: 2px;
-  z-index: 30;
-}
-
-// Firefox Overrides
-::-moz-range-track {
-  background: $range-track-color;
-  border: 0;
-}
-
-input::-moz-focus-inner,
-input::-moz-focus-outer {
-  border: 0;
+.container-mio {
+  max-width: 50px;
 }
