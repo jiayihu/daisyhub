@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import './Filters.scss';
 import { Collapse, Button, CustomInput, Label, Row, Col } from 'reactstrap';
-import { hasFees } from '../Bulletins';
-import { DoubleSlider } from './DoubleSlider/DoubleSlider';
+import { DoubleSlider } from '../../../ui/DoubleSlider/DoubleSlider';
 
 type Props = {
-  handleSetFilters: (minPrice: number, maxPrice: number, hasFees: hasFees) => void;
+  // filters: { minPrice: number; maxPrice: number; fees: boolean | null };
+  handleSetFilters: (filters: { minPrice: number; maxPrice: number; fees: boolean | null }) => void;
 };
 
-export const Filters = ({ handleSetFilters }: Props) => {
+export const Filters = React.memo(({ handleSetFilters }: Props) => {
   const [openFilters, setOpenFilters] = useState(false);
   const [maxPrice, setMaxPrice] = useState(1000);
   const [minPrice, setMinPrice] = useState(0);
-  const [fees, setFees] = useState(hasFees.ANY);
+  const [fees, setFees] = useState<boolean | null>(null);
 
   useEffect(() => {
-    handleSetFilters(minPrice, maxPrice, fees);
+    handleSetFilters({ minPrice, maxPrice, fees });
   }, [fees, minPrice, maxPrice, handleSetFilters]);
 
   return (
@@ -38,7 +38,13 @@ export const Filters = ({ handleSetFilters }: Props) => {
       <Collapse isOpen={openFilters}>
         <Row className="filter-box">
           <Col xs="8">
-            <DoubleSlider setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} />
+            <DoubleSlider
+              valueMin={minPrice}
+              valueMax={maxPrice}
+              onChangeMin={setMinPrice}
+              onChangeMax={setMaxPrice}
+              range={{ min: 0, max: 1000 }}
+            />
           </Col>
           <Col xs="auto">
             <Label for="fees">Fees?</Label>
@@ -49,7 +55,7 @@ export const Filters = ({ handleSetFilters }: Props) => {
                 name="fees"
                 label="Yes"
                 onClick={() => {
-                  setFees(hasFees.YES);
+                  setFees(true);
                 }}
               />
               <CustomInput
@@ -58,7 +64,7 @@ export const Filters = ({ handleSetFilters }: Props) => {
                 name="fees"
                 label="No"
                 onClick={() => {
-                  setFees(hasFees.NO);
+                  setFees(false);
                 }}
               />
               <CustomInput
@@ -68,7 +74,7 @@ export const Filters = ({ handleSetFilters }: Props) => {
                 label="Any"
                 defaultChecked={true}
                 onClick={() => {
-                  setFees(hasFees.ANY);
+                  setFees(null);
                 }}
               />
             </div>
@@ -77,4 +83,4 @@ export const Filters = ({ handleSetFilters }: Props) => {
       </Collapse>
     </>
   );
-};
+});
