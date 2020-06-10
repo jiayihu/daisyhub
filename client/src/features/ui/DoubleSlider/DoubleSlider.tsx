@@ -27,7 +27,7 @@ export const DoubleSlider = React.memo(
       return `calc(${newValue}% + (${newPosition}px))`;
     };
 
-    const onMoveCursor = (currentTargetId: string, currentValue: number) => {
+    const onMoveThumbs = (currentTargetId: string, currentValue: number) => {
       if (currentTargetId === 'min') {
         onChangeMin(currentValue);
         if (currentValue >= valueMax) {
@@ -58,7 +58,7 @@ export const DoubleSlider = React.memo(
             step={steps}
             type="range"
             onChange={e => {
-              onMoveCursor(e.target.id, +e.target.value);
+              onMoveThumbs(e.target.id, +e.target.value);
             }}
           />
           <div id="max-value" className="range-max-value" style={{ left: updateBubbles(valueMax) }}>
@@ -73,7 +73,7 @@ export const DoubleSlider = React.memo(
             step={steps}
             type="range"
             onChange={e => {
-              onMoveCursor(e.target.id, +e.target.value);
+              onMoveThumbs(e.target.id, +e.target.value);
             }}
           />
         </div>

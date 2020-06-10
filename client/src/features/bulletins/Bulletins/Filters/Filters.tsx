@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Filters.scss';
 import { Collapse, Button, CustomInput, Label, Row, Col } from 'reactstrap';
 import { DoubleSlider } from '../../../ui/DoubleSlider/DoubleSlider';
 
 type Props = {
-  // filters: { minPrice: number; maxPrice: number; fees: boolean | null };
-  handleSetFilters: (filters: { minPrice: number; maxPrice: number; fees: boolean | null }) => void;
+  filters: { minPrice: number; maxPrice: number; fees: boolean | null };
+  onSetFilters: (filters: { minPrice: number; maxPrice: number; fees: boolean | null }) => void;
 };
 
-export const Filters = React.memo(({ handleSetFilters }: Props) => {
+export const Filters = React.memo(({ filters, onSetFilters }: Props) => {
   const [openFilters, setOpenFilters] = useState(false);
-  const [maxPrice, setMaxPrice] = useState(1000);
-  const [minPrice, setMinPrice] = useState(0);
-  const [fees, setFees] = useState<boolean | null>(null);
+  const { minPrice, maxPrice, fees } = filters;
 
-  useEffect(() => {
-    handleSetFilters({ minPrice, maxPrice, fees });
-  }, [fees, minPrice, maxPrice, handleSetFilters]);
+  const setMinPrice = (minPrice: number) => {
+    onSetFilters({ minPrice, maxPrice, fees });
+  };
+  const setMaxPrice = (maxPrice: number) => {
+    onSetFilters({ minPrice, maxPrice, fees });
+  };
+  const setFees = (fees: boolean | null) => {
+    onSetFilters({ minPrice, maxPrice, fees });
+  };
 
   return (
     <>
@@ -39,8 +43,8 @@ export const Filters = React.memo(({ handleSetFilters }: Props) => {
         <Row className="filter-box">
           <Col xs="8">
             <DoubleSlider
-              valueMin={minPrice}
-              valueMax={maxPrice}
+              valueMin={filters.minPrice}
+              valueMax={filters.maxPrice}
               onChangeMin={setMinPrice}
               onChangeMax={setMaxPrice}
               range={{ min: 0, max: 1000 }}

@@ -14,13 +14,15 @@ type Props = {
   history: History;
 };
 
+type Filters = {
+  minPrice: number;
+  maxPrice: number;
+  fees: boolean | null;
+};
+
 export const Bulletins = (_: Props) => {
   const bulletins = useSelector(selectBulletins);
-  const [filters, setFilters] = useState<{
-    minPrice: number;
-    maxPrice: number;
-    fees: boolean | null;
-  }>({
+  const [filters, setFilters] = useState<Filters>({
     minPrice: 0,
     maxPrice: 1000,
     fees: null,
@@ -57,7 +59,7 @@ export const Bulletins = (_: Props) => {
   if (!orderedBulletins.length)
     return (
       <>
-        <Filters handleSetFilters={setFilters} />
+        <Filters filters={filters} onSetFilters={setFilters} />
         <Alert color="light">
           <h3>Whoopsie, no islands meet these criteria!</h3>
           Try change your filter settings.
@@ -67,7 +69,7 @@ export const Bulletins = (_: Props) => {
 
   return (
     <>
-      <Filters handleSetFilters={setFilters} />
+      <Filters filters={filters} onSetFilters={setFilters} />
       <CardColumns className="bulletins">
         {orderedBulletins.map(bulletin => (
           <BulletinPreview bulletin={bulletin} key={bulletin.id} />
