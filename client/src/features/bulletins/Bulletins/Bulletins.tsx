@@ -9,7 +9,12 @@ import { BulletinPreview } from '../BulletinPreview/BulletinPreview';
 import { Link } from 'react-router-dom';
 import { PostLoader } from '../../ui/PostLoader/PostLoader';
 import { Filters } from './Filters/Filters';
-import { Filters as TFilters } from '../../../types/filters';
+
+export type TFilters = {
+  minPrice: number;
+  maxPrice: number;
+  fees: boolean | null;
+};
 
 type Props = {
   history: History;
