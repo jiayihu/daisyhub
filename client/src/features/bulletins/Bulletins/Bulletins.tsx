@@ -9,20 +9,15 @@ import { BulletinPreview } from '../BulletinPreview/BulletinPreview';
 import { Link } from 'react-router-dom';
 import { PostLoader } from '../../ui/PostLoader/PostLoader';
 import { Filters } from './Filters/Filters';
+import { Filters as TFilters } from '../../../types/filters';
 
 type Props = {
   history: History;
 };
 
-type Filters = {
-  minPrice: number;
-  maxPrice: number;
-  fees: boolean | null;
-};
-
 export const Bulletins = (_: Props) => {
   const bulletins = useSelector(selectBulletins);
-  const [filters, setFilters] = useState<Filters>({
+  const [filters, setFilters] = useState<TFilters>({
     minPrice: 0,
     maxPrice: 1000,
     fees: null,

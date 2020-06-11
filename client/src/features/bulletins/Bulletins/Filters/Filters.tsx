@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import './Filters.scss';
 import { Collapse, Button, CustomInput, Label, Row, Col } from 'reactstrap';
 import { DoubleSlider } from '../../../ui/DoubleSlider/DoubleSlider';
+import { Filters as TFilters } from '../../../../types/filters';
 
 type Props = {
   filters: { minPrice: number; maxPrice: number; fees: boolean | null };
-  onSetFilters: (filters: { minPrice: number; maxPrice: number; fees: boolean | null }) => void;
+  onSetFilters: (filters: TFilters) => void;
 };
 
 export const Filters = React.memo(({ filters, onSetFilters }: Props) => {

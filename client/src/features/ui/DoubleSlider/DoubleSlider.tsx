@@ -27,17 +27,15 @@ export const DoubleSlider = React.memo(
       return `calc(${newValue}% + (${newPosition}px))`;
     };
 
-    const onMoveThumbs = (currentTargetId: string, currentValue: number) => {
-      if (currentTargetId === 'min') {
+    const onMoveThumbMin = (currentValue: number) => {
+      if (currentValue <= valueMax) {
         onChangeMin(currentValue);
-        if (currentValue >= valueMax) {
-          onChangeMax(currentValue);
-        }
-      } else if (currentTargetId === 'max') {
+      }
+    };
+
+    const onMoveThumbMax = (currentValue: number) => {
+      if (currentValue >= valueMin) {
         onChangeMax(currentValue);
-        if (currentValue <= valueMin) {
-          onChangeMin(currentValue);
-        }
       }
     };
 
@@ -58,7 +56,7 @@ export const DoubleSlider = React.memo(
             step={steps}
             type="range"
             onChange={e => {
-              onMoveThumbs(e.target.id, +e.target.value);
+              onMoveThumbMin(Number(e.target.value));
             }}
           />
           <div id="max-value" className="range-max-value" style={{ left: updateBubbles(valueMax) }}>
@@ -73,7 +71,7 @@ export const DoubleSlider = React.memo(
             step={steps}
             type="range"
             onChange={e => {
-              onMoveThumbs(e.target.id, +e.target.value);
+              onMoveThumbMax(Number(e.target.value));
             }}
           />
         </div>
