@@ -61,8 +61,8 @@ export const Bulletins = (_: Props) => {
       <>
         <Filters filters={filters} onSetFilters={setFilters} />
         <Alert color="light">
-          <h3>Whoopsie, no islands meet these criteria!</h3>
-          Try change your filter settings.
+          <h3>Whoopsie, no island meet these criteria!</h3>
+          Try changing the filters.
         </Alert>
       </>
     );
