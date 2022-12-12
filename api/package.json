@@ -21,7 +21,7 @@
   "dependencies": {
     "@google-cloud/firestore": "^3.7.4",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "faker": "^4.1.0",
     "fp-ts": "^2.5.4",
     "io-ts": "^2.2.1",
